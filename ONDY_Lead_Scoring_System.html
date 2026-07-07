@@ -1,0 +1,832 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ONDY Lead Scoring System</title>
+<style>
+  :root {
+    --black:#1A1A1A; --dark:#2D2D2D; --gray:#6B7280; --lgray:#F5F5F5;
+    --border:#E5E7EB; --white:#FFFFFF;
+    --hot:#DC2626; --hot-bg:#FEF2F2; --hot-bd:#FECACA;
+    --warm:#D97706; --warm-bg:#FFFBEB; --warm-bd:#FDE68A;
+    --cold:#2563EB; --cold-bg:#EFF6FF; --cold-bd:#BFDBFE;
+    --green:#059669; --green-bg:#ECFDF5;
+    --trk-a:#6D28D9; --trk-b:#065F46; --trk-c:#92400E; --trk-d:#1E40AF;
+    --ondy:#CC0033; --lark:#00B96B;
+  }
+  *{box-sizing:border-box;margin:0;padding:0;}
+  body{font-family:'Segoe UI',Arial,sans-serif;background:#F3F4F6;color:var(--black);}
+
+  .app-header{background:var(--black);color:#fff;padding:14px 28px;display:flex;align-items:center;justify-content:space-between;}
+  .app-header h1{font-size:17px;font-weight:700;}
+  .app-header .badge{font-size:10px;background:#374151;color:#9CA3AF;padding:3px 10px;border-radius:20px;}
+
+  .tabs{background:var(--dark);display:flex;gap:2px;padding:0 28px;}
+  .tab-btn{background:transparent;border:none;color:#9CA3AF;padding:11px 18px;font-size:12px;font-weight:600;cursor:pointer;border-bottom:3px solid transparent;transition:all .2s;}
+  .tab-btn.active{color:#fff;border-bottom-color:#fff;}
+  .tab-content{display:none;}
+  .tab-content.active{display:block;}
+
+  /* LARK TAB */
+  .lark-wrap{max-width:720px;margin:32px auto;padding:0 16px 60px;}
+  .workflow-card{background:var(--white);border:1px solid var(--border);border-radius:14px;padding:24px 28px;margin-bottom:20px;box-shadow:0 2px 10px rgba(0,0,0,.06);}
+  .wf-title{font-size:15px;font-weight:800;color:var(--black);margin-bottom:16px;}
+  .wf-steps{display:flex;align-items:flex-start;gap:6px;flex-wrap:wrap;}
+  .wf-step{flex:1;min-width:130px;background:var(--lgray);border-radius:10px;padding:14px 12px;text-align:center;}
+  .wf-step-num{width:26px;height:26px;background:var(--black);color:#fff;border-radius:50%;font-size:12px;font-weight:800;display:flex;align-items:center;justify-content:center;margin:0 auto 8px;}
+  .wf-step-icon{font-size:20px;margin-bottom:6px;}
+  .wf-step-label{font-size:11px;font-weight:700;color:var(--dark);margin-bottom:2px;}
+  .wf-step-sub{font-size:10px;color:var(--gray);line-height:1.5;}
+  .wf-arrow{display:flex;align-items:center;padding-top:28px;color:var(--gray);font-size:16px;}
+
+  .lark-cta-card{background:var(--white);border:1px solid var(--border);border-radius:14px;overflow:hidden;margin-bottom:20px;box-shadow:0 2px 10px rgba(0,0,0,.06);}
+  .lark-cta-top{background:linear-gradient(135deg,#00B96B 0%,#00865A 100%);padding:22px 28px;color:#fff;display:flex;align-items:center;justify-content:space-between;gap:16px;}
+  .lark-cta-top h3{font-size:17px;font-weight:800;margin-bottom:4px;}
+  .lark-cta-top p{font-size:12px;opacity:.9;line-height:1.6;}
+  .lark-logo{font-size:42px;flex-shrink:0;}
+  .lark-cta-body{padding:20px 28px;}
+  .lark-url-row{display:flex;gap:10px;margin-bottom:12px;}
+  .lark-url-input{flex:1;padding:10px 13px;border:1.5px solid var(--border);border-radius:8px;font-size:12px;color:var(--dark);font-family:inherit;outline:none;}
+  .lark-url-input:focus{border-color:var(--lark);}
+  .btn-lark-open{padding:10px 18px;background:var(--lark);color:#fff;border:none;border-radius:8px;font-size:12px;font-weight:700;cursor:pointer;white-space:nowrap;transition:background .2s;}
+  .btn-lark-open:hover{background:#00865A;}
+  .lark-note{font-size:11px;color:var(--gray);line-height:1.8;}
+  .lark-note b{color:var(--dark);}
+
+  .lark-frame-wrap{background:var(--white);border:1px solid var(--border);border-radius:14px;overflow:hidden;margin-bottom:20px;box-shadow:0 2px 10px rgba(0,0,0,.06);}
+  .lark-frame-header{background:var(--lgray);padding:10px 18px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid var(--border);}
+  .lark-frame-header span{font-size:12px;font-weight:600;color:var(--gray);}
+  #larkIframe{width:100%;height:650px;border:none;display:none;}
+  .iframe-placeholder{display:flex;flex-direction:column;align-items:center;justify-content:center;height:260px;text-align:center;color:var(--gray);padding:24px;}
+  .iframe-placeholder .ph-icon{font-size:44px;margin-bottom:10px;}
+  .iframe-placeholder p{font-size:13px;line-height:1.8;}
+
+  .criteria-card{background:var(--white);border:1px solid var(--border);border-radius:14px;overflow:hidden;box-shadow:0 2px 10px rgba(0,0,0,.06);}
+  .criteria-header{background:var(--black);color:#fff;padding:14px 22px;display:flex;align-items:center;justify-content:space-between;cursor:pointer;}
+  .criteria-header h4{font-size:13px;font-weight:700;}
+  .criteria-toggle{font-size:16px;transition:transform .3s;}
+  .criteria-header.open .criteria-toggle{transform:rotate(180deg);}
+  .criteria-body{display:none;padding:18px 22px;}
+  .criteria-body.open{display:block;}
+  .crit-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;}
+  .crit-title{font-size:10px;font-weight:700;text-transform:uppercase;color:var(--gray);margin-bottom:8px;}
+  .crit-row{display:flex;justify-content:space-between;align-items:center;padding:4px 0;border-bottom:1px solid var(--border);font-size:12px;}
+  .crit-row:last-child{border:none;}
+  .crit-pts{font-size:10px;font-weight:700;padding:1px 7px;border-radius:10px;background:#EEF2FF;color:#4F46E5;}
+  .tier-table{width:100%;margin-top:8px;border-collapse:collapse;}
+  .tier-table td{padding:6px 10px;font-size:12px;border:1px solid var(--border);}
+  .tier-table tr:nth-child(even){background:var(--lgray);}
+
+  /* SCORE CALC TAB */
+  .calc-wrap{max-width:680px;margin:32px auto;padding:0 16px 60px;}
+  .score-bar{background:var(--white);border-radius:12px;border:2px solid var(--border);padding:14px 20px;margin-bottom:16px;display:flex;align-items:center;gap:14px;box-shadow:0 2px 8px rgba(0,0,0,.04);flex-wrap:wrap;}
+  .sb-big{font-size:34px;font-weight:900;color:var(--black);min-width:48px;line-height:1;}
+  .sb-label{font-size:9px;font-weight:700;color:var(--gray);text-transform:uppercase;margin-top:2px;}
+  .progress-wrap{flex:1;min-width:130px;}
+  .progress-bar{height:8px;background:var(--lgray);border-radius:4px;overflow:hidden;margin-bottom:4px;}
+  .progress-fill{height:100%;border-radius:4px;background:var(--black);transition:width .4s;}
+  .progress-labels{display:flex;justify-content:space-between;font-size:10px;color:var(--gray);}
+  .tier-pill{font-size:12px;font-weight:700;padding:5px 14px;border-radius:20px;}
+  .trk-pill{font-size:10px;font-weight:700;padding:3px 10px;border-radius:20px;background:var(--lgray);color:var(--dark);}
+
+  .calc-card{background:var(--white);border-radius:12px;box-shadow:0 4px 20px rgba(0,0,0,.07);overflow:hidden;margin-bottom:14px;}
+  .calc-header{background:var(--black);color:#fff;padding:14px 22px;display:flex;align-items:center;justify-content:space-between;}
+  .calc-header h3{font-size:14px;font-weight:700;}
+  .calc-header .hint{font-size:11px;color:#9CA3AF;}
+  .calc-body{padding:18px 22px;}
+
+  .field-group{margin-bottom:16px;}
+  .field-row-2{display:grid;grid-template-columns:1fr 1fr;gap:12px;}
+  .field-label{font-size:12px;font-weight:700;color:var(--dark);margin-bottom:6px;display:flex;align-items:center;gap:5px;flex-wrap:wrap;}
+  .lark-badge{font-size:9px;background:#D1FAE5;color:#065F46;padding:1px 6px;border-radius:10px;font-weight:700;}
+  .pts-badge{font-size:9px;background:#EEF2FF;color:#4F46E5;padding:1px 6px;border-radius:10px;font-weight:700;margin-left:auto;}
+  select{width:100%;padding:8px 10px;border:1.5px solid var(--border);border-radius:7px;font-size:12px;color:var(--black);background:var(--white);outline:none;transition:border-color .2s;font-family:inherit;}
+  select:focus{border-color:var(--black);}
+  .option-group{display:flex;flex-wrap:wrap;gap:8px;margin-top:4px;}
+  .option-card{display:flex;align-items:center;gap:7px;padding:8px 12px;border:1.5px solid var(--border);border-radius:7px;cursor:pointer;font-size:12px;color:var(--dark);transition:all .2s;user-select:none;}
+  .option-card:hover{border-color:var(--dark);}
+  .option-card.selected{border-color:var(--black);background:var(--lgray);}
+  .option-card input{display:none;}
+  .check-group{display:flex;flex-direction:column;gap:7px;margin-top:4px;}
+  .check-item{display:flex;align-items:center;gap:9px;padding:8px 12px;border:1.5px solid var(--border);border-radius:7px;cursor:pointer;font-size:12px;color:var(--dark);transition:all .2s;}
+  .check-item:hover{border-color:var(--dark);}
+  .check-item input[type="checkbox"]{width:14px;height:14px;cursor:pointer;accent-color:var(--black);flex-shrink:0;}
+  .check-item.checked{border-color:var(--black);background:var(--lgray);}
+  .check-item .pts{margin-left:auto;font-size:10px;font-weight:700;color:var(--lark);}
+
+  .btn-calc{width:100%;padding:13px;background:var(--black);color:#fff;border:none;border-radius:8px;font-size:14px;font-weight:700;cursor:pointer;transition:background .2s;}
+  .btn-calc:hover{background:var(--dark);}
+
+  /* RESULT MODAL */
+  .result-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.65);z-index:999;align-items:center;justify-content:center;}
+  .result-overlay.show{display:flex;}
+  .result-modal{background:var(--white);border-radius:16px;width:560px;max-width:95vw;max-height:90vh;overflow-y:auto;box-shadow:0 24px 64px rgba(0,0,0,.3);}
+  .rm-header{padding:22px 26px;color:#fff;}
+  .rm-header h2{font-size:17px;font-weight:800;margin-bottom:3px;}
+  .rm-header p{font-size:12px;opacity:.85;}
+  .rm-body{padding:22px 26px;}
+  .rm-score-row{display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;}
+  .rm-score-big{font-size:52px;font-weight:900;line-height:1;}
+  .rm-right{text-align:right;}
+  .rm-track-lbl{display:inline-block;padding:3px 11px;border-radius:20px;font-size:11px;font-weight:700;color:#fff;margin-bottom:5px;}
+  .rm-sla{font-size:11px;color:var(--gray);display:block;}
+  .rm-box{background:var(--lgray);border-radius:8px;padding:13px 15px;margin-bottom:12px;}
+  .rm-box-title{font-size:10px;font-weight:700;color:var(--gray);text-transform:uppercase;margin-bottom:8px;}
+  .rm-row{display:flex;justify-content:space-between;font-size:12px;padding:3px 0;border-bottom:1px solid var(--border);}
+  .rm-row:last-child{border:none;}
+  .rm-row span:first-child{color:var(--dark);}
+  .rm-row span:last-child{font-weight:700;color:var(--black);}
+  .rm-guru{display:flex;align-items:center;gap:10px;padding:11px 13px;background:var(--black);color:#fff;border-radius:8px;margin-bottom:12px;}
+  .guru-av{width:34px;height:34px;background:var(--dark);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:15px;}
+  .guru-nm{font-size:13px;font-weight:700;}
+  .guru-rl{font-size:10px;color:#9CA3AF;}
+  .guru-sla{font-size:12px;font-weight:700;color:#FCD34D;margin-left:auto;}
+  .rm-steps{display:flex;flex-direction:column;gap:7px;margin-bottom:16px;}
+  .rm-step{display:flex;align-items:flex-start;gap:9px;font-size:12px;color:var(--dark);}
+  .step-n{width:20px;height:20px;background:var(--black);color:#fff;border-radius:50%;font-size:10px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+  .rm-actions{display:flex;gap:10px;}
+  .rm-btn{flex:1;padding:10px;border-radius:7px;font-size:13px;font-weight:700;cursor:pointer;}
+  .rm-btn.close{border:2px solid var(--border);background:var(--white);color:var(--dark);}
+  .rm-btn.notify{border:none;background:var(--black);color:#fff;}
+
+  /* LEAD QUEUE TAB */
+  .dist-container{max-width:1100px;margin:0 auto;padding:20px;}
+  .stats-row{display:grid;grid-template-columns:repeat(5,1fr);gap:10px;margin-bottom:18px;}
+  .stat-card{background:var(--white);border:1px solid var(--border);border-radius:10px;padding:12px 14px;text-align:center;}
+  .stat-num{font-size:24px;font-weight:800;color:var(--black);display:block;}
+  .stat-label{font-size:10px;color:var(--gray);font-weight:600;text-transform:uppercase;}
+  .stat-num.hot{color:var(--hot);}
+  .stat-num.warm{color:var(--warm);}
+  .stat-num.cold{color:var(--cold);}
+  .dist-grid{display:grid;grid-template-columns:1fr 380px;gap:16px;}
+  .queue-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;}
+  .queue-title{font-size:14px;font-weight:700;}
+  .fpills{display:flex;gap:6px;}
+  .fpill{padding:3px 10px;border-radius:20px;font-size:11px;font-weight:600;cursor:pointer;border:1.5px solid var(--border);background:var(--white);color:var(--gray);}
+  .fpill.active{background:var(--black);color:#fff;border-color:var(--black);}
+  .lead-card{background:var(--white);border:1px solid var(--border);border-radius:10px;padding:13px 14px;margin-bottom:9px;display:flex;gap:10px;align-items:flex-start;cursor:pointer;border-left:4px solid var(--border);transition:box-shadow .2s;}
+  .lead-card:hover{box-shadow:0 4px 12px rgba(0,0,0,.1);}
+  .lead-card.hot{border-left-color:var(--hot);}
+  .lead-card.warm{border-left-color:var(--warm);}
+  .lead-card.cold{border-left-color:var(--cold);}
+  .lead-av{font-size:22px;flex-shrink:0;width:34px;text-align:center;}
+  .lead-inf{flex:1;min-width:0;}
+  .lead-nm-row{display:flex;align-items:center;flex-wrap:wrap;gap:6px;margin-bottom:3px;}
+  .lead-nm{font-size:13px;font-weight:700;color:var(--black);}
+  .tier-bdg{font-size:10px;font-weight:700;padding:2px 8px;border-radius:10px;}
+  .tier-bdg.hot{background:var(--hot-bg);color:var(--hot);}
+  .tier-bdg.warm{background:var(--warm-bg);color:var(--warm);}
+  .tier-bdg.cold{background:var(--cold-bg);color:var(--cold);}
+  .trk-tag{font-size:9px;font-weight:700;padding:2px 7px;border-radius:8px;color:#fff;}
+  .lead-meta{font-size:11px;color:var(--gray);margin-bottom:3px;}
+  .lead-src{font-size:11px;color:var(--dark);}
+  .lead-acts{display:flex;gap:6px;margin-top:6px;}
+  .btn-sm{padding:4px 10px;border-radius:6px;font-size:10px;font-weight:700;cursor:pointer;border:1.5px solid var(--border);background:var(--white);color:var(--dark);}
+  .btn-sm.p{background:var(--ondy);color:#fff;border-color:var(--ondy);}
+  .lead-rt{text-align:right;flex-shrink:0;}
+  .lead-sc{font-size:22px;font-weight:900;}
+  .lead-sclbl{font-size:9px;color:var(--gray);}
+  .sla-chip{font-size:9px;font-weight:700;padding:2px 8px;border-radius:8px;margin-top:3px;display:inline-block;}
+  .sla-u{background:#FEF2F2;color:var(--hot);}
+  .sla-n{background:var(--warm-bg);color:var(--warm);}
+  .sla-ok{background:var(--cold-bg);color:var(--cold);}
+  .intent-tag{font-size:10px;font-weight:600;padding:2px 8px;border-radius:10px;background:var(--lgray);color:var(--dark);margin-right:4px;}
+  .intent-tag.b{background:#D1FAE5;color:#065F46;}
+  .email-panel{background:var(--white);border:1px solid var(--border);border-radius:10px;padding:18px;font-size:12px;line-height:1.8;color:var(--dark);min-height:220px;}
+  .ep-subject{font-size:13px;font-weight:700;margin-bottom:4px;}
+  .ep-meta{font-size:11px;color:var(--gray);margin-bottom:12px;}
+  .ep-body{white-space:pre-wrap;}
+</style>
+</head>
+<body>
+
+<div class="app-header">
+  <h1>&#127919; ONDY Lead Scoring System</h1>
+  <span class="badge">Lark Form + Auto Score &middot; v2.0</span>
+</div>
+
+<div class="tabs">
+  <button class="tab-btn active" onclick="switchTab('lark',this)">&#128203; Lark Form &#xe0a3;&#xe0a3;&#xe0a3;&#xe0a3;&#xe0a3; Lead</button>
+  <button class="tab-btn" onclick="switchTab('calc',this)">&#9889; &#xe0a3;&#xe0a3;&#xe0a3;&#xe0a3;&#xe0a3;&#xe0a3; Score</button>
+  <button class="tab-btn" onclick="switchTab('dist',this)">&#128202; Lead Queue</button>
+</div>
+
+<!-- ═══ TAB 1: LARK FORM ═══ -->
+<div id="tab-lark" class="tab-content active">
+<div class="lark-wrap">
+
+  <div class="workflow-card">
+    <div class="wf-title">&#128260; Lead Intake Workflow — กรอก Lark Form &#8594; คำนวณ Score</div>
+    <div class="wf-steps">
+      <div class="wf-step">
+        <div class="wf-step-num">1</div>
+        <div class="wf-step-icon">&#128203;</div>
+        <div class="wf-step-label">Lead กรอก Lark Form</div>
+        <div class="wf-step-sub">น้อง/ผู้ปกครองกรอกข้อมูลผ่าน QR / ลิงก์</div>
+      </div>
+      <div class="wf-arrow">&#8594;</div>
+      <div class="wf-step">
+        <div class="wf-step-num">2</div>
+        <div class="wf-step-icon">&#128233;</div>
+        <div class="wf-step-label">Sale รับข้อมูล</div>
+        <div class="wf-step-sub">Lark แจ้งเตือน Sale ทันทีที่มีการ Submit</div>
+      </div>
+      <div class="wf-arrow">&#8594;</div>
+      <div class="wf-step">
+        <div class="wf-step-num">3</div>
+        <div class="wf-step-icon">&#9889;</div>
+        <div class="wf-step-label">คำนวณ Score</div>
+        <div class="wf-step-sub">Sale นำข้อมูลจาก Lark มากรอกใน Score Calculator</div>
+      </div>
+      <div class="wf-arrow">&#8594;</div>
+      <div class="wf-step">
+        <div class="wf-step-num">4</div>
+        <div class="wf-step-icon">&#127991;&#65039;</div>
+        <div class="wf-step-label">HOT / WARM / COLD</div>
+        <div class="wf-step-sub">ระบบระบุ Tier + Track + SLA อัตโนมัติ</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="lark-cta-card">
+    <div class="lark-cta-top">
+      <div>
+        <h3>&#128994; เปิด Lark Form รับ Lead</h3>
+        <p>วาง URL ของ Lark Form ที่ใช้รับ Lead ด้านล่าง<br>แล้วกด "เปิด Lark Form" เพื่อเปิดในหน้าต่างใหม่</p>
+      </div>
+      <div class="lark-logo">&#128203;</div>
+    </div>
+    <div class="lark-cta-body">
+      <div class="lark-url-row">
+        <input type="url" class="lark-url-input" id="larkUrl" placeholder="วาง Lark Form URL เช่น https://forms.larksuite.com/..." />
+        <button class="btn-lark-open" onclick="openLark()">เปิด Lark Form &#8599;</button>
+      </div>
+      <div class="lark-note">
+        <b>วิธีตั้งค่า:</b> วาง URL แล้วกดปุ่มด้านบน &mdash; ระบบจะจำ URL ไว้อัตโนมัติ<br>
+        <b>สำหรับ Lead:</b> แชร์ลิงก์ หรือแสดง QR Code จาก Lark ให้น้องกรอกด้วยตนเอง<br>
+        <b>หลังกรอกแล้ว:</b> Sale ไปที่ <b>แท็บ "คำนวณ Score"</b> เพื่อคำนวณ HOT / WARM / COLD
+      </div>
+    </div>
+  </div>
+
+  <div class="lark-frame-wrap">
+    <div class="lark-frame-header">
+      <span>&#128203; Lark Form Preview</span>
+      <button onclick="loadIframe()" style="font-size:11px;padding:3px 10px;border:1px solid var(--border);background:var(--white);border-radius:6px;cursor:pointer;font-weight:600;color:var(--dark);">โหลด Preview</button>
+    </div>
+    <div id="iframePlaceholder" class="iframe-placeholder">
+      <div class="ph-icon">&#128279;</div>
+      <p>วาง Lark Form URL ด้านบน แล้วกด <b>"โหลด Preview"</b><br>เพื่อดูตัวอย่าง Form ในหน้านี้</p>
+    </div>
+    <iframe id="larkIframe"></iframe>
+  </div>
+
+  <div class="criteria-card">
+    <div class="criteria-header" onclick="toggleCriteria(this)">
+      <h4>&#128202; เกณฑ์การ Scoring (HOT / WARM / COLD)</h4>
+      <span class="criteria-toggle">&#9660;</span>
+    </div>
+    <div class="criteria-body">
+      <div class="crit-grid">
+        <div>
+          <div class="crit-title">&#127891; Demographic Score (max 55 pts)</div>
+          <div class="crit-row"><span>ระดับ ม.6</span><span class="crit-pts">+20</span></div>
+          <div class="crit-row"><span>ระดับ ม.5</span><span class="crit-pts">+15</span></div>
+          <div class="crit-row"><span>ระดับ ม.4</span><span class="crit-pts">+10</span></div>
+          <div class="crit-row"><span>โรงเรียน Tier 1</span><span class="crit-pts">+10</span></div>
+          <div class="crit-row"><span>โรงเรียน Tier 2</span><span class="crit-pts">+7</span></div>
+          <div class="crit-row"><span>ห้องพิเศษวิทย์-คณิต</span><span class="crit-pts">+8</span></div>
+          <div class="crit-row"><span>วิทย์-คณิต ปกติ</span><span class="crit-pts">+5</span></div>
+          <div class="crit-row"><span>เป้าหมาย ม.ชั้นนำ</span><span class="crit-pts">+10</span></div>
+          <div class="crit-row"><span>คณะแพทย์/วิศวะ</span><span class="crit-pts">+5</span></div>
+        </div>
+        <div>
+          <div class="crit-title">&#127919; Behavioral Score (max 45 pts)</div>
+          <div class="crit-row"><span>ปรับพื้นฐาน 99 บาท</span><span class="crit-pts">+25</span></div>
+          <div class="crit-row"><span>ทดลองเรียนฟรี 2 ชม.</span><span class="crit-pts">+20</span></div>
+          <div class="crit-row"><span>Mock ฟรี</span><span class="crit-pts">+15</span></div>
+          <div class="crit-row"><span>วางแผนการเรียน</span><span class="crit-pts">+15</span></div>
+          <div class="crit-row"><span>เรียนพิเศษอยู่แล้ว</span><span class="crit-pts">+8</span></div>
+          <div class="crit-row"><span>โปรโมชั่นพิเศษ</span><span class="crit-pts">+8</span></div>
+          <div class="crit-row"><span>กรอกข้อกังวล</span><span class="crit-pts">+5</span></div>
+          <div class="crit-row"><span>สนใจ &#8805;3 วิชา</span><span class="crit-pts">+5</span></div>
+        </div>
+      </div>
+      <div style="margin-top:14px;">
+        <div class="crit-title">&#127991;&#65039; Tier Thresholds</div>
+        <table class="tier-table">
+          <tr><td style="background:var(--hot-bg);color:var(--hot);font-weight:800;">&#128308; HOT</td><td>Score &#8805; 70 &mdash; Senior Guru ติดต่อใน 24 ชั่วโมง</td></tr>
+          <tr><td style="background:var(--warm-bg);color:var(--warm);font-weight:800;">&#128993; WARM</td><td>Score 45–69 &mdash; Guru สาขา ติดต่อใน 3 วัน</td></tr>
+          <tr><td style="background:var(--cold-bg);color:var(--cold);font-weight:800;">&#128309; COLD</td><td>Score &lt; 45 &mdash; ส่งเข้า Auto Nurture 14 วัน</td></tr>
+        </table>
+      </div>
+    </div>
+  </div>
+
+</div>
+</div>
+
+<!-- ═══ TAB 2: SCORE CALCULATOR ═══ -->
+<div id="tab-calc" class="tab-content">
+<div class="calc-wrap">
+
+  <div class="score-bar">
+    <div>
+      <div class="sb-big" id="sbScore">0</div>
+      <div class="sb-label">Lead Score</div>
+    </div>
+    <div class="progress-wrap">
+      <div class="progress-bar"><div class="progress-fill" id="sbFill" style="width:0%"></div></div>
+      <div class="progress-labels"><span id="sbDetail">D: 0 pts &middot; B: 0 pts</span><span>max 100</span></div>
+    </div>
+    <span class="tier-pill" id="sbTier" style="background:var(--cold-bg);color:var(--cold);">&#128309; COLD</span>
+    <span class="trk-pill" id="sbTrack">— ยังไม่มีข้อมูล —</span>
+  </div>
+
+  <!-- Source -->
+  <div class="calc-card">
+    <div class="calc-header"><h3>&#128205; Source (Track ที่มาของ Lead)</h3><span class="hint">กำหนด Track โดยตรง</span></div>
+    <div class="calc-body">
+      <div class="field-group">
+        <div class="field-label">Source จาก Lark Form <span class="lark-badge">Lark Field 16</span></div>
+        <select id="f_source" onchange="updateScore()">
+          <option value="">— เลือก Source —</option>
+          <option value="A">A — กิจกรรมโรงเรียน (School Visit / QR Scan)</option>
+          <option value="B">B — ทดลองเรียน (Free Trial)</option>
+          <option value="C">C — ซื้อ Course 99 บาท</option>
+          <option value="D">D — กิจกรรมสาขา (Branch Event / Walk-in)</option>
+        </select>
+      </div>
+    </div>
+  </div>
+
+  <!-- Demographic -->
+  <div class="calc-card">
+    <div class="calc-header"><h3>&#127891; Demographic Score</h3><span class="hint">max 55 pts</span></div>
+    <div class="calc-body">
+      <div class="field-row-2">
+        <div class="field-group">
+          <div class="field-label">ระดับชั้น <span class="lark-badge">Field 6</span> <span class="pts-badge">max +20</span></div>
+          <select id="f_grade" onchange="updateScore()">
+            <option value="">Please select</option>
+            <option value="p5">ป.5</option><option value="p6">ป.6</option>
+            <option value="m1">ม.1</option><option value="m2">ม.2</option><option value="m3">ม.3</option>
+            <option value="m4">ม.4</option><option value="m5">ม.5</option><option value="m6">ม.6</option>
+            <option value="m6plus">มากกว่า ม.6</option><option value="primary">ประถมศึกษา</option>
+          </select>
+        </div>
+        <div class="field-group">
+          <div class="field-label">โรงเรียน (Tier) <span class="lark-badge">Field 7</span> <span class="pts-badge">max +10</span></div>
+          <select id="f_school" onchange="updateScore()">
+            <option value="">Please select</option>
+            <optgroup label="— Tier 1 (ชั้นนำ) —">
+              <option value="tier1">เตรียมอุดมศึกษา</option>
+              <option value="tier1">สวนกุหลาบวิทยาลัย</option>
+              <option value="tier1">สาธิต มศว ปทุมวัน</option>
+              <option value="tier1">สาธิต มศว ประสานมิตร</option>
+              <option value="tier1">สาธิตจุฬาลงกรณ์</option>
+              <option value="tier1">มหิดลวิทยานุสรณ์</option>
+            </optgroup>
+            <optgroup label="— Tier 2 (ชื่อดัง) —">
+              <option value="tier2">สามเสนวิทยาลัย</option>
+              <option value="tier2">สตรีวิทยา</option>
+              <option value="tier2">บดินทรเดชา</option>
+              <option value="tier2">เตรียมอุดมพัฒนาการ</option>
+              <option value="tier2">หอวัง</option>
+              <option value="tier2">ชลราษฎรอำรุง</option>
+              <option value="tier2">ระยองวิทยาคม</option>
+              <option value="tier2">หาดใหญ่วิทยาลัย</option>
+              <option value="tier2">บุญวาทย์วิทยาลัย</option>
+              <option value="tier2">ขอนแก่นวิทยายน</option>
+              <option value="tier2">เชียงใหม่</option>
+              <option value="tier2">ยุพราชวิทยาลัย</option>
+            </optgroup>
+            <optgroup label="— เอกชน —">
+              <option value="private">เซนต์คาเบรียล / อัสสัมชัญ / อื่นๆ</option>
+            </optgroup>
+            <optgroup label="— อื่นๆ —">
+              <option value="other">โรงเรียนรัฐบาลทั่วไป</option>
+            </optgroup>
+          </select>
+        </div>
+      </div>
+      <div class="field-row-2">
+        <div class="field-group">
+          <div class="field-label">แผนการเรียน <span class="lark-badge">Field 9</span> <span class="pts-badge">max +8</span></div>
+          <select id="f_stream" onchange="updateScore()">
+            <option value="">Please select</option>
+            <option value="gifted_sci">ห้องพิเศษวิทย์-คณิต</option>
+            <option value="gifted_eng">ห้องพิเศษ EIS / IEP</option>
+            <option value="sci_math">วิทย์-คณิต ปกติ</option>
+            <option value="art_calc">ศิลป์-คำนวณ</option>
+            <option value="art_eng">ศิลป์-ภาษาอังกฤษ</option>
+            <option value="art_thai">ศิลป์-ภาษาไทย</option>
+            <option value="art_lang">ศิลป์-ภาษาต่างประเทศ</option>
+            <option value="inter">นานาชาติ (Inter)</option>
+            <option value="other_stream">อื่นๆ</option>
+          </select>
+        </div>
+        <div class="field-group">
+          <div class="field-label">เป้าหมายมหาวิทยาลัย <span class="lark-badge">Field 11</span> <span class="pts-badge">max +10</span></div>
+          <select id="f_uni" onchange="updateScore()">
+            <option value="">Please select</option>
+            <optgroup label="— ม.ชั้นนำ —">
+              <option value="elite">จุฬาลงกรณ์</option>
+              <option value="elite">ธรรมศาสตร์</option>
+              <option value="elite">มหิดล</option>
+              <option value="elite">เกษตรศาสตร์</option>
+              <option value="elite">KMITL / KMUTT</option>
+              <option value="elite">ขอนแก่น / เชียงใหม่ / สงขลา</option>
+            </optgroup>
+            <optgroup label="— ม.รัฐอื่นๆ —">
+              <option value="public">มศว / บูรพา / นเรศวร / อื่นๆ</option>
+            </optgroup>
+            <optgroup label="— ม.เอกชน —">
+              <option value="private_uni">AU / ม.กรุงเทพ / อื่นๆ</option>
+            </optgroup>
+            <option value="abroad">ต่างประเทศ</option>
+            <option value="undecided">ยังไม่แน่ใจ</option>
+          </select>
+        </div>
+      </div>
+      <div class="field-group">
+        <div class="field-label">เป้าหมายคณะ <span class="lark-badge">Field 10</span> <span class="pts-badge">max +5</span></div>
+        <select id="f_faculty" onchange="updateScore()">
+          <option value="">Please select</option>
+          <option value="med">แพทยศาสตร์ / ทันตแพทย์ / เภสัช / พยาบาล</option>
+          <option value="eng">วิศวกรรมศาสตร์</option>
+          <option value="sci">วิทยาศาสตร์</option>
+          <option value="law">นิติศาสตร์</option>
+          <option value="econ">เศรษฐศาสตร์ / บริหารธุรกิจ / การบัญชี</option>
+          <option value="arch">สถาปัตยกรรม / ศิลปกรรม / นิเทศศาสตร์</option>
+          <option value="edu">ครุศาสตร์ / ศึกษาศาสตร์</option>
+          <option value="lang">อักษรศาสตร์ / ภาษาต่างประเทศ</option>
+          <option value="poli">รัฐศาสตร์ / สังคมวิทยา</option>
+          <option value="other_fac">ยังไม่แน่ใจ / อื่นๆ</option>
+        </select>
+      </div>
+    </div>
+  </div>
+
+  <!-- Behavioral -->
+  <div class="calc-card">
+    <div class="calc-header"><h3>&#127919; Behavioral Score</h3><span class="hint">max 45 pts</span></div>
+    <div class="calc-body">
+      <div class="field-group">
+        <div class="field-label">สนใจให้ติดต่อเรื่องใด (เลือกได้หลายข้อ) <span class="lark-badge">Lark Field 13</span></div>
+        <div class="check-group" id="interestGroup">
+          <label class="check-item" onclick="toggleCheck(this,'int_plan')">
+            <input type="checkbox" id="int_plan" data-score="15">
+            <span>&#128218; วางแผนการเรียน / คำแนะนำเตรียมสอบ</span><span class="pts">+15</span>
+          </label>
+          <label class="check-item" onclick="toggleCheck(this,'int_trial')">
+            <input type="checkbox" id="int_trial" data-score="20" data-track="B">
+            <span>&#9999;&#65039; ทดลองเรียนฟรี 2 ชม.</span><span class="pts">+20</span>
+          </label>
+          <label class="check-item" onclick="toggleCheck(this,'int_99b')">
+            <input type="checkbox" id="int_99b" data-score="25" data-track="C">
+            <span>&#128176; ปรับพื้นฐาน 99 บาท</span><span class="pts">+25</span>
+          </label>
+          <label class="check-item" onclick="toggleCheck(this,'int_mock')">
+            <input type="checkbox" id="int_mock" data-score="15" data-track="B">
+            <span>&#128221; ทุนจำลองสนามสอบ Mock ฟรี</span><span class="pts">+15</span>
+          </label>
+          <label class="check-item" onclick="toggleCheck(this,'int_promo')">
+            <input type="checkbox" id="int_promo" data-score="8">
+            <span>&#127873; โปรโมชั่นพิเศษ</span><span class="pts">+8</span>
+          </label>
+          <label class="check-item" onclick="toggleCheck(this,'int_follow')">
+            <input type="checkbox" id="int_follow" data-score="5">
+            <span>&#128226; ติดตามกิจกรรม</span><span class="pts">+5</span>
+          </label>
+          <label class="check-item" onclick="toggleCheck(this,'int_other')">
+            <input type="checkbox" id="int_other" data-score="3">
+            <span>อื่นๆ</span><span class="pts">+3</span>
+          </label>
+        </div>
+      </div>
+      <div class="field-group">
+        <div class="field-label">เรียนพิเศษอยู่หรือไม่ <span class="lark-badge">Field 14</span> <span class="pts-badge">+8 ถ้าเรียน</span></div>
+        <div class="option-group" id="tutorGroup">
+          <label class="option-card" onclick="selectOpt(this,'yes')" id="tutor_yes">
+            <input type="radio" name="tutor" value="yes"> เรียน
+          </label>
+          <label class="option-card" onclick="selectOpt(this,'no')" id="tutor_no">
+            <input type="radio" name="tutor" value="no"> ไม่เรียน
+          </label>
+        </div>
+      </div>
+      <div class="field-group">
+        <div class="field-label">วิชาที่สนใจ (&#8805;3 วิชา = +5 pts) <span class="lark-badge">Field 15</span></div>
+        <select id="f_subject" multiple onchange="updateScore()" size="5" style="height:auto;">
+          <option value="math">คณิตศาสตร์</option>
+          <option value="eng">อังกฤษ</option>
+          <option value="phys">ฟิสิกส์</option>
+          <option value="bio">ชีววิทยา</option>
+          <option value="chem">เคมี</option>
+          <option value="thai_soc">ไทย/สังคมศึกษา</option>
+          <option value="tgat">TGAT</option>
+          <option value="tpat1">TPAT1</option>
+          <option value="tpat3">TPAT3</option>
+          <option value="other_sub">อื่นๆ</option>
+          <option value="none">ไม่สนใจเป็นพิเศษ</option>
+        </select>
+      </div>
+      <div class="field-group">
+        <div class="field-label">สิ่งที่น้องกังวล <span class="lark-badge">Field 17</span> <span class="pts-badge">+5 ถ้ากรอก</span></div>
+        <textarea id="f_concern" rows="2" placeholder="เช่น ยังไม่รู้จะเลือกคณะอะไร, กลัวสอบไม่ติด..." onchange="updateScore()" style="width:100%;padding:8px 11px;border:1.5px solid var(--border);border-radius:7px;font-size:12px;font-family:inherit;resize:vertical;outline:none;"></textarea>
+      </div>
+    </div>
+  </div>
+
+  <!-- Lead Info -->
+  <div class="calc-card">
+    <div class="calc-header"><h3>&#128100; ข้อมูล Lead (จาก Lark Form)</h3><span class="hint">แสดงในผล Score</span></div>
+    <div class="calc-body">
+      <div class="field-row-2">
+        <div class="field-group">
+          <div class="field-label">ชื่อ-นามสกุล <span class="lark-badge">Field 2–3</span></div>
+          <input type="text" id="f_name" placeholder="ชื่อ-นามสกุล Lead" style="width:100%;padding:8px 11px;border:1.5px solid var(--border);border-radius:7px;font-size:12px;font-family:inherit;outline:none;">
+        </div>
+        <div class="field-group">
+          <div class="field-label">เบอร์โทร <span class="lark-badge">Field 4</span></div>
+          <input type="tel" id="f_phone" placeholder="0XX-XXX-XXXX" style="width:100%;padding:8px 11px;border:1.5px solid var(--border);border-radius:7px;font-size:12px;font-family:inherit;outline:none;">
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <button class="btn-calc" onclick="submitScore()">&#9889; คำนวณ Score และดูผล HOT / WARM / COLD</button>
+
+</div>
+</div>
+
+<!-- ═══ TAB 3: LEAD QUEUE ═══ -->
+<div id="tab-dist" class="tab-content">
+<div class="dist-container">
+  <div class="stats-row">
+    <div class="stat-card"><span class="stat-num">5</span><span class="stat-label">Total Leads</span></div>
+    <div class="stat-card"><span class="stat-num hot">2</span><span class="stat-label">HOT</span></div>
+    <div class="stat-card"><span class="stat-num warm">2</span><span class="stat-label">WARM</span></div>
+    <div class="stat-card"><span class="stat-num cold">1</span><span class="stat-label">COLD</span></div>
+    <div class="stat-card"><span class="stat-num" style="color:var(--green);">80%</span><span class="stat-label">HOT+WARM</span></div>
+  </div>
+  <div class="dist-grid">
+    <div>
+      <div class="queue-header">
+        <span class="queue-title">&#128203; Lead Queue</span>
+        <div class="fpills">
+          <span class="fpill active" onclick="filterLeads('all',this)">ทั้งหมด</span>
+          <span class="fpill" onclick="filterLeads('hot',this)">HOT</span>
+          <span class="fpill" onclick="filterLeads('warm',this)">WARM</span>
+          <span class="fpill" onclick="filterLeads('cold',this)">COLD</span>
+        </div>
+      </div>
+      <div class="lead-card hot" data-tier="hot" onclick="showEmail(0)">
+        <div class="lead-av">&#128105;</div>
+        <div class="lead-inf">
+          <div class="lead-nm-row"><span class="lead-nm">น.ส.พิชญา ศรีวิชัย</span><span class="tier-bdg hot">&#128308; HOT</span><span class="trk-tag" style="background:var(--trk-a);">Track A</span></div>
+          <div class="lead-meta">ม.6 &middot; เตรียมอุดมศึกษา &middot; กรุงเทพฯ &middot; วิทย์-คณิต</div>
+          <div class="lead-src">&#127919; สนใจ: วางแผนการเรียน + ทดลองเรียน | เป้าหมาย: จุฬาฯ แพทย์</div>
+          <div class="lead-acts">
+            <button class="btn-sm p" onclick="event.stopPropagation()">&#128222; โทรเลย</button>
+            <button class="btn-sm" onclick="event.stopPropagation()">&#128172; LINE</button>
+          </div>
+        </div>
+        <div class="lead-rt"><div class="lead-sc" style="color:var(--hot)">85</div><div class="lead-sclbl">คะแนน</div><div class="sla-chip sla-u">&#9201; 24 ชม.</div></div>
+      </div>
+      <div class="lead-card hot" data-tier="hot" onclick="showEmail(1)">
+        <div class="lead-av">&#128104;&#8205;&#127891;</div>
+        <div class="lead-inf">
+          <div class="lead-nm-row"><span class="lead-nm">นายกษิดิ์เดช พรหมมา</span><span class="tier-bdg hot">&#128308; HOT</span><span class="trk-tag" style="background:var(--trk-b);">Track B</span></div>
+          <div class="lead-meta">ม.6 &middot; สวนกุหลาบ &middot; กรุงเทพฯ &middot; วิทย์-คณิต</div>
+          <div class="lead-src">&#127919; สนใจ: ทดลองเรียนฟรี + Mock | เป้าหมาย: จุฬาฯ วิศวะ</div>
+          <div class="lead-acts">
+            <button class="btn-sm p" onclick="event.stopPropagation()">&#128222; โทรเลย</button>
+            <button class="btn-sm" onclick="event.stopPropagation()">&#128172; LINE</button>
+          </div>
+        </div>
+        <div class="lead-rt"><div class="lead-sc" style="color:var(--hot)">77</div><div class="lead-sclbl">คะแนน</div><div class="sla-chip sla-u">&#9201; 24 ชม.</div></div>
+      </div>
+      <div class="lead-card warm" data-tier="warm" onclick="showEmail(2)">
+        <div class="lead-av">&#128105;</div>
+        <div class="lead-inf">
+          <div class="lead-nm-row"><span class="lead-nm">น.ส.อาภัสรา ทองสุก</span><span class="tier-bdg warm">&#128993; WARM</span><span class="trk-tag" style="background:var(--trk-d);">Track D</span></div>
+          <div class="lead-meta">ม.5 &middot; บดินทรเดชา &middot; กรุงเทพฯ &middot; ศิลป์-คำนวณ</div>
+          <div class="lead-src">&#127919; วางแผนการเรียน + โปรโมชั่น | ธรรมศาสตร์ เศรษฐศาสตร์</div>
+          <div class="lead-acts">
+            <button class="btn-sm p" onclick="event.stopPropagation()">&#128222; โทร</button>
+            <button class="btn-sm" onclick="event.stopPropagation()">&#128172; LINE</button>
+          </div>
+        </div>
+        <div class="lead-rt"><div class="lead-sc" style="color:var(--warm)">58</div><div class="lead-sclbl">คะแนน</div><div class="sla-chip sla-n">&#9201; 3 วัน</div></div>
+      </div>
+      <div class="lead-card warm" data-tier="warm" onclick="showEmail(2)">
+        <div class="lead-av">&#128102;</div>
+        <div class="lead-inf">
+          <div class="lead-nm-row"><span class="lead-nm">นายภูวนาถ สิงห์โต</span><span class="tier-bdg warm">&#128993; WARM</span><span class="trk-tag" style="background:var(--trk-a);">Track A</span></div>
+          <div class="lead-meta">ม.6 &middot; เตรียมอุดมพัฒนาการ &middot; กรุงเทพฯ</div>
+          <div class="lead-src">&#127919; วางแผนการเรียน + Mock | ธรรมศาสตร์</div>
+          <div class="lead-acts">
+            <button class="btn-sm p" onclick="event.stopPropagation()">&#128222; โทร</button>
+            <button class="btn-sm" onclick="event.stopPropagation()">&#128172; LINE</button>
+          </div>
+        </div>
+        <div class="lead-rt"><div class="lead-sc" style="color:var(--warm)">52</div><div class="lead-sclbl">คะแนน</div><div class="sla-chip sla-n">&#9201; 3 วัน</div></div>
+      </div>
+      <div class="lead-card cold" data-tier="cold" onclick="showEmail(3)">
+        <div class="lead-av">&#128104;</div>
+        <div class="lead-inf">
+          <div class="lead-nm-row"><span class="lead-nm">น.ส.ปณิตา แสงดาว</span><span class="tier-bdg cold">&#128309; COLD</span><span class="trk-tag" style="background:var(--trk-a);">Track A</span></div>
+          <div class="lead-meta">ม.4 &middot; โรงเรียนทั่วไป &middot; มีนบุรี</div>
+          <div class="lead-src">&#127919; ติดตามกิจกรรม | ยังไม่มีเป้าหมายชัดเจน</div>
+          <div class="lead-acts">
+            <button class="btn-sm" onclick="event.stopPropagation()">&#128172; LINE Nurture</button>
+          </div>
+        </div>
+        <div class="lead-rt"><div class="lead-sc" style="color:var(--cold)">28</div><div class="lead-sclbl">คะแนน</div><div class="sla-chip sla-ok">&#9201; 14 วัน</div></div>
+      </div>
+    </div>
+    <div>
+      <div class="queue-header"><span class="queue-title">&#128231; Guru Alert Email</span></div>
+      <div class="email-panel" id="emailPanel"><p style="color:var(--gray);font-size:12px;">คลิก Lead เพื่อดูตัวอย่าง Email ที่จะส่งให้ Guru</p></div>
+    </div>
+  </div>
+</div>
+</div>
+
+<!-- Result Modal -->
+<div class="result-overlay" id="resultOverlay">
+  <div class="result-modal" id="resultModal"></div>
+</div>
+
+<script>
+const GRADE_SCORE  = {p5:1,p6:2,m1:2,m2:3,m3:5,m4:10,m5:15,m6:20,m6plus:15,primary:1};
+const SCHOOL_SCORE = {tier1:10,tier2:7,private:6,other:3,'':0};
+const STREAM_SCORE = {sci_math:5,art_calc:4,gifted_sci:8,gifted_eng:7,inter:6,art_eng:3,art_thai:2,art_lang:3,other_stream:1,'':0};
+const UNI_SCORE    = {elite:10,public:7,private_uni:5,abroad:8,undecided:0,'':0};
+const FAC_SCORE    = {med:5,eng:5,sci:4,law:4,econ:4,arch:3,edu:3,lang:3,poli:3,other_fac:0,'':0};
+
+const TRACK_INFO = {
+  A:{name:'Track A — กิจกรรมโรงเรียน',color:'#6D28D9',conv:'15–25%',sla:'7–14 วัน',guru:'Guru สาขา',steps:['ส่ง Welcome LINE + ONDY Intro Card ทันที (T+0)','ส่ง Persona Quiz ผ่าน LINE (T+2)','Guru โทรแนะนำ 3 คณะ + นัด Consult (T+5)','ONDY Consultation 30 นาที (T+7)','ปิด / Promo Follow-up (T+10–14)']},
+  B:{name:'Track B — Trial Course',color:'#065F46',conv:'35–50%',sla:'5–7 วัน',guru:'Guru ประจำสาขา',steps:['ส่ง Trial Reminder + Survey (T+1)','AI Gap Analysis → ส่งรายงาน (T+2)','Guru ส่ง ONDY Plan Pitch (T+3)','ONDY Consultation 30 นาที (T+5)','ปิด / Senior Guru Escalate (T+7)']},
+  C:{name:'Track C — Course 99 บาท',color:'#92400E',conv:'30–45%',sla:'7–10 วัน',guru:'Senior Guru',steps:['ยืนยัน Course Access + Welcome LINE (T+0)','Learning Check-in + Study Tips (T+3)','Guru เชื่อม Course → TCAS Path (T+7)','ONDY Plan Pitch + Full Pack (T+10)','ปิด / Special Bundle (T+14)']},
+  D:{name:'Track D — กิจกรรมสาขา',color:'#1E40AF',conv:'40–55%',sla:'5–7 วัน',guru:'Guru สาขา',steps:['Add LINE + บันทึก Profile In-Person (T+0)','ส่ง Activity Recap + Quiz (T+1)','AI สร้าง ONDY Plan Preview (T+3)','นัด In-Branch Consultation (T+5)','ปิด / LINE Nurture + Promo (T+7)']},
+};
+
+function calcScore() {
+  let demo=0, beh=0, track=null;
+  demo += GRADE_SCORE[document.getElementById('f_grade').value]||0;
+  demo += SCHOOL_SCORE[document.getElementById('f_school').value]||0;
+  demo += STREAM_SCORE[document.getElementById('f_stream').value]||0;
+  const uni=document.getElementById('f_uni').value;
+  if(uni&&uni!=='undecided') demo+=UNI_SCORE[uni]||0;
+  const fac=document.getElementById('f_faculty').value;
+  if(fac&&fac!=='other_fac') demo+=FAC_SCORE[fac]||0;
+  demo=Math.min(55,demo);
+  document.querySelectorAll('#interestGroup input[type="checkbox"]:checked').forEach(c=>{beh+=parseInt(c.dataset.score||0);});
+  const tutor=document.querySelector('input[name="tutor"]:checked');
+  if(tutor?.value==='yes') beh+=8;
+  const subj=document.getElementById('f_subject');
+  const sc=Array.from(subj.options).filter(o=>o.selected&&o.value!=='none').length;
+  if(sc>=3) beh+=5; else if(sc>=1) beh+=2;
+  if(document.getElementById('f_concern').value.trim().length>20) beh+=5;
+  beh=Math.min(45,beh);
+  const src=document.getElementById('f_source').value;
+  if(src){track=src;}else{
+    if(document.getElementById('int_99b').checked) track='C';
+    else if(document.getElementById('int_trial').checked||document.getElementById('int_mock').checked) track='B';
+    else track='A';
+  }
+  return{total:demo+beh,demo,beh,track};
+}
+
+function updateScore(){
+  const{total,demo,beh,track}=calcScore();
+  document.getElementById('sbScore').textContent=total;
+  document.getElementById('sbFill').style.width=Math.min(100,total)+'%';
+  document.getElementById('sbDetail').textContent='D: '+demo+' pts · B: '+beh+' pts';
+  document.getElementById('sbTrack').textContent=track?TRACK_INFO[track]?.name||'—':'—';
+  const t=document.getElementById('sbTier');
+  if(total>=70){t.style.cssText='font-size:12px;font-weight:700;padding:5px 14px;border-radius:20px;background:var(--hot-bg);color:var(--hot);';t.textContent='🔴 HOT';}
+  else if(total>=45){t.style.cssText='font-size:12px;font-weight:700;padding:5px 14px;border-radius:20px;background:var(--warm-bg);color:var(--warm);';t.textContent='🟡 WARM';}
+  else{t.style.cssText='font-size:12px;font-weight:700;padding:5px 14px;border-radius:20px;background:var(--cold-bg);color:var(--cold);';t.textContent='🔵 COLD';}
+}
+
+function selectOpt(el,val){
+  document.querySelectorAll('#tutorGroup .option-card').forEach(c=>c.classList.remove('selected'));
+  el.classList.add('selected');
+  el.querySelector('input').checked=true;
+  updateScore();
+}
+
+function toggleCheck(el,id){
+  const inp=document.getElementById(id);
+  inp.checked=!inp.checked;
+  el.classList.toggle('checked',inp.checked);
+  updateScore();
+}
+
+function submitScore(){
+  const{total,demo,beh,track}=calcScore();
+  const ti=TRACK_INFO[track]||TRACK_INFO['A'];
+  const name=document.getElementById('f_name').value.trim()||'ไม่ระบุชื่อ';
+  const phone=document.getElementById('f_phone').value.trim()||'—';
+  let tier,tierColor,slaText,guruText;
+  if(total>=70){tier='🔴 HOT Lead';tierColor='#DC2626';slaText='Senior Guru ติดต่อภายใน 24 ชั่วโมง';guruText='Senior Guru';}
+  else if(total>=45){tier='🟡 WARM Lead';tierColor='#D97706';slaText='Guru ประจำสาขา ติดต่อภายใน 3 วัน';guruText='Guru สาขา';}
+  else{tier='🔵 COLD Lead';tierColor='#2563EB';slaText='ส่งเข้า Auto Nurture Journey (14 วัน)';guruText='Marketing Auto';}
+  const gradeEl=document.getElementById('f_grade');
+  const schoolEl=document.getElementById('f_school');
+  const gradeText=gradeEl.options[gradeEl.selectedIndex]?.text||'—';
+  const schoolText=schoolEl.options[schoolEl.selectedIndex]?.text||'—';
+  const intents=[];
+  if(document.getElementById('int_plan').checked) intents.push('วางแผนการเรียน');
+  if(document.getElementById('int_trial').checked) intents.push('ทดลองเรียนฟรี');
+  if(document.getElementById('int_99b').checked) intents.push('ปรับพื้นฐาน 99B');
+  if(document.getElementById('int_mock').checked) intents.push('Mock ฟรี');
+  if(document.getElementById('int_promo').checked) intents.push('โปรโมชั่น');
+  const modal=document.getElementById('resultModal');
+  modal.innerHTML=`<div class="rm-header" style="background:${tierColor}"><h2>${tier}</h2><p>${name} &middot; ${phone}</p></div>
+  <div class="rm-body">
+    <div class="rm-score-row"><div class="rm-score-big" style="color:${tierColor}">${total}</div>
+    <div class="rm-right"><span class="rm-track-lbl" style="background:${ti.color}">${ti.name}</span><span class="rm-sla">SLA: ${slaText}</span></div></div>
+    <div class="rm-box"><div class="rm-box-title">&#128202; Score Breakdown</div>
+      <div class="rm-row"><span>Demographic Score</span><span>${demo} pts</span></div>
+      <div class="rm-row"><span>Behavioral Score</span><span>${beh} pts</span></div>
+      <div class="rm-row"><span>Total Score</span><span>${total} / 100</span></div>
+      <div class="rm-row"><span>&#0914;&#0961;&#0945;&#0952;&#0956;&#0972;&#0962;</span><span>${gradeText}</span></div>
+      <div class="rm-row"><span>&#x0E42;&#x0E23;&#x0E07;&#x0E40;&#x0E23;&#x0E35;&#x0E22;&#x0E19;</span><span>${schoolText}</span></div>
+      ${intents.length?`<div class="rm-row"><span>Intent</span><span>${intents.join(', ')}</span></div>`:''}
+    </div>
+    <div class="rm-guru"><div class="guru-av">&#128100;</div><div><div class="guru-nm">${guruText}</div><div class="guru-rl">${ti.name}</div></div><div class="guru-sla">${ti.sla}</div></div>
+    <div style="font-size:10px;font-weight:700;color:var(--gray);text-transform:uppercase;margin-bottom:10px;">&#128203; Next Steps</div>
+    <div class="rm-steps">${ti.steps.map((s,i)=>`<div class="rm-step"><div class="step-n">${i+1}</div><div>${s}</div></div>`).join('')}</div>
+    <div class="rm-actions">
+      <button class="rm-btn close" onclick="document.getElementById('resultOverlay').classList.remove('show')">&#10005; &#x0E1B;&#x0E34;&#x0E14;</button>
+      <button class="rm-btn notify" onclick="copyAlert('${name}','${total}','${tier}','${ti.name}','${slaText}')">&#128203; Copy Alert</button>
+    </div>
+  </div>`;
+  document.getElementById('resultOverlay').classList.add('show');
+}
+
+function copyAlert(name,score,tier,track,sla){
+  const text='&#127919; NEW LEAD ALERT\n━━━━━━━━━━━━━━━\nLead: '+name+'\nScore: '+score+'/100 → '+tier+'\nTrack: '+track+'\nSLA: '+sla;
+  navigator.clipboard.writeText(text).then(()=>alert('&#x0E04;&#x0E31;&#x0E14;&#x0E25;&#x0E2D;&#x0E01; Alert &#x0E40;&#x0E23;&#x0E35;&#x0E22;&#x0E1A;&#x0E23;&#x0E49;&#x0E2D;&#x0E22;!'));
+}
+
+function switchTab(id,btn){
+  document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));
+  document.querySelectorAll('.tab-content').forEach(c=>c.classList.remove('active'));
+  btn.classList.add('active');
+  document.getElementById('tab-'+id).classList.add('active');
+}
+
+function openLark(){
+  const url=document.getElementById('larkUrl').value.trim();
+  if(!url){alert('กรุณาวาง Lark Form URL ก่อน');return;}
+  localStorage.setItem('larkFormUrl',url);
+  window.open(url,'_blank');
+}
+
+function loadIframe(){
+  const url=document.getElementById('larkUrl').value.trim();
+  if(!url){alert('กรุณาวาง Lark Form URL ก่อน');return;}
+  localStorage.setItem('larkFormUrl',url);
+  document.getElementById('iframePlaceholder').style.display='none';
+  const frame=document.getElementById('larkIframe');
+  frame.src=url; frame.style.display='block';
+}
+
+function toggleCriteria(header){
+  header.classList.toggle('open');
+  header.nextElementSibling.classList.toggle('open');
+}
+
+const EMAILS=[
+  {subject:'New HOT Lead: น.ส.พิชญา ศรีวิชัย | Score 85 | Track A',to:'Sr. Guru ปลา',tier:'🔴 HOT',body:'เรียน Guru ปลา,\n\nมี HOT Lead ใหม่รอการติดตาม:\n\n• ชื่อ: น.ส.พิชญา ศรีวิชัย\n• Score: 85/100 → 🔴 HOT\n• Track: A — กิจกรรมโรงเรียน\n• โรงเรียน: เตรียมอุดมศึกษา (Tier 1)\n• เป้าหมาย: จุฬาฯ แพทย์\n\n⏱ SLA: ติดต่อภายใน 24 ชั่วโมง\n\nNext Step:\n1. ส่ง Welcome LINE + Intro Card\n2. ส่ง Persona Quiz (T+2)\n3. โทรแนะนำ + นัด Consult (T+5)'},
+  {subject:'New HOT Lead: นายกษิดิ์เดช พรหมมา | Score 77 | Track B',to:'Sr. Guru ต้อย',tier:'🔴 HOT',body:'เรียน Guru ต้อย,\n\n• ชื่อ: นายกษิดิ์เดช พรหมมา\n• Score: 77/100 → 🔴 HOT | Track B\n• โรงเรียน: สวนกุหลาบ (Tier 1)\n• Intent: ทดลองเรียนฟรี + Mock ฟรี\n\n⏱ SLA: 24 ชั่วโมง\n\nNext Step:\n1. Trial Reminder + Survey (T+1)\n2. AI Gap Analysis (T+2)\n3. ONDY Plan Pitch (T+3)'},
+  {subject:'WARM Lead: น.ส.อาภัสรา ทองสุก | Score 58 | Track D',to:'Guru แก้ว',tier:'🟡 WARM',body:'เรียน Guru แก้ว,\n\n• ชื่อ: น.ส.อาภัสรา ทองสุก\n• Score: 58/100 → 🟡 WARM | Track D\n• โรงเรียน: บดินทรเดชา (Tier 2)\n• Intent: วางแผน + โปรโมชั่น\n\n⏱ SLA: 3 วัน\n\nNext Step:\n1. Add LINE + Profile (T+0)\n2. Activity Recap + Quiz (T+1)\n3. ONDY Plan Preview (T+3)'},
+  {subject:'COLD Lead: น.ส.ปณิตา แสงดาว | Score 28 | Auto Nurture',to:'Marketing Auto',tier:'🔵 COLD',body:'ระบบ Auto Nurture,\n\nส่ง Lead เข้า Journey:\n\n• ชื่อ: น.ส.ปณิตา แสงดาว\n• Score: 28/100 → 🔵 COLD\n\n⏱ Auto Nurture: 14 วัน\n1. Day 1: Welcome + Content\n2. Day 3: Study Tips\n3. Day 7: Quiz + Promo\n4. Day 14: Re-engage'}
+];
+
+function showEmail(idx){
+  const e=EMAILS[idx];
+  document.getElementById('emailPanel').innerHTML=`<div class="ep-subject">${e.subject}</div><div class="ep-meta">To: ${e.to} &nbsp;|&nbsp; Tier: ${e.tier}</div><div class="ep-body">${e.body}</div>`;
+}
+
+function filterLeads(tier,el){
+  document.querySelectorAll('.fpill').forEach(p=>p.classList.remove('active'));
+  el.classList.add('active');
+  document.querySelectorAll('.lead-card').forEach(c=>{c.style.display=(tier==='all'||c.dataset.tier===tier)?'flex':'none';});
+}
+
+window.addEventListener('DOMContentLoaded',()=>{
+  const saved=localStorage.getItem('larkFormUrl');
+  if(saved) document.getElementById('larkUrl').value=saved;
+  updateScore();
+});
+</script>
+</body>
+</html>

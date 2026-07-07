@@ -1,0 +1,1524 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ONDY HQ Backlog Monitor</title>
+<style>
+:root{
+  --star:#7C3AED;--star-bg:#F5F3FF;--star-bd:#DDD6FE;
+  --core:#0F766E;--core-bg:#F0FDF9;--core-bd:#99F6E4;
+  --risk:#DC2626;--risk-bg:#FEF2F2;--risk-bd:#FECACA;
+  --gray:#6B7280;--dark:#111827;--bd:#E5E7EB;--bg:#F3F4F6;--white:#fff;
+  --indigo:#4F46E5;--teal:#0891B2;--amber:#D97706;--green:#059669;
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:'Segoe UI',system-ui,sans-serif;background:var(--bg);color:var(--dark);font-size:13px;}
+
+/* TOP BAR */
+.topbar{background:#0F172A;color:white;padding:0 24px;display:flex;align-items:stretch;height:52px;}
+.tb-brand{display:flex;align-items:center;gap:10px;border-right:1px solid #1E293B;padding-right:20px;margin-right:20px;}
+.tb-logo{font-size:20px;font-weight:900;color:#A78BFA;letter-spacing:-1px;}
+.tb-sub{font-size:11px;color:#64748B;font-weight:500;}
+.tb-nav{display:flex;align-items:stretch;gap:0;flex:1;}
+.tb-btn{padding:0 18px;font-size:12px;font-weight:600;color:#94A3B8;cursor:pointer;background:none;border:none;border-bottom:2px solid transparent;height:100%;transition:all .15s;}
+.tb-btn:hover{color:#E2E8F0;}
+.tb-btn.active{color:#A78BFA;border-bottom-color:#A78BFA;}
+.tb-right{display:flex;align-items:center;gap:10px;margin-left:auto;}
+.badge-date{background:#1E293B;border:1px solid #334155;color:#CBD5E1;padding:3px 10px;border-radius:20px;font-size:11px;}
+.btn-sm{padding:5px 12px;border-radius:6px;cursor:pointer;font-size:11px;font-weight:700;border:none;}
+.btn-sync{background:#7C3AED;color:white;}
+.btn-send{background:#059669;color:white;}
+
+/* KPI ROW */
+.kpi-strip{display:grid;grid-template-columns:repeat(7,1fr);gap:10px;padding:14px 24px;background:white;border-bottom:1px solid var(--bd);}
+.kpi{text-align:center;padding:10px 4px;}
+.kpi-v{font-size:20px;font-weight:800;}
+.kpi-l{font-size:10px;color:var(--gray);margin-top:2px;font-weight:600;letter-spacing:.3px;}
+
+/* TAB CONTENT */
+.tab-content{display:none;}.tab-content.active{display:block;}
+
+/* ═══ HQ MONITOR TAB ═══ */
+.hq-wrap{padding:16px 24px 32px;}
+/* Sub-tabs (ทั้งหมด / Sale / นักเรียน) */
+.hq-sub-bar{display:flex;gap:8px;align-items:center;margin-bottom:14px;}
+.hq-sub-btn{display:flex;align-items:center;gap:6px;padding:6px 16px;border-radius:20px;font-size:13px;font-weight:700;cursor:pointer;border:2px solid var(--bd);background:white;color:var(--gray);transition:all .15s;}
+.hq-sub-btn:hover{border-color:#94A3B8;color:var(--dark);}
+.hq-sub-btn.active.all{background:#F0F9FF;border-color:#0EA5E9;color:#0369A1;}
+.hq-sub-btn.active.sale{background:#F5F3FF;border-color:var(--star);color:var(--star);}
+.hq-sub-btn.active.student{background:#F0FDF9;border-color:var(--core);color:var(--core);}
+.hq-sub-count{font-size:11px;font-weight:800;padding:1px 7px;border-radius:10px;}
+.hq-sub-btn.active.all .hq-sub-count{background:#0EA5E9;color:white;}
+.hq-sub-btn.active.sale .hq-sub-count{background:var(--star);color:white;}
+.hq-sub-btn.active.student .hq-sub-count{background:var(--core);color:white;}
+.hq-sub-btn:not(.active) .hq-sub-count{background:#E5E7EB;color:var(--gray);}
+.hq-pane{display:none;}.hq-pane.active{display:block;}
+/* Student view table */
+.stu-tbl-wrap{background:white;border:1px solid var(--bd);border-radius:10px;overflow:hidden;}
+table.stu-tbl{width:100%;border-collapse:collapse;font-size:12px;}
+table.stu-tbl th{padding:9px 12px;text-align:center;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.4px;color:var(--gray);border-bottom:2px solid var(--bd);background:#F9FAFB;white-space:nowrap;}
+table.stu-tbl th.l{text-align:left;}
+table.stu-tbl td{padding:9px 12px;border-bottom:1px solid #F3F4F6;text-align:center;vertical-align:middle;}
+table.stu-tbl td.l{text-align:left;}
+table.stu-tbl tr:hover td{background:#FAFAFA;}
+table.stu-tbl tfoot td{background:#F8FAFC;font-weight:700;border-top:2px solid var(--bd);}
+.donut-wrap{display:flex;align-items:center;gap:8px;}
+.donut-svg{flex-shrink:0;}
+.donut-labels{font-size:10px;line-height:1.6;}
+.conv-seg{display:flex;height:8px;border-radius:4px;overflow:hidden;width:100px;}
+.seg-conv{background:#059669;}.seg-remain{background:#E5E7EB;}
+.filter-bar{display:flex;gap:10px;align-items:center;flex-wrap:wrap;background:white;border:1px solid var(--bd);border-radius:10px;padding:10px 16px;margin-bottom:14px;}
+.filter-bar label{font-size:11px;font-weight:700;color:var(--gray);}
+select.fs{padding:5px 9px;border:1px solid var(--bd);border-radius:6px;font-size:12px;background:white;}
+.chip-row{display:flex;gap:6px;flex-wrap:wrap;}
+.mchip{padding:3px 10px;border-radius:16px;font-size:11px;font-weight:600;cursor:pointer;border:1px solid var(--bd);background:#F9FAFB;color:var(--gray);}
+.mchip.on{background:var(--indigo);color:white;border-color:var(--indigo);}
+.mchip-preset{padding:3px 10px;border-radius:16px;font-size:11px;font-weight:700;cursor:pointer;border:none;}
+.mchip-h1{background:#E0F2FE;color:#0369A1;}
+.mchip-all{background:#FEF3C7;color:#92400E;}
+
+/* Section header */
+.sec-head{display:flex;align-items:center;gap:10px;margin-bottom:10px;}
+.sec-title{font-size:14px;font-weight:800;color:var(--dark);}
+.sec-badge{font-size:11px;font-weight:600;padding:2px 8px;border-radius:10px;background:#EEF2FF;color:var(--indigo);}
+
+/* ─── Matrix Table ─── */
+.matrix-wrap{overflow-x:auto;border-radius:10px;border:1px solid var(--bd);background:white;}
+table.mx{border-collapse:collapse;font-size:11px;min-width:max-content;width:100%;}
+table.mx th{background:#F8FAFC;padding:6px 8px;text-align:center;border-bottom:2px solid var(--bd);border-right:1px solid var(--bd);white-space:nowrap;position:sticky;top:0;z-index:5;}
+table.mx th.sticky-left{position:sticky;left:0;z-index:10;background:#F1F5F9;text-align:left;}
+table.mx td{padding:5px 8px;border-bottom:1px solid #F3F4F6;border-right:1px solid #F3F4F6;text-align:center;vertical-align:middle;}
+table.mx td.sticky-left{position:sticky;left:0;background:white;z-index:3;text-align:left;font-weight:700;border-right:2px solid var(--bd);}
+table.mx tr:hover td{background:#FAFAFA;}
+table.mx tfoot td{background:#F8FAFC;font-weight:700;border-top:2px solid var(--bd);}
+
+/* Person header */
+.ph-name{font-weight:800;font-size:11px;color:var(--dark);}
+.ph-area{display:inline-block;font-size:9px;padding:1px 5px;border-radius:3px;background:#E0E7FF;color:#3730A3;margin:1px 0;}
+.ph-tier{font-size:9px;font-weight:700;}
+.ph-plan{font-size:9px;color:var(--gray);}
+
+/* Cell content */
+.cx-actual{font-weight:700;font-size:11px;color:var(--dark);}
+.cx-zero{color:#D1D5DB;font-size:11px;}
+.cx-bar{width:100%;height:3px;background:#F3F4F6;border-radius:2px;margin:2px 0;}
+.cx-fill{height:100%;border-radius:2px;background:var(--indigo);opacity:.7;}
+.cx-conv{font-size:10px;font-weight:700;}
+.row-label{font-size:12px;font-weight:700;white-space:nowrap;}
+.row-sub{font-size:9px;color:var(--gray);font-weight:400;}
+
+/* Plan sub-row */
+.plan-row td{background:#FAFBFF;}
+.plan-row td.sticky-left{background:#F0F4FF;}
+.conv-row td{background:#F0FFF9;}
+.conv-row td.sticky-left{background:#E0FAF0;}
+
+/* Color cells */
+.cv-hi{color:#059669;font-weight:800;}
+.cv-mid{color:#D97706;font-weight:700;}
+.cv-lo{color:#DC2626;font-weight:700;}
+
+/* ─── Tier section ─── */
+.tier-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-top:6px;}
+.tier-card{border-radius:10px;border:2px solid;overflow:hidden;}
+.tier-card.star{border-color:var(--star-bd);}
+.tier-card.core{border-color:var(--core-bd);}
+.tier-card.risk{border-color:var(--risk-bd);}
+.tier-card-head{padding:10px 14px;display:flex;align-items:center;gap:8px;}
+.tier-card-head.star{background:var(--star-bg);}
+.tier-card-head.core{background:var(--core-bg);}
+.tier-card-head.risk{background:var(--risk-bg);}
+.tier-icon{font-size:16px;}
+.tier-name{font-size:13px;font-weight:800;}
+.tier-name.star{color:var(--star);}.tier-name.core{color:var(--core);}.tier-name.risk{color:var(--risk);}
+.tier-count-badge{margin-left:auto;font-size:10px;font-weight:800;padding:2px 8px;border-radius:10px;color:white;}
+.tier-count-badge.star{background:var(--star);}.tier-count-badge.core{background:var(--core);}.tier-count-badge.risk{background:var(--risk);}
+.tier-persons{background:white;}
+.tier-person{display:flex;align-items:center;gap:8px;padding:9px 14px;border-bottom:1px solid var(--bd);}
+.tier-person:last-child{border-bottom:none;}
+.tp-name{font-weight:700;font-size:12px;flex:1;}
+.tp-area{font-size:9px;background:#E0E7FF;color:#3730A3;padding:1px 5px;border-radius:3px;}
+.tp-bar-wrap{width:100px;display:flex;align-items:center;gap:5px;}
+.tp-bar{flex:1;height:5px;background:#E5E7EB;border-radius:3px;overflow:hidden;}
+.tp-fill{height:100%;border-radius:3px;}
+.tp-fill.star{background:var(--star);}.tp-fill.core{background:var(--core);}.tp-fill.risk{background:var(--risk);}
+.tp-pct{font-size:10px;font-weight:700;width:30px;text-align:right;}
+.tp-conv{font-size:10px;padding:2px 6px;border-radius:4px;font-weight:700;}
+.tp-conv.hi{background:#ECFDF5;color:#059669;}.tp-conv.mid{background:#FEF3C7;color:#92400E;}.tp-conv.lo{background:#FEF2F2;color:#DC2626;}
+.tp-spark{display:block;}
+.action-tag{font-size:10px;font-weight:600;padding:2px 7px;border-radius:10px;white-space:nowrap;}
+.at-ok{background:#ECFDF5;color:#065F46;}.at-call{background:#FEF3C7;color:#92400E;}.at-focus{background:#FEE2E2;color:#991B1B;}.at-watch{background:#EDE9FE;color:#5B21B6;}
+
+/* ═══ Tier Tab (same as email dashboard) ═══ */
+.main-et{padding:0 24px 24px;}
+.ts{margin-bottom:20px;}
+.th-head{display:flex;align-items:center;gap:10px;padding:10px 16px;border-radius:10px 10px 0 0;border:1px solid;border-bottom:none;}
+.th-head.star{background:var(--star-bg);border-color:var(--star-bd);}
+.th-head.core{background:var(--core-bg);border-color:var(--core-bd);}
+.th-head.risk{background:var(--risk-bg);border-color:var(--risk-bd);}
+.tbl-tier{width:100%;border-collapse:collapse;background:white;border:1px solid;border-radius:0 0 10px 10px;overflow:hidden;}
+.tbl-tier.star{border-color:var(--star-bd);}.tbl-tier.core{border-color:var(--core-bd);}.tbl-tier.risk{border-color:var(--risk-bd);}
+.tbl-tier th{padding:8px 12px;text-align:left;font-size:10px;font-weight:700;text-transform:uppercase;color:var(--gray);border-bottom:1px solid var(--bd);background:#F9FAFB;}
+.tbl-tier th.r{text-align:right;}
+.tbl-tier td{padding:10px 12px;border-bottom:1px solid var(--bd);vertical-align:middle;}
+.tbl-tier tr:last-child td{border-bottom:none;}
+.tbl-tier tr:hover td{background:#F9FAFB;}
+
+/* ═══ Conv Month Tab ═══ */
+.conv-wrap2{padding:16px 24px 24px;}
+.conv-filter2{display:flex;gap:10px;align-items:center;flex-wrap:wrap;background:white;border:1px solid var(--bd);border-radius:10px;padding:10px 16px;margin-bottom:14px;}
+.conv-kpi2{display:grid;grid-template-columns:repeat(5,1fr);gap:10px;margin-bottom:14px;}
+.ckpi{background:white;border:1px solid var(--bd);border-radius:10px;padding:10px 12px;text-align:center;}
+.ckpi-v{font-size:18px;font-weight:800;}
+.ckpi-l{font-size:10px;color:var(--gray);margin-top:2px;}
+.conv-tbl-wrap{background:white;border:1px solid var(--bd);border-radius:10px;overflow:auto;}
+table.ctbl{width:100%;border-collapse:collapse;font-size:12px;}
+table.ctbl th{padding:7px 10px;text-align:center;font-size:10px;font-weight:700;text-transform:uppercase;color:var(--gray);border-bottom:1px solid var(--bd);background:#F9FAFB;white-space:nowrap;}
+table.ctbl th.l{text-align:left;}
+table.ctbl td{padding:7px 10px;border-bottom:1px solid #F3F4F6;text-align:center;vertical-align:middle;}
+table.ctbl td.l{text-align:left;}
+table.ctbl tr:hover td{background:#FAFAFA;}
+table.ctbl tfoot td{background:#F9FAFB;font-weight:700;border-top:2px solid var(--bd);}
+.rate-badge{display:inline-block;border-radius:4px;padding:2px 6px;font-size:11px;font-weight:800;}
+.r-hi{background:#ECFDF5;color:#059669;}.r-mid{background:#FEF3C7;color:#92400E;}.r-lo{background:#FEF2F2;color:#DC2626;}
+.person-badge{font-size:9px;background:#E0E7FF;color:#3730A3;padding:1px 5px;border-radius:3px;margin-left:4px;}
+
+/* ═══ Email Alert Tab ═══ */
+.email-wrap{padding:16px 24px 24px;}
+.email-sub-tabs{display:flex;gap:0;border-bottom:1px solid var(--bd);margin-bottom:16px;}
+.est-btn{padding:7px 16px;font-size:12px;font-weight:600;color:var(--gray);cursor:pointer;background:none;border:none;border-bottom:2px solid transparent;margin-bottom:-1px;}
+.est-btn.active{color:var(--indigo);border-bottom-color:var(--indigo);}
+/* ─── Email Studio (Sale + Student) ─── */
+.email-studio{display:flex;gap:14px;}
+.email-studio-left{width:230px;flex-shrink:0;}
+.email-studio-right{flex:1;min-width:0;}
+.em-person-list{background:white;border:1px solid var(--bd);border-radius:10px;overflow:hidden;}
+.em-person-header{padding:9px 13px;background:#F8FAFC;border-bottom:1px solid var(--bd);font-size:12px;font-weight:800;color:var(--dark);}
+.em-person-scroll{max-height:520px;overflow-y:auto;}
+.em-person-item{display:flex;align-items:center;gap:8px;padding:9px 12px;cursor:pointer;border-bottom:1px solid #F9FAFB;border-left:3px solid transparent;}
+.em-person-item:hover{background:#F0F9FF;}
+.em-person-item.selected{background:#EEF2FF;border-left-color:#4F46E5;}
+.em-person-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0;}
+/* Preview frame */
+.em-preview-frame{background:white;border:1px solid var(--bd);border-radius:10px;overflow:hidden;}
+.em-preview-meta{padding:8px 14px;background:#F8FAFC;border-bottom:1px solid var(--bd);}
+.em-meta-row{font-size:11px;color:#475569;display:flex;gap:6px;line-height:1.9;}
+.em-meta-label{font-weight:700;min-width:46px;color:var(--dark);}
+.em-html-wrap{max-height:460px;overflow-y:auto;}
+/* Branded email HTML */
+.em-brand-header{background:#8B1A3A;padding:18px 22px;text-align:center;}
+.em-brand-logo{font-size:26px;font-weight:900;color:#F59E0B;letter-spacing:-1px;}
+.em-brand-title{font-size:14px;font-weight:700;color:white;margin-top:4px;}
+.em-brand-sub{font-size:11px;color:#E9C8D0;margin-top:2px;}
+.em-body{padding:16px 20px;font-size:13px;color:#1F2937;line-height:1.7;}
+.em-greeting{font-size:16px;font-weight:800;color:#111827;margin-bottom:6px;}
+.em-section{background:#F9FAFB;border:1px solid #E5E7EB;border-radius:10px;padding:11px 13px;margin:10px 0;}
+.em-section-title{font-size:11px;font-weight:800;color:#374151;margin-bottom:8px;}
+.em-student-card{background:white;border:1px solid #E5E7EB;border-radius:8px;padding:9px 11px;margin:5px 0;}
+.em-student-name{font-weight:800;font-size:13px;color:#111827;}
+.em-priority-badge{font-size:9px;font-weight:800;padding:2px 8px;border-radius:10px;color:white;}
+.em-prog-row{display:flex;align-items:center;gap:8px;margin:4px 0;}
+.em-prog-bar{flex:1;height:8px;background:#E5E7EB;border-radius:4px;overflow:hidden;}
+.em-prog-fill{height:100%;border-radius:4px;}
+.em-script-box{background:#FFF7ED;border:1px solid #FED7AA;border-radius:8px;padding:10px 12px;font-size:12px;font-style:italic;color:#92400E;line-height:1.8;}
+.em-course-item{display:flex;align-items:center;gap:10px;padding:8px 10px;background:white;border:1px solid #E5E7EB;border-radius:8px;margin:4px 0;}
+.em-course-icon{font-size:18px;flex-shrink:0;}
+.em-course-info{flex:1;}
+.em-course-name{font-size:12px;font-weight:700;color:#111827;}
+.em-course-desc{font-size:10px;color:#6B7280;}
+.em-course-price{font-size:13px;font-weight:800;color:#DC2626;}
+/* Student email extras */
+.em-promo-box{background:linear-gradient(135deg,#FEF3C7,#FDE68A);border:1px solid #FCD34D;border-radius:10px;padding:14px;text-align:center;margin:10px 0;}
+.em-promo-tag{display:inline-block;background:#F59E0B;color:white;font-size:10px;font-weight:800;padding:3px 12px;border-radius:20px;margin-bottom:6px;}
+.em-promo-title{font-size:18px;font-weight:900;color:#92400E;}
+.em-promo-sub{font-size:11px;color:#78350F;margin-top:4px;line-height:1.6;}
+.em-line-box{display:flex;align-items:center;gap:10px;background:#F0FFF4;border:1px solid #BBF7D0;border-radius:8px;padding:10px 12px;margin:8px 0;}
+.em-line-btn{width:100%;padding:12px;background:#00B900;color:white;border:none;border-radius:10px;font-size:14px;font-weight:800;cursor:pointer;text-align:center;display:block;margin-top:6px;}
+/* Send bar */
+.em-send-bar{display:flex;align-items:center;gap:10px;padding:10px 14px;border-top:1px solid var(--bd);background:#F8FAFC;}
+.em-send-count{font-size:12px;color:#475569;}
+.em-send-btn{padding:7px 20px;background:#4F46E5;color:white;border:none;border-radius:8px;font-size:12px;font-weight:700;cursor:pointer;}
+.em-send-btn.sent{background:#059669;cursor:default;}
+/* Student multi-card layout */
+.em-stu-cards-scroll{display:flex;flex-direction:column;gap:10px;max-height:540px;overflow-y:auto;padding-right:4px;}
+.em-stu-email-card{background:white;border:1px solid var(--bd);border-radius:10px;overflow:hidden;flex-shrink:0;}
+.em-stu-card-head{display:flex;align-items:center;gap:8px;padding:8px 12px;background:#F8FAFC;border-bottom:1px solid var(--bd);}
+.em-stu-card-meta{flex:1;font-size:11px;color:#475569;display:flex;align-items:center;gap:6px;flex-wrap:wrap;}
+.em-stu-card-meta b{color:var(--dark);font-size:12px;}
+.em-stu-send-btn{padding:4px 12px;background:#4F46E5;color:white;border:none;border-radius:6px;font-size:11px;font-weight:700;cursor:pointer;flex-shrink:0;}
+.em-stu-send-btn.sent{background:#059669;cursor:default;}
+.em-stu-more-note{background:#F0F9FF;border:1px dashed #BAE6FD;border-radius:8px;padding:12px 16px;text-align:center;font-size:12px;color:#0369A1;font-weight:600;}
+@keyframes fadeIn{from{opacity:0;transform:translateY(-4px);}to{opacity:1;transform:translateY(0);}}
+.modal-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:100;align-items:center;justify-content:center;}
+.modal-overlay.show{display:flex;}
+.modal{background:white;border-radius:12px;padding:24px;width:500px;max-width:95vw;box-shadow:0 20px 60px rgba(0,0,0,.3);}
+.modal-title{font-size:16px;font-weight:800;margin-bottom:12px;}
+.modal-body{font-size:13px;color:#374151;line-height:1.8;}
+.modal-actions{margin-top:16px;display:flex;gap:10px;justify-content:flex-end;}
+.btn-ok{background:#059669;color:white;border:none;padding:8px 20px;border-radius:6px;cursor:pointer;font-weight:700;}
+.btn-cancel{background:#F3F4F6;color:#374151;border:none;padding:8px 16px;border-radius:6px;cursor:pointer;}
+svg.spark2{display:block;}
+.prog-wrap2{display:flex;align-items:center;gap:6px;}
+.prog-bar2{flex:1;height:5px;background:#E5E7EB;border-radius:3px;overflow:hidden;}
+.prog-fill2{height:100%;border-radius:3px;}
+</style>
+</head>
+<body>
+
+<!-- ═══ TOP BAR ═══ -->
+<div class="topbar">
+  <div class="tb-brand">
+    <span class="tb-logo">ONDY</span>
+    <div><div style="font-size:12px;font-weight:700;color:#E2E8F0;">HQ Backlog Monitor</div><div class="tb-sub">Ondy Only Tracking · 2. Backlog</div></div>
+  </div>
+  <div class="tb-nav">
+    <button class="tb-btn active" onclick="switchMain('hq',this)">🏢 HQ Monitor</button>
+    <button class="tb-btn" onclick="switchMain('tier',this)">🏆 Tier Performance</button>
+    <button class="tb-btn" onclick="switchMain('conv',this)">📈 Conversion แยกเดือน</button>
+    <button class="tb-btn" onclick="switchMain('email',this)">📧 Email Alert</button>
+  </div>
+  <div class="tb-right">
+    <span class="badge-date" id="dateDisplay"></span>
+    <span style="font-size:10px;color:#64748B;">Last sync: Jul 2026</span>
+    <button class="btn-sm btn-sync" onclick="alert('กรุณาเปิด Tableau Session ก่อน Sync')">⟳ Sync Tableau</button>
+    <button class="btn-sm btn-send" onclick="openModal()">✉ Send Alert</button>
+  </div>
+</div>
+
+<!-- ═══ KPI STRIP ═══ -->
+<div class="kpi-strip" id="kpiStrip"></div>
+
+<!-- ═══ TAB: HQ MONITOR ═══ -->
+<div id="tab-hq" class="tab-content active">
+<div class="hq-wrap">
+
+  <!-- Sub-tabs -->
+  <div class="hq-sub-bar">
+    <button class="hq-sub-btn active all" id="subBtn-all" onclick="switchHQSub('all')">
+      ทั้งหมด <span class="hq-sub-count" id="subCount-all">—</span>
+    </button>
+    <button class="hq-sub-btn sale" id="subBtn-sale" onclick="switchHQSub('sale')">
+      📊 Sale <span class="hq-sub-count" id="subCount-sale">—</span>
+    </button>
+    <button class="hq-sub-btn student" id="subBtn-student" onclick="switchHQSub('student')">
+      🎓 นักเรียน <span class="hq-sub-count" id="subCount-student">—</span>
+    </button>
+  </div>
+
+  <!-- Filter (shared) -->
+  <div class="filter-bar">
+    <label>เดือน:</label>
+    <div class="chip-row" id="hqChips"></div>
+    <button class="mchip-preset mchip-h1" onclick="hqSetH1()">📅 H1</button>
+    <button class="mchip-preset mchip-all" onclick="hqSetAll()">📅 ทั้งปี</button>
+    <div style="margin-left:auto;display:flex;gap:8px;align-items:center;">
+      <label>Branch:</label>
+      <select class="fs" id="hqBranch" onchange="renderHQ()">
+        <option value="ALL">ทุก Branch</option>
+        <option value="AYA">AYA</option><option value="BRM">BRM</option>
+        <option value="CBI">CBI</option><option value="CCO">CCO</option>
+        <option value="CMI">CMI</option><option value="CPN">CPN</option>
+        <option value="CRI">CRI</option><option value="HYD">HYD</option>
+        <option value="KKN">KKN</option><option value="LPG">LPG</option>
+        <option value="LRI">LRI</option><option value="MRK">MRK</option>
+      </select>
+      <label>แสดง:</label>
+      <select class="fs" id="hqView" onchange="renderHQ()">
+        <option value="actual">ยอดจริง</option>
+        <option value="conv">Conv%</option>
+        <option value="both">ทั้งคู่</option>
+      </select>
+    </div>
+  </div>
+
+  <!-- PANE: ทั้งหมด -->
+  <div id="hqPane-all" class="hq-pane active">
+    <div class="sec-head"><span class="sec-title">📋 ยอดวางแผน × Backlog รายพนักงาน</span><span class="sec-badge" id="planBadge"></span></div>
+    <div class="matrix-wrap" style="margin-bottom:20px;">
+      <table class="mx" id="planOverviewTable"></table>
+    </div>
+    <div class="sec-head"><span class="sec-title">📅 ยอดจริงรายเดือน × รายพนักงาน (Conversion Matrix)</span><span class="sec-badge" id="matrixBadge"></span></div>
+    <div class="matrix-wrap" style="margin-bottom:20px;">
+      <table class="mx" id="matrixTable"></table>
+    </div>
+    <div class="sec-head"><span class="sec-title">🏆 Tier Monitor — จัดกลุ่มตาม Conv Rate</span></div>
+    <div class="tier-grid" id="tierMonitor"></div>
+  </div>
+
+  <!-- PANE: Sale -->
+  <div id="hqPane-sale" class="hq-pane">
+    <div class="sec-head"><span class="sec-title">📊 Sale — ยอดวางแผน & Conversion Matrix รายพนักงาน</span></div>
+    <div class="matrix-wrap" style="margin-bottom:20px;">
+      <table class="mx" id="salePlanTable"></table>
+    </div>
+    <div class="sec-head"><span class="sec-title">📅 Monthly Actual × รายพนักงาน</span><span class="sec-badge" id="saleMatrixBadge"></span></div>
+    <div class="matrix-wrap" style="margin-bottom:20px;">
+      <table class="mx" id="saleMatrixTable"></table>
+    </div>
+  </div>
+
+  <!-- PANE: นักเรียน -->
+  <div id="hqPane-student" class="hq-pane">
+    <div class="sec-head"><span class="sec-title">🎓 นักเรียน — Backlog Student Count & Conversion รายพนักงาน</span><span class="sec-badge" id="stuBadge"></span></div>
+    <div class="stu-tbl-wrap" style="margin-bottom:20px;">
+      <table class="stu-tbl" id="studentTable"></table>
+    </div>
+    <div class="sec-head"><span class="sec-title">🏆 Tier Monitor (ตาม Conv Rate)</span></div>
+    <div class="tier-grid" id="tierMonitorStu"></div>
+  </div>
+
+</div>
+</div>
+
+<!-- ═══ TAB: TIER PERFORMANCE ═══ -->
+<div id="tab-tier" class="tab-content">
+<div class="main-et" id="tierContent"></div>
+</div>
+
+<!-- ═══ TAB: CONV MONTHLY ═══ -->
+<div id="tab-conv" class="tab-content">
+<div class="conv-wrap2">
+  <div class="conv-filter2">
+    <label>เดือน:</label>
+    <div class="chip-row" id="convChips2"></div>
+    <button class="mchip-preset mchip-h1" onclick="conv2SetH1()">📅 H1</button>
+    <button class="mchip-preset mchip-all" onclick="conv2SetAll()">📅 ทั้งปี</button>
+    <div style="margin-left:auto;display:flex;gap:8px;align-items:center;">
+      <label>Branch:</label>
+      <select class="fs" id="conv2Branch" onchange="renderConv2()">
+        <option value="ALL">ทุก Branch</option>
+        <option value="AYA">AYA</option><option value="BRM">BRM</option>
+        <option value="CBI">CBI</option><option value="CCO">CCO</option>
+        <option value="CMI">CMI</option><option value="CPN">CPN</option>
+        <option value="CRI">CRI</option><option value="HYD">HYD</option>
+        <option value="KKN">KKN</option><option value="LPG">LPG</option>
+        <option value="LRI">LRI</option><option value="MRK">MRK</option>
+      </select>
+      <label>เรียงโดย:</label>
+      <select class="fs" id="conv2Sort" onchange="renderConv2()">
+        <option value="conv">Conv Rate %</option>
+        <option value="actual">ยอดจริง</option>
+        <option value="name">ชื่อ</option>
+      </select>
+    </div>
+  </div>
+  <div class="conv-kpi2" id="convKPI2"></div>
+  <div class="conv-tbl-wrap"><table class="ctbl" id="conv2Table"></table></div>
+  <p style="font-size:11px;color:var(--gray);margin-top:10px;padding:8px 12px;background:white;border:1px solid var(--bd);border-radius:8px;">
+    ⚠️ ยอดจริงรายเดือน = Tableau Backlog Tab (ตารางสรุปรายสาขา) | Backlog/Conv = ตารางสรุปรายพนักงานขาย | Register date ม.ค.–พ.ค. 2026 / Year-Month ม.ค.–มิ.ย. 2026
+  </p>
+</div>
+</div>
+
+<!-- ═══ TAB: EMAIL ALERT ═══ -->
+<div id="tab-email" class="tab-content">
+<div class="email-wrap">
+  <div class="email-sub-tabs">
+    <button class="est-btn active" onclick="switchEmail('et1',this)">📊 Backlog Tier</button>
+    <button class="est-btn" onclick="switchEmail('et2',this)">📈 Conv แยกเดือน</button>
+    <button class="est-btn" onclick="switchEmail('et3',this)">✉ ส่ง Sale</button>
+    <button class="est-btn" onclick="switchEmail('et4',this)">🎓 ส่ง นักเรียน</button>
+  </div>
+  <div id="email-et1" class="tab-content active" style="display:block"></div>
+  <div id="email-et2" class="tab-content"></div>
+  <div id="email-et3" class="tab-content"></div>
+  <div id="email-et4" class="tab-content"></div>
+</div>
+</div>
+
+<!-- MODAL -->
+<div class="modal-overlay" id="sendModal">
+  <div class="modal">
+    <div class="modal-title">✉ ส่ง HQ Backlog Alert</div>
+    <div class="modal-body" id="modalBody"></div>
+    <div class="modal-actions">
+      <button class="btn-cancel" onclick="closeModal()">ยกเลิก</button>
+      <button class="btn-ok" onclick="closeModal()">✓ Confirm Send</button>
+    </div>
+  </div>
+</div>
+
+<script>
+// ─── DATA ────────────────────────────────────────────────────────────────────
+// [Area, Name, GrandTotal, Jan, Feb, Mar, Apr, May, Jun, Jul, Aug, Sep, Oct, Nov, Dec]
+const RAW = [
+  ['AYA','AYAAUM',     515240,  35100,     0,  36500,  22800,      0,   4000,      0, 179600, 168440,  26700,  19000,  23100],
+  ['BRM','BRMCHAAIM',  729444, 190380, 30810,      0, 284950, 211904,  11400,      0,      0,      0,      0,      0,      0],
+  ['CBI','CBIAI',      444200,      0, 17800,  74200,  77800,  77200,  39600,  37900,  57200,  22100,  36200,   4200,      0],
+  ['CBI','CBIFirst',   102800,   4000,     0,      0,      0,      0,  12100,  31700,  23100,  11900,  12000,   4000,   4000],
+  ['CCO','CCOPHUENG',  563416, 272416,145600,   4000,      0,  16800,      0,  44500,  30800,      0,  16000,  33300,      0],
+  ['CMI','CMIAOM',    1191280, 188496,367996, 153100,  57600,  34188,  84200,  17800, 105700,  66800,  53500,  43000,  18900],
+  ['CMI','CMIJUNE',    941599, 170100,235200,  28400, 191800,  71499,  56900,      0,  22900, 133600,  13300,   8000,   9900],
+  ['CPN','CPNTONG',    837358, 282358,156100,  61200,  78700, 148900,  12900,   4800,   8400,   9500,  34800,   8800,  30900],
+  ['CRI','CRINEEN',    157900,      0,     0,      0,      0,      0,  62700,   4500,  20500,  34500,  35700,      0,      0],
+  ['HYD','HYDKATAI',  2862000, 588000,528500, 398600, 352000, 227600, 138200,  92700, 105400, 134300, 188300,   8000, 100400],
+  ['HYD','HYDMEJI',    918200,   7900,140900, 240600,  24900, 147800,  73900,  83900,  85800,  49900,  34700,  27900,      0],
+  ['HYD','HYDYA',     1754204,  65600,373194, 250300,  78200,  66700, 229100,  88120, 123800, 256190,  16500,  83000, 123500],
+  ['KKN','KKNAUM',     104016,      0, 85716,      0,      0,   4300,      0,  14000,      0,      0,      0,      0,      0],
+  ['KKN','KKNBELL',    400597, 151598, 65599,  63000,  17900,  15800,  45100,   8000,      0,  13100,  20500,      0,      0],
+  ['KKN','UBNUN',       71400,      0, 23800,      0,      0,  23800,      0,      0,  23800,      0,      0,      0,      0],
+  ['LPG','LPGJUNE',    232636, 172638, 39648,      0,      0,      0,   4600,   7300,      0,   3400,   5050,      0,      0],
+  ['LRI','LRIMINT',   1058600, 739400, 16400,  26800,      0,  87400,      0,  37000,      0, 151600,      0,      0,      0],
+  ['MRK','MRKDEAR',    477300, 171000, 95300,  40000,  17400,   7000,   4000,      0,   4600,      0,  40000,      0,  98000],
+];
+
+// Backlog conversion data from Tableau (Register date Jan–May 2026)
+const CONV = {
+  'AYAAUM':    {planTotal:515240,   actualTotal:3100,    countAll:26,  countConverted:1},
+  'BRMCHAAIM': {planTotal:1163331,  actualTotal:764925,  countAll:107, countConverted:70},
+  'CBIAI':     {planTotal:1145600,  actualTotal:135203,  countAll:51,  countConverted:13},
+  'CBIFirst':  {planTotal:751500,   actualTotal:62305,   countAll:41,  countConverted:7},
+  'CCOPHUENG': {planTotal:2204530,  actualTotal:991483,  countAll:97,  countConverted:94},
+  'CMIAOM':    {planTotal:2396147,  actualTotal:670243,  countAll:98,  countConverted:64},
+  'CMIJUNE':   {planTotal:3300491,  actualTotal:839074,  countAll:123, countConverted:72},
+  'CPNTONG':   {planTotal:2195927,  actualTotal:1274248, countAll:120, countConverted:116},
+  'CRINEEN':   {planTotal:1675600,  actualTotal:983159,  countAll:101, countConverted:73},
+  'HYDKATAI':  {planTotal:7288550,  actualTotal:1104700, countAll:153, countConverted:101},
+  'HYDMEJI':   {planTotal:918200,   actualTotal:72292,   countAll:18,  countConverted:6},
+  'HYDYA':     {planTotal:5029319,  actualTotal:507013,  countAll:116, countConverted:49},
+  'KKNAUM':    {planTotal:213090,   actualTotal:127110,  countAll:16,  countConverted:12},
+  'KKNBELL':   {planTotal:1561997,  actualTotal:501993,  countAll:75,  countConverted:58},
+  'UBNUN':     {planTotal:2879695,  actualTotal:617675,  countAll:107, countConverted:52},
+  'LPGJUNE':   {planTotal:616529,   actualTotal:530926,  countAll:56,  countConverted:51},
+  'LRIMINT':   {planTotal:26107892, actualTotal:98345,   countAll:120, countConverted:13},
+  'MRKDEAR':   {planTotal:477300,   actualTotal:0,       countAll:0,   countConverted:0},
+};
+
+const MN = ['ม.ค.','ก.พ.','มี.ค.','เม.ย.','พ.ค.','มิ.ย.','ก.ค.','ส.ค.','ก.ย.','ต.ค.','พ.ย.','ธ.ค.'];
+
+// State
+let hqMonths = [0,1,2,3,4,5];
+let convMonths2 = [0,1,2,3,4,5];
+
+// ─── HELPERS ─────────────────────────────────────────────────────────────────
+function fmt(n){if(!n)return'0';if(n>=1000000)return(n/1000000).toFixed(2)+'M';if(n>=1000)return(n/1000).toFixed(0)+'K';return n.toLocaleString();}
+function fmtFull(n){return'฿'+n.toLocaleString();}
+function rateColor(r){return r>=70?'#059669':r>=40?'#D97706':'#DC2626';}
+function rateBadge(r,cls=''){if(r===null)return'<span style="color:#D1D5DB">—</span>';const c=r>=70?'r-hi':r>=40?'r-mid':'r-lo';return`<span class="rate-badge ${c} ${cls}">${r}%</span>`;}
+function tier(grand){return grand>=900000?'star':grand>=300000?'core':'risk';}
+function convRate(c){return c.countAll>0?Math.round(c.countConverted/c.countAll*100):null;}
+
+function buildData(branchF='ALL'){
+  return RAW
+    .filter(r=>branchF==='ALL'||r[0]===branchF)
+    .map(r=>{
+      const c=CONV[r[1]]||{planTotal:r[2],actualTotal:0,countAll:0,countConverted:0};
+      return {
+        area:r[0],name:r[1],grand:r[2],
+        monthly:r.slice(3),
+        h1:r.slice(3,9).reduce((a,b)=>a+b,0),
+        tier:tier(r[2]),
+        cr:convRate(c),
+        conv:c,
+      };
+    });
+}
+
+function sparklineSVG(vals,col,w=80,h=20){
+  const max=Math.max(...vals,1);
+  if(vals.length<2)return'';
+  const pts=vals.map((v,i)=>`${i*(w-4)/(vals.length-1)+2},${h-3-(v/max)*(h-6)}`).join(' ');
+  return `<svg class="spark2" width="${w}" height="${h}" viewBox="0 0 ${w} ${h}">
+    <polyline points="${pts}" fill="none" stroke="${col}" stroke-width="1.5" stroke-linejoin="round" stroke-linecap="round"/>
+  </svg>`;
+}
+
+// ─── MAIN TAB SWITCH ──────────────────────────────────────────────────────────
+function switchMain(tab,btn){
+  document.querySelectorAll('.tab-content[id^="tab-"]').forEach(t=>t.classList.remove('active'));
+  document.querySelectorAll('.tb-btn').forEach(b=>b.classList.remove('active'));
+  document.getElementById('tab-'+tab).classList.add('active');
+  btn.classList.add('active');
+  if(tab==='tier') renderTierTab();
+  if(tab==='conv') renderConv2();
+  if(tab==='email') renderEmailTier();
+}
+function switchEmail(id,btn){
+  document.querySelectorAll('.email-wrap .tab-content').forEach(t=>t.style.display='none');
+  document.querySelectorAll('.est-btn').forEach(b=>b.classList.remove('active'));
+  document.getElementById('email-'+id).style.display='block';
+  btn.classList.add('active');
+  if(id==='et2') renderEmailConv();
+  if(id==='et3') renderEmailSale();
+  if(id==='et4') renderEmailStudent();
+}
+
+// ─── KPI STRIP ────────────────────────────────────────────────────────────────
+function renderKPI(){
+  const data=buildData();
+  const totalGrand=data.reduce((s,d)=>s+d.grand,0);
+  const totalH1=data.reduce((s,d)=>s+d.h1,0);
+  const totalBacklog=data.reduce((s,d)=>s+d.conv.countAll,0);
+  const totalConverted=data.reduce((s,d)=>s+d.conv.countConverted,0);
+  const avgCR=totalBacklog>0?Math.round(totalConverted/totalBacklog*100):0;
+  const stars=data.filter(d=>d.tier==='star').length;
+  const cores=data.filter(d=>d.tier==='core').length;
+  const risks=data.filter(d=>d.tier==='risk').length;
+  document.getElementById('kpiStrip').innerHTML=`
+    <div class="kpi"><div class="kpi-v" style="color:var(--indigo)">฿${fmt(totalGrand)}</div><div class="kpi-l">Total Plan (ปี 2026)</div></div>
+    <div class="kpi"><div class="kpi-v" style="color:var(--amber)">฿${fmt(totalH1)}</div><div class="kpi-l">H1 Actual (ม.ค.–มิ.ย.)</div></div>
+    <div class="kpi"><div class="kpi-v" style="color:var(--teal)">${Math.round(totalH1/totalGrand*100)}%</div><div class="kpi-l">H1 / Annual Plan</div></div>
+    <div class="kpi"><div class="kpi-v">${totalBacklog.toLocaleString()}</div><div class="kpi-l">Backlog ทั้งหมด</div></div>
+    <div class="kpi"><div class="kpi-v">${totalConverted.toLocaleString()}</div><div class="kpi-l">Converted (Backlog)</div></div>
+    <div class="kpi"><div class="kpi-v" style="color:${rateColor(avgCR)}">${avgCR}%</div><div class="kpi-l">Avg Conv Rate</div></div>
+    <div class="kpi">
+      <div class="kpi-v">
+        <span style="color:var(--star)">⭐${stars}</span>
+        <span style="color:var(--core);margin:0 4px">💚${cores}</span>
+        <span style="color:var(--risk)">🔴${risks}</span>
+      </div>
+      <div class="kpi-l">Tier (Star/Core/Risk)</div>
+    </div>
+  `;
+}
+
+// ─── HQ TAB ──────────────────────────────────────────────────────────────────
+function buildHQChips(){
+  document.getElementById('hqChips').innerHTML=MN.map((m,i)=>
+    `<button class="mchip ${hqMonths.includes(i)?'on':''}" onclick="hqToggle(${i})">${m}</button>`
+  ).join('');
+}
+function hqToggle(i){const ix=hqMonths.indexOf(i);if(ix>=0)hqMonths.splice(ix,1);else hqMonths.push(i);hqMonths.sort((a,b)=>a-b);buildHQChips();renderHQ();}
+function hqSetH1(){hqMonths=[0,1,2,3,4,5];buildHQChips();renderHQ();}
+function hqSetAll(){hqMonths=[0,1,2,3,4,5,6,7,8,9,10,11];buildHQChips();renderHQ();}
+
+// ─── HQ SUB-TAB SWITCH ───────────────────────────────────────────────────────
+let currentHQSub = 'all';
+function switchHQSub(tab){
+  currentHQSub = tab;
+  document.querySelectorAll('.hq-pane').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.hq-sub-btn').forEach(b=>{b.classList.remove('active','all','sale','student');});
+  document.getElementById('hqPane-'+tab).classList.add('active');
+  const btn = document.getElementById('subBtn-'+tab);
+  btn.classList.add('active', tab);
+  renderHQ();
+}
+
+function renderHQ(){
+  const brF=document.getElementById('hqBranch').value;
+  const view=document.getElementById('hqView').value;
+  const data=buildData(brF);
+  const months=hqMonths;
+
+  // Update sub-tab counts
+  const totalBacklog = data.reduce((s,d)=>s+d.conv.countAll,0);
+  const totalConverted = data.reduce((s,d)=>s+d.conv.countConverted,0);
+  document.getElementById('subCount-all').textContent = data.length;
+  document.getElementById('subCount-sale').textContent = data.length;
+  document.getElementById('subCount-student').textContent = totalBacklog;
+
+  if(currentHQSub === 'all'){
+    renderPlanOverview(data);
+    renderMatrix(data, months, view);
+    renderTierMonitor(data);
+  } else if(currentHQSub === 'sale'){
+    renderSalePane(data, months, view);
+  } else if(currentHQSub === 'student'){
+    renderStudentPane(data);
+  }
+}
+
+function renderPlanOverview(data){
+  document.getElementById('planBadge').textContent=`${data.length} พนักงาน`;
+  const tierCol={star:'#7C3AED',core:'#0F766E',risk:'#DC2626'};
+  const tierLabel={star:'⭐',core:'💚',risk:'🔴'};
+  const maxPlan=Math.max(...data.map(d=>d.conv.planTotal||d.grand),1);
+
+  const headers=data.map(d=>{
+    const c=d.conv;
+    const cr=convRate(c);
+    const col=tierCol[d.tier];
+    return `<th style="min-width:100px;max-width:120px;">
+      <div class="ph-name">${d.name}</div>
+      <div class="ph-area">${d.area}</div>
+      <div class="ph-tier" style="color:${col}">${tierLabel[d.tier]} ${d.tier.toUpperCase()}</div>
+    </th>`;
+  }).join('');
+
+  const planRow=data.map(d=>{
+    const c=d.conv;
+    const pct=Math.round((c.planTotal||d.grand)/maxPlan*100);
+    return `<td>
+      <div style="font-weight:800;font-size:11px;">฿${fmt(c.planTotal||d.grand)}</div>
+      <div class="cx-bar"><div class="cx-fill" style="width:${pct}%;background:var(--indigo)"></div></div>
+      <div style="font-size:9px;color:var(--gray)">${c.countAll||'—'} คน</div>
+    </td>`;
+  }).join('');
+
+  const actualRow=data.map(d=>{
+    const c=d.conv;
+    const pct=Math.round(d.h1/Math.max(...RAW.map(r=>r.slice(3,9).reduce((a,b)=>a+b,0)),1)*100);
+    return `<td>
+      <div style="font-weight:800;font-size:11px;color:var(--green)">฿${fmt(d.h1)}</div>
+      <div class="cx-bar"><div class="cx-fill" style="width:${pct}%;background:var(--green)"></div></div>
+      <div style="font-size:9px;color:var(--gray)">H1 Actual</div>
+    </td>`;
+  }).join('');
+
+  const convRow=data.map(d=>{
+    const c=d.conv;
+    const cr=convRate(c);
+    const col=cr!==null?rateColor(cr):'#D1D5DB';
+    return `<td>${cr!==null?rateBadge(cr):'—'}<br>
+      <div style="font-size:9px;color:var(--gray)">${c.countConverted||0}/${c.countAll||0} คน</div>
+    </td>`;
+  }).join('');
+
+  const actPct=data.map(d=>{
+    const plan=d.conv.planTotal||d.grand;
+    const pct=plan>0?Math.round(d.h1/plan*100):0;
+    const col=pct>=50?'#059669':pct>=25?'#D97706':'#DC2626';
+    return `<td style="font-weight:800;color:${col}">${pct}%</td>`;
+  }).join('');
+
+  document.getElementById('planOverviewTable').innerHTML=`
+    <thead>
+      <tr>
+        <th class="sticky-left" style="min-width:120px;">รายการ</th>
+        ${headers}
+      </tr>
+    </thead>
+    <tbody>
+      <tr><td class="sticky-left"><div class="row-label">มูลค่าแผน (Backlog)</div><div class="row-sub">จาก Tableau</div></td>${planRow}</tr>
+      <tr><td class="sticky-left"><div class="row-label">ยอดจริง H1</div><div class="row-sub">ม.ค.–มิ.ย. 2026</div></td>${actualRow}</tr>
+      <tr><td class="sticky-left"><div class="row-label">Conv Rate (Backlog)</div><div class="row-sub">converted/countAll</div></td>${convRow}</tr>
+      <tr><td class="sticky-left"><div class="row-label">Actual / Plan %</div><div class="row-sub">H1 actual ÷ Plan</div></td>${actPct}</tr>
+    </tbody>
+  `;
+}
+
+function renderMatrix(data, months, view){
+  document.getElementById('matrixBadge').textContent=`${months.map(i=>MN[i]).join(', ')}`;
+  const maxVal=Math.max(...data.flatMap(d=>months.map(i=>d.monthly[i])),1);
+
+  const headers=data.map(d=>{
+    const col={star:'#7C3AED',core:'#0F766E',risk:'#DC2626'}[d.tier];
+    return `<th style="min-width:90px;max-width:110px;">
+      <div class="ph-name" style="color:${col}">${d.name}</div>
+      <div class="ph-area">${d.area}</div>
+    </th>`;
+  }).join('');
+
+  const monthRows=months.map(mi=>{
+    const cells=data.map(d=>{
+      const v=d.monthly[mi];
+      if(!v)return`<td><span class="cx-zero">—</span></td>`;
+      const pct=Math.round(v/maxVal*100);
+      const planMonth=d.conv.planTotal>0?Math.round(d.conv.planTotal/12):0;
+      const convM=planMonth>0?Math.min(Math.round(v/planMonth*100),999):null;
+      const barCol={star:'#7C3AED',core:'#0F766E',risk:'#DC2626'}[d.tier];
+
+      if(view==='conv'){
+        return`<td>${convM!==null?rateBadge(convM):'—'}</td>`;
+      } else if(view==='both'){
+        const cr=convM!==null?`<br>${rateBadge(convM)}`:'';
+        return`<td>
+          <div class="cx-actual">฿${fmt(v)}</div>
+          <div class="cx-bar"><div class="cx-fill" style="width:${pct}%;background:${barCol}"></div></div>
+          ${cr}
+        </td>`;
+      } else {
+        return`<td>
+          <div class="cx-actual">฿${fmt(v)}</div>
+          <div class="cx-bar"><div class="cx-fill" style="width:${pct}%;background:${barCol}"></div></div>
+        </td>`;
+      }
+    }).join('');
+    const rowTotal=data.reduce((s,d)=>s+d.monthly[mi],0);
+    return `<tr>
+      <td class="sticky-left"><div class="row-label">${MN[mi]}</div></td>
+      ${cells}
+      <td style="font-weight:800;background:#F5F3FF;color:var(--star)">฿${fmt(rowTotal)}</td>
+    </tr>`;
+  }).join('');
+
+  const totalCells=data.map(d=>{
+    const tot=months.reduce((s,i)=>s+d.monthly[i],0);
+    return`<td style="font-weight:800;color:var(--dark)">฿${fmt(tot)}</td>`;
+  }).join('');
+  const grandTot=data.reduce((s,d)=>s+months.reduce((ss,i)=>ss+d.monthly[i],0),0);
+
+  const convCells=data.map(d=>{
+    const cr=convRate(d.conv);
+    return`<td>${rateBadge(cr)}</td>`;
+  }).join('');
+
+  document.getElementById('matrixTable').innerHTML=`
+    <thead>
+      <tr>
+        <th class="sticky-left">เดือน</th>
+        ${headers}
+        <th style="background:#EDE9FE;color:var(--star);min-width:70px;">รวม</th>
+      </tr>
+    </thead>
+    <tbody>${monthRows}</tbody>
+    <tfoot>
+      <tr>
+        <td class="sticky-left" style="font-weight:800">รวม (เลือก)</td>
+        ${totalCells}
+        <td style="font-weight:800;color:var(--star)">฿${fmt(grandTot)}</td>
+      </tr>
+      <tr>
+        <td class="sticky-left" style="font-weight:800;color:var(--teal)">Conv% (Backlog)</td>
+        ${convCells}
+        <td>${rateBadge(data.reduce((s,d)=>s+d.conv.countConverted,0)>0?Math.round(data.reduce((s,d)=>s+d.conv.countConverted,0)/Math.max(data.reduce((s,d)=>s+d.conv.countAll,0),1)*100):null)}</td>
+      </tr>
+    </tfoot>
+  `;
+}
+
+function renderTierMonitor(data, targetId='tierMonitor'){
+  const tiers=['star','core','risk'];
+  const labels={star:'⭐ STAR — Top Performers',core:'💚 CORE — Solid Performers',risk:'🔴 RISK — ต้องติดตามด่วน'};
+  const criteria={star:'Grand Total ≥ 900K',core:'Grand Total 300K–899K',risk:'Grand Total < 300K'};
+  const maxGrand=Math.max(...data.map(d=>d.grand),1);
+  const colMap={star:'#7C3AED',core:'#0F766E',risk:'#DC2626'};
+
+  document.getElementById(targetId).innerHTML=tiers.map(t=>{
+    const members=data.filter(d=>d.tier===t).sort((a,b)=>b.grand-a.grand);
+    if(!members.length)return`<div class="tier-card ${t}"><div class="tier-card-head ${t}"><span class="tier-icon">${t==='star'?'⭐':t==='core'?'💚':'🔴'}</span><span class="tier-name ${t}">${labels[t]}</span><span class="tier-count-badge ${t}">0 คน</span></div></div>`;
+
+    const rows=members.map(d=>{
+      const cr=convRate(d.conv);
+      const col=colMap[t];
+      const pct=Math.round(d.grand/maxGrand*100);
+      const crCls=cr===null?'':cr>=70?'hi':cr>=40?'mid':'lo';
+      const action=t==='risk'?'<span class="action-tag at-focus">⚡ Focus</span>'
+        :cr!==null&&cr<40?'<span class="action-tag at-call">📞 Follow Up</span>'
+        :'<span class="action-tag at-ok">✓ OK</span>';
+      return`<div class="tier-person">
+        <div class="tp-name">${d.name}<span class="tp-area">${d.area}</span></div>
+        ${sparklineSVG(d.monthly,col,70,18)}
+        <div class="tp-bar-wrap">
+          <div class="tp-bar"><div class="tp-fill ${t}" style="width:${pct}%"></div></div>
+          <span class="tp-pct">${pct}%</span>
+        </div>
+        <span class="tp-conv ${crCls}">${cr!==null?cr+'%':'—'}</span>
+        ${action}
+      </div>`;
+    }).join('');
+
+    return`<div class="tier-card ${t}">
+      <div class="tier-card-head ${t}">
+        <span class="tier-icon">${t==='star'?'⭐':t==='core'?'💚':'🔴'}</span>
+        <span class="tier-name ${t}">${labels[t]}</span>
+        <span class="tier-count-badge ${t}">${members.length} คน</span>
+        <span style="margin-left:8px;font-size:10px;color:var(--gray)">${criteria[t]}</span>
+      </div>
+      <div class="tier-persons">${rows}</div>
+    </div>`;
+  }).join('');
+}
+
+// ─── SALE PANE ───────────────────────────────────────────────────────────────
+function renderSalePane(data, months, view){
+  document.getElementById('saleMatrixBadge').textContent = months.map(i=>MN[i]).join(', ');
+  const tierCol={star:'#7C3AED',core:'#0F766E',risk:'#DC2626'};
+  const tierLabel={star:'⭐',core:'💚',risk:'🔴'};
+  const maxPlan=Math.max(...data.map(d=>d.conv.planTotal||d.grand),1);
+  const maxVal=Math.max(...data.flatMap(d=>months.map(i=>d.monthly[i])),1);
+
+  // Plan summary per person (col-oriented)
+  const headers=data.map(d=>{
+    const col=tierCol[d.tier];
+    return`<th style="min-width:90px"><div class="ph-name" style="color:${col}">${d.name}</div><div class="ph-area">${d.area}</div><div class="ph-tier" style="color:${col}">${tierLabel[d.tier]}</div></th>`;
+  }).join('');
+
+  const planRow=data.map(d=>{
+    const p=d.conv.planTotal||d.grand;
+    const pct=Math.round(p/maxPlan*100);
+    return`<td><div style="font-weight:800;font-size:11px">฿${fmt(p)}</div><div class="cx-bar"><div class="cx-fill" style="width:${pct}%;background:var(--indigo)"></div></div></td>`;
+  }).join('');
+  const countRow=data.map(d=>`<td style="font-weight:700">${d.conv.countAll||'—'}<div style="font-size:9px;color:var(--gray)">คนในแผน</div></td>`).join('');
+  const convRow=data.map(d=>{ const cr=convRate(d.conv); return`<td>${rateBadge(cr)}</td>`; }).join('');
+  const h1Row=data.map(d=>`<td style="font-weight:800;color:var(--green)">฿${fmt(d.h1)}</td>`).join('');
+
+  document.getElementById('salePlanTable').innerHTML=`
+    <thead><tr><th class="sticky-left" style="min-width:120px">รายการ</th>${headers}</tr></thead>
+    <tbody>
+      <tr><td class="sticky-left"><div class="row-label">มูลค่าแผน</div><div class="row-sub">Backlog Plan</div></td>${planRow}</tr>
+      <tr><td class="sticky-left"><div class="row-label">จำนวนคนในแผน</div><div class="row-sub">Backlog Count</div></td>${countRow}</tr>
+      <tr><td class="sticky-left"><div class="row-label">Conv Rate</div><div class="row-sub">Converted/Total</div></td>${convRow}</tr>
+      <tr><td class="sticky-left"><div class="row-label">ยอดจริง H1</div><div class="row-sub">ม.ค.–มิ.ย.</div></td>${h1Row}</tr>
+    </tbody>`;
+
+  // Monthly matrix
+  const mHeaders=data.map(d=>{const col=tierCol[d.tier];return`<th style="min-width:90px"><div class="ph-name" style="color:${col}">${d.name}</div><div class="ph-area">${d.area}</div></th>`;}).join('');
+  const monthRows=months.map(mi=>{
+    const cells=data.map(d=>{
+      const v=d.monthly[mi];
+      if(!v)return`<td><span class="cx-zero">—</span></td>`;
+      const pct=Math.round(v/maxVal*100);
+      const col=tierCol[d.tier];
+      return`<td><div class="cx-actual">฿${fmt(v)}</div><div class="cx-bar"><div class="cx-fill" style="width:${pct}%;background:${col}"></div></div></td>`;
+    }).join('');
+    const rowTotal=data.reduce((s,d)=>s+d.monthly[mi],0);
+    return`<tr><td class="sticky-left"><div class="row-label">${MN[mi]}</div></td>${cells}<td style="font-weight:800;color:var(--star)">฿${fmt(rowTotal)}</td></tr>`;
+  }).join('');
+  const totals=data.map(d=>`<td style="font-weight:800">฿${fmt(months.reduce((s,i)=>s+d.monthly[i],0))}</td>`).join('');
+  const grand=data.reduce((s,d)=>s+months.reduce((ss,i)=>ss+d.monthly[i],0),0);
+  document.getElementById('saleMatrixTable').innerHTML=`
+    <thead><tr><th class="sticky-left">เดือน</th>${mHeaders}<th style="background:#EDE9FE;color:var(--star)">รวม</th></tr></thead>
+    <tbody>${monthRows}</tbody>
+    <tfoot><tr><td class="sticky-left" style="font-weight:800">รวม</td>${totals}<td style="font-weight:800;color:var(--star)">฿${fmt(grand)}</td></tr></tfoot>`;
+}
+
+// ─── STUDENT PANE ─────────────────────────────────────────────────────────────
+function renderStudentPane(data){
+  const totalBacklog=data.reduce((s,d)=>s+d.conv.countAll,0);
+  const totalConverted=data.reduce((s,d)=>s+d.conv.countConverted,0);
+  const totalRemain=totalBacklog-totalConverted;
+  document.getElementById('stuBadge').textContent=`${totalBacklog} คนในแผน | ${totalConverted} Converted | ${totalRemain} ยังค้างอยู่`;
+
+  const sorted=[...data].sort((a,b)=>b.conv.countAll-a.conv.countAll);
+  const maxCount=Math.max(...sorted.map(d=>d.conv.countAll),1);
+  const tierCol={star:'#7C3AED',core:'#0F766E',risk:'#DC2626'};
+
+  const rows=sorted.map(d=>{
+    const c=d.conv;
+    const cr=convRate(c);
+    const remain=c.countAll-c.countConverted;
+    const avgPlan=c.countAll>0?Math.round(c.planTotal/c.countAll):0;
+    const avgActual=c.countConverted>0?Math.round(c.actualTotal/c.countConverted):0;
+    const barConv=c.countAll>0?Math.round(c.countConverted/c.countAll*100):0;
+    const barW=Math.round(c.countAll/maxCount*100);
+    const col=tierCol[d.tier];
+
+    // Mini donut (SVG arc)
+    const r=16,cx=18,cy=18,circ=2*Math.PI*r;
+    const pctArc=barConv/100;
+    const dash=pctArc*circ+' '+(circ-pctArc*circ);
+    const donut=`<svg class="donut-svg" width="36" height="36" viewBox="0 0 36 36">
+      <circle cx="${cx}" cy="${cy}" r="${r}" fill="none" stroke="#E5E7EB" stroke-width="5"/>
+      <circle cx="${cx}" cy="${cy}" r="${r}" fill="none" stroke="${cr>=70?'#059669':cr>=40?'#D97706':'#DC2626'}" stroke-width="5"
+        stroke-dasharray="${dash}" stroke-dashoffset="${circ*0.25}" stroke-linecap="round"/>
+      <text x="${cx}" y="${cy+4}" text-anchor="middle" font-size="9" font-weight="800" fill="${col}">${cr!==null?cr+'%':'—'}</text>
+    </svg>`;
+
+    const crCls=cr===null?'':cr>=70?'r-hi':cr>=40?'r-mid':'r-lo';
+
+    return`<tr>
+      <td class="l"><b style="color:${col}">${d.name}</b><span style="font-size:9px;background:#E0E7FF;color:#3730A3;padding:1px 5px;border-radius:3px;margin-left:4px">${d.area}</span></td>
+      <td>${{star:'⭐',core:'💚',risk:'🔴'}[d.tier]}</td>
+      <td>
+        <div style="font-weight:800">${c.countAll||'—'}</div>
+        <div style="display:flex;align-items:center;gap:4px;margin-top:3px">
+          <div style="flex:1;height:5px;background:#E5E7EB;border-radius:3px;overflow:hidden;width:80px">
+            <div style="width:${barW}%;height:100%;background:${col};border-radius:3px"></div>
+          </div>
+        </div>
+      </td>
+      <td style="font-weight:700;color:#059669">${c.countConverted||'—'}</td>
+      <td style="color:#DC2626;font-weight:700">${remain>0?remain:'—'}</td>
+      <td>
+        <div style="display:flex;align-items:center;gap:6px">
+          ${donut}
+          <span class="rate-badge ${crCls}">${cr!==null?cr+'%':'—'}</span>
+        </div>
+      </td>
+      <td style="font-size:11px">฿${fmt(avgPlan)}<div style="font-size:9px;color:var(--gray)">avg plan/คน</div></td>
+      <td style="font-size:11px;color:var(--green)">฿${fmt(avgActual)}<div style="font-size:9px;color:var(--gray)">avg actual/คน</div></td>
+      <td style="font-weight:800">฿${fmt(c.planTotal)}</td>
+      <td style="font-weight:800;color:var(--green)">฿${fmt(c.actualTotal)}</td>
+      <td>${c.countAll>0?'<span class="action-tag '+(cr>=70?'at-ok':cr>=40?'at-call':'at-focus')+'">'+(cr>=70?'✓ On Track':cr>=40?'📞 Follow Up':'⚡ Focus')+'</span>':'—'}</td>
+    </tr>`;
+  }).join('');
+
+  const footConvR=totalBacklog>0?Math.round(totalConverted/totalBacklog*100):0;
+  document.getElementById('studentTable').innerHTML=`
+    <thead><tr>
+      <th class="l">พนักงาน</th><th>Tier</th>
+      <th>จำนวนคนในแผน</th>
+      <th style="color:#059669">Converted</th>
+      <th style="color:#DC2626">ยังค้าง</th>
+      <th>Conv Rate</th>
+      <th>Avg Plan/คน</th>
+      <th>Avg Actual/คน</th>
+      <th>มูลค่าแผน</th>
+      <th>มูลค่าจริง</th>
+      <th>Action</th>
+    </tr></thead>
+    <tbody>${rows}</tbody>
+    <tfoot><tr>
+      <td class="l" colspan="2" style="font-weight:800">📊 รวมทีม</td>
+      <td style="font-weight:800">${totalBacklog.toLocaleString()}</td>
+      <td style="font-weight:800;color:#059669">${totalConverted.toLocaleString()}</td>
+      <td style="font-weight:800;color:#DC2626">${totalRemain.toLocaleString()}</td>
+      <td>${rateBadge(footConvR)}</td>
+      <td>฿${fmt(Math.round(data.reduce((s,d)=>s+d.conv.planTotal,0)/Math.max(totalBacklog,1)))}</td>
+      <td>฿${fmt(Math.round(data.reduce((s,d)=>s+d.conv.actualTotal,0)/Math.max(totalConverted,1)))}</td>
+      <td style="font-weight:800">฿${fmt(data.reduce((s,d)=>s+d.conv.planTotal,0))}</td>
+      <td style="font-weight:800;color:var(--green)">฿${fmt(data.reduce((s,d)=>s+d.conv.actualTotal,0))}</td>
+      <td></td>
+    </tr></tfoot>`;
+
+  // Tier monitor for student view
+  renderTierMonitorTo('tierMonitorStu', data);
+}
+
+function renderTierMonitorTo(targetId, data){
+  renderTierMonitor(data, targetId);
+}
+
+// ─── TIER TAB ─────────────────────────────────────────────────────────────────
+function renderTierTab(){
+  const data=buildData();
+  const tiers=['star','core','risk'];
+  const labels={star:['⭐','STAR','Top Performers — ≥ 900K'],core:['💚','CORE','300K–899K'],risk:['🔴','RISK','< 300K — ต้องติดตาม']};
+  const maxGrand=Math.max(...data.map(d=>d.grand),1);
+  const trendFn=m=>{const nz=m.filter(v=>v>0);if(nz.length<2)return'flat';return nz[nz.length-1]>nz[nz.length-2]*1.05?'up':'down';};
+  const trendLabels={up:'▲ เพิ่มขึ้น',down:'▼ ลดลง',flat:'→ คงที่'};
+  const trendStyles={up:'background:#ECFDF5;color:#059669',down:'background:#FEF2F2;color:#DC2626',flat:'background:#F3F4F6;color:#6B7280'};
+
+  function buildTierBlock(t){
+    const members=data.filter(d=>d.tier===t).sort((a,b)=>b.grand-a.grand);
+    if(!members.length)return'';
+    const col={star:'#7C3AED',core:'#0F766E',risk:'#DC2626'}[t];
+    const [icon,name,desc]=labels[t];
+    const rows=members.map(d=>{
+      const pct=Math.round(d.grand/maxGrand*100);
+      const h1pct=Math.round(d.h1/d.grand*100);
+      const trend=trendFn(d.monthly);
+      const cr=convRate(d.conv);
+      return`<tr>
+        <td><b>${d.name}</b> <span style="font-size:10px;background:#E0E7FF;color:#3730A3;padding:1px 5px;border-radius:3px;">${d.area}</span></td>
+        <td style="text-align:right"><div style="font-weight:800">${fmtFull(d.grand)}</div><div style="font-size:10px;color:var(--gray)">H1: ฿${fmt(d.h1)}</div></td>
+        <td>
+          <div class="prog-wrap2"><div class="prog-bar2"><div class="prog-fill2" style="width:${pct}%;background:${col}"></div></div><span style="font-size:10px;color:var(--gray);width:30px;text-align:right">${pct}%</span></div>
+          <div style="font-size:10px;color:var(--gray)">H1 coverage: ${h1pct}%</div>
+        </td>
+        <td>${sparklineSVG(d.monthly,col,160,26)}</td>
+        <td><span style="font-size:11px;font-weight:700;padding:2px 7px;border-radius:10px;${trendStyles[trend]}">${trendLabels[trend]}</span></td>
+        <td>${rateBadge(cr)}</td>
+      </tr>`;
+    }).join('');
+    return`<div class="ts">
+      <div class="th-head ${t}" style="display:flex;align-items:center;gap:10px;padding:10px 16px;border-radius:10px 10px 0 0;border:1px solid;border-bottom:none;">
+        <span style="font-size:18px">${icon}</span>
+        <span style="font-size:14px;font-weight:800;color:var(--${t})">${name}</span>
+        <span style="font-size:11px;font-weight:700;padding:2px 8px;border-radius:10px;background:var(--${t});color:white">${members.length} คน</span>
+        <span style="font-size:11px;color:var(--gray);margin-left:auto">${desc}</span>
+      </div>
+      <table class="tbl-tier ${t}">
+        <thead><tr><th>พนักงาน</th><th class="r">ยอดวางแผน</th><th>สัดส่วน</th><th>Trend 12M</th><th>Trend</th><th>Conv%</th></tr></thead>
+        <tbody>${rows}</tbody>
+      </table>
+    </div>`;
+  }
+
+  document.getElementById('tierContent').innerHTML=tiers.map(buildTierBlock).join('');
+}
+
+// ─── CONV MONTHLY TAB ─────────────────────────────────────────────────────────
+function buildConvChips2(){
+  document.getElementById('convChips2').innerHTML=MN.map((m,i)=>
+    `<button class="mchip ${convMonths2.includes(i)?'on':''}" onclick="conv2Toggle(${i})">${m}</button>`
+  ).join('');
+}
+function conv2Toggle(i){const ix=convMonths2.indexOf(i);if(ix>=0)convMonths2.splice(ix,1);else convMonths2.push(i);convMonths2.sort((a,b)=>a-b);buildConvChips2();renderConv2();}
+function conv2SetH1(){convMonths2=[0,1,2,3,4,5];buildConvChips2();renderConv2();}
+function conv2SetAll(){convMonths2=[0,1,2,3,4,5,6,7,8,9,10,11];buildConvChips2();renderConv2();}
+
+function renderConv2(){
+  buildConvChips2();
+  const brF=document.getElementById('conv2Branch').value;
+  const sortBy=document.getElementById('conv2Sort').value;
+  const months=convMonths2;
+  let data=buildData(brF);
+  if(sortBy==='conv') data.sort((a,b)=>(b.cr??-1)-(a.cr??-1));
+  else if(sortBy==='actual') data.sort((a,b)=>months.reduce((s,i)=>s+b.monthly[i],0)-months.reduce((s,i)=>s+a.monthly[i],0));
+  else data.sort((a,b)=>a.name.localeCompare(b.name));
+
+  const maxVal=Math.max(...data.flatMap(d=>months.map(i=>d.monthly[i])),1);
+  const totalBacklog=data.reduce((s,d)=>s+d.conv.countAll,0);
+  const totalConv=data.reduce((s,d)=>s+d.conv.countConverted,0);
+  const avgCR=totalBacklog>0?Math.round(totalConv/totalBacklog*100):0;
+  const totalActual=data.reduce((s,d)=>s+months.reduce((ss,i)=>ss+d.monthly[i],0),0);
+
+  document.getElementById('convKPI2').innerHTML=`
+    <div class="ckpi"><div class="ckpi-v" style="color:var(--indigo)">${data.length}</div><div class="ckpi-l">Salespeople</div></div>
+    <div class="ckpi"><div class="ckpi-v" style="color:var(--amber)">฿${fmt(totalActual)}</div><div class="ckpi-l">ยอดจริงรวม</div></div>
+    <div class="ckpi"><div class="ckpi-v">${totalBacklog.toLocaleString()}</div><div class="ckpi-l">Backlog รวม</div></div>
+    <div class="ckpi"><div class="ckpi-v">${totalConv.toLocaleString()}</div><div class="ckpi-l">Converted</div></div>
+    <div class="ckpi"><div class="ckpi-v" style="color:${rateColor(avgCR)}">${avgCR}%</div><div class="ckpi-l">Avg Conv%</div></div>
+  `;
+
+  const mHeaders=months.map(i=>`<th>${MN[i]}</th>`).join('');
+  const rows=data.map(r=>{
+    const selVals=months.map(i=>r.monthly[i]);
+    const selTotal=selVals.reduce((a,b)=>a+b,0);
+    const cells=selVals.map(v=>{
+      if(!v)return`<td><span style="color:#D1D5DB">—</span></td>`;
+      const bw=Math.round(v/maxVal*100);
+      return`<td><div style="font-weight:700">฿${fmt(v)}</div><div class="cx-bar"><div class="cx-fill" style="width:${bw}%;background:var(--indigo);opacity:.6"></div></div></td>`;
+    }).join('');
+    const col={star:'#7C3AED',core:'#0F766E',risk:'#DC2626'}[r.tier];
+    const spk=sparklineSVG(selVals,col,70,18);
+    return`<tr>
+      <td class="l"><b>${r.name}</b><span class="person-badge">${r.area}</span></td>
+      <td>${{star:'⭐',core:'💚',risk:'🔴'}[r.tier]}</td>
+      ${cells}
+      <td style="font-weight:800;color:var(--star)">฿${fmt(selTotal)}</td>
+      <td style="color:var(--gray)">${r.conv.countAll||'—'}</td>
+      <td>${r.conv.countConverted||'—'}</td>
+      <td>${rateBadge(r.cr)}</td>
+      <td>${spk}</td>
+    </tr>`;
+  }).join('');
+
+  const footCells=months.map(i=>`<td style="font-weight:800">฿${fmt(data.reduce((s,d)=>s+d.monthly[i],0))}</td>`).join('');
+  const grandTot=data.reduce((s,d)=>s+months.reduce((ss,i)=>ss+d.monthly[i],0),0);
+
+  document.getElementById('conv2Table').innerHTML=`
+    <thead><tr>
+      <th class="l">พนักงาน</th><th>Tier</th>
+      ${mHeaders}
+      <th style="color:var(--star)">รวม</th>
+      <th>Backlog</th><th>Converted</th><th>Conv%</th><th>Trend</th>
+    </tr></thead>
+    <tbody>${rows}</tbody>
+    <tfoot><tr>
+      <td class="l" colspan="2" style="font-weight:800;color:var(--gray)">📊 รวมทีม</td>
+      ${footCells}
+      <td style="color:var(--star);font-weight:800">฿${fmt(grandTot)}</td>
+      <td style="font-weight:800">${totalBacklog.toLocaleString()}</td>
+      <td style="font-weight:800">${totalConv.toLocaleString()}</td>
+      <td>${rateBadge(avgCR)}</td>
+      <td></td>
+    </tr></tfoot>
+  `;
+}
+
+// ─── EMAIL ALERT TAB ──────────────────────────────────────────────────────────
+function renderEmailTier(){
+  const data=buildData();
+  const tiers=['star','core','risk'];
+  const labels={star:['⭐','STAR','≥ 900K'],core:['💚','CORE','300K–899K'],risk:['🔴','RISK','< 300K']};
+  const maxGrand=Math.max(...data.map(d=>d.grand),1);
+  const trendFn=m=>{const nz=m.filter(v=>v>0);if(nz.length<2)return'flat';return nz[nz.length-1]>nz[nz.length-2]*1.05?'up':'down';};
+  const trendStyles={up:'background:#ECFDF5;color:#059669',down:'background:#FEF2F2;color:#DC2626',flat:'background:#F3F4F6;color:#6B7280'};
+  const trendLabels={up:'▲ เพิ่มขึ้น',down:'▼ ลดลง',flat:'→ คงที่'};
+  const colMap={star:'#7C3AED',core:'#0F766E',risk:'#DC2626'};
+
+  function block(t){
+    const m=data.filter(d=>d.tier===t).sort((a,b)=>b.grand-a.grand);
+    if(!m.length)return'';
+    const [icon,name,desc]=labels[t];
+    const col=colMap[t];
+    const rows=m.map(d=>{
+      const pct=Math.round(d.grand/maxGrand*100);
+      const h1pct=Math.round(d.h1/d.grand*100);
+      const tr=trendFn(d.monthly);
+      return`<tr>
+        <td><b>${d.name}</b><span style="font-size:10px;background:#E0E7FF;color:#3730A3;padding:1px 5px;border-radius:3px;margin-left:4px">${d.area}</span></td>
+        <td style="text-align:right"><div style="font-weight:800">${fmtFull(d.grand)}</div><div style="font-size:10px;color:var(--gray)">H1: ฿${fmt(d.h1)}</div></td>
+        <td>
+          <div class="prog-wrap2"><div class="prog-bar2"><div class="prog-fill2" style="width:${pct}%;background:${col}"></div></div><span style="font-size:10px;color:var(--gray);min-width:28px;text-align:right">${pct}%</span></div>
+          <div style="font-size:10px;color:var(--gray)">H1 coverage: ${h1pct}%</div>
+        </td>
+        <td>${sparklineSVG(d.monthly,col,160,26)}</td>
+        <td><span style="font-size:11px;font-weight:700;padding:2px 7px;border-radius:10px;${trendStyles[tr]}">${trendLabels[tr]}</span></td>
+        <td>${rateBadge(d.cr)}</td>
+        <td>${t==='risk'?'<span class="action-tag at-focus">⚡ Focus</span>':d.cr!==null&&d.cr<40?'<span class="action-tag at-call">📞 Follow Up</span>':'<span class="action-tag at-ok">✓ OK</span>'}</td>
+      </tr>`;
+    }).join('');
+    return`<div class="ts">
+      <div class="th-head ${t}" style="display:flex;align-items:center;gap:10px;padding:10px 16px;border-radius:10px 10px 0 0;border:1px solid;border-bottom:none;">
+        <span style="font-size:18px">${icon}</span>
+        <span style="font-size:14px;font-weight:800;color:var(--${t})">${name}</span>
+        <span style="font-size:11px;font-weight:700;padding:2px 8px;border-radius:10px;background:var(--${t});color:white">${m.length} คน</span>
+        <span style="margin-left:auto;font-size:11px;color:var(--gray)">${desc}</span>
+      </div>
+      <table class="tbl-tier ${t}">
+        <thead><tr><th>พนักงาน</th><th class="r">ยอดวางแผน</th><th>สัดส่วน</th><th>Trend 12M</th><th>Trend</th><th>Conv%</th><th>Action</th></tr></thead>
+        <tbody>${rows}</tbody>
+      </table>
+    </div>`;
+  }
+  document.getElementById('email-et1').innerHTML=`<div style="padding:16px 0">${tiers.map(block).join('')}</div>`;
+}
+
+function renderEmailConv(){
+  const months=[0,1,2,3,4,5];
+  const data=buildData().sort((a,b)=>(b.cr??-1)-(a.cr??-1));
+  const maxVal=Math.max(...data.flatMap(d=>months.map(i=>d.monthly[i])),1);
+  const mHeaders=months.map(i=>`<th>${MN[i]}</th>`).join('');
+  const rows=data.map(r=>{
+    const selVals=months.map(i=>r.monthly[i]);
+    const selTotal=selVals.reduce((a,b)=>a+b,0);
+    const col={star:'#7C3AED',core:'#0F766E',risk:'#DC2626'}[r.tier];
+    const cells=selVals.map(v=>{
+      if(!v)return`<td><span style="color:#D1D5DB">—</span></td>`;
+      const bw=Math.round(v/maxVal*100);
+      return`<td><div style="font-weight:700;font-size:11px">฿${fmt(v)}</div><div class="cx-bar"><div class="cx-fill" style="width:${bw}%;background:var(--indigo);opacity:.6"></div></div></td>`;
+    }).join('');
+    return`<tr>
+      <td class="l"><b>${r.name}</b><span class="person-badge">${r.area}</span></td>
+      <td>${{star:'⭐',core:'💚',risk:'🔴'}[r.tier]}</td>
+      ${cells}
+      <td style="font-weight:800;color:var(--star)">฿${fmt(selTotal)}</td>
+      <td>${r.conv.countAll||'—'}</td>
+      <td>${r.conv.countConverted||'—'}</td>
+      <td>${rateBadge(r.cr)}</td>
+    </tr>`;
+  }).join('');
+  const totals=months.map(i=>`<td style="font-weight:800">฿${fmt(data.reduce((s,d)=>s+d.monthly[i],0))}</td>`).join('');
+  document.getElementById('email-et2').innerHTML=`
+    <table class="ctbl">
+      <thead><tr><th class="l">พนักงาน</th><th>Tier</th>${mHeaders}<th style="color:var(--star)">H1 รวม</th><th>Backlog</th><th>Converted</th><th>Conv%</th></tr></thead>
+      <tbody>${rows}</tbody>
+      <tfoot><tr><td class="l" colspan="2" style="font-weight:800">รวมทีม</td>${totals}<td style="font-weight:800;color:var(--star)">฿${fmt(data.reduce((s,d)=>s+months.reduce((ss,i)=>ss+d.monthly[i],0),0))}</td><td style="font-weight:800">${data.reduce((s,d)=>s+d.conv.countAll,0)}</td><td style="font-weight:800">${data.reduce((s,d)=>s+d.conv.countConverted,0)}</td><td>${rateBadge(Math.round(data.reduce((s,d)=>s+d.conv.countConverted,0)/Math.max(data.reduce((s,d)=>s+d.conv.countAll,0),1)*100))}</td></tr></tfoot>
+    </table>
+  `;
+}
+
+// ─── EMAIL STUDIO SHARED DATA ─────────────────────────────────────────────────
+const MOCK_NAMES = [
+  'ณัฐชา พรมดี','พิมพ์ชนก หมื่นภู','ธนภัทร สมใจ','สิริมา วงศ์ทอง',
+  'ปภัสรา ตั้งใจดี','กิตติภูมิ แสงทอง','วรรณวิสา คำปา','นิธิพัฒน์ ชำนาญ',
+  'อรณี บุญมี','ธีรภัทร ศิริวงศ์','พัชรพร ดวงมณี','สุภัทรา มานะดี',
+  'ณัฐวุฒิ ปิยะรัตน์','ปิยะมาศ กันทะ','วิชิต ใจดี','ภัทรพล แก้วสาย',
+  'นลินา ชัยมงคล','สุธีร์ กาญจนา','ปิ่นปินัน ศักดิ์ดี','ภาวิณี เพ็งพันธ์'
+];
+const COURSES_REC = [
+  {icon:'🧪',name:'Pack TCAS เคมี',desc:'ครบสาวิทย์ก่อนสอบ',price:'฿9,500'},
+  {icon:'📘',name:'TGAT 1 การสื่อสาร ภาษาอังกฤษ',desc:'TGAT สอบ ม.ค. — เริ่มได้เลยตอนนี้',price:'฿4,900'},
+  {icon:'🎯',name:'TGAT 2&3 การคิดอย่างมีเหตุผล',desc:'คอร์สเปิดใหม่ ก.ค. — Hot!',price:'฿3,900'},
+  {icon:'📐',name:'Pack TCAS คณิต+ฟิสิกส์',desc:'เซตคู่ราคาพิเศษ',price:'฿12,000'},
+  {icon:'🌏',name:'TGAT Full Pack',desc:'ครบทุก TGAT — ดีที่สุดคุ้มที่สุด',price:'฿8,500'},
+];
+const SUBJ_POOL = [
+  ['คณิตศาสตร์','ภาษาอังกฤษ','TGAT 1'],
+  ['ฟิสิกส์','เคมี','TGAT 2&3'],
+  ['คณิตศาสตร์','เคมี','ชีววิทยา'],
+  ['ภาษาอังกฤษ','TGAT 1','ฟิสิกส์'],
+];
+function strHash(s){let h=0;for(let i=0;i<s.length;i++)h=(h*31+s.charCodeAt(i))>>>0;return h;}
+function mockStudentsFor(d){
+  const h=strHash(d.name);
+  const remain=Math.max(d.conv.countAll-d.conv.countConverted,0);
+  const count=Math.min(remain,4);
+  const result=[];
+  for(let i=0;i<count;i++){
+    const idx=(h+i*7)%MOCK_NAMES.length;
+    const prog=Math.round(30+((h+i*13)%46));
+    const priority=prog>=60?'HIGH':prog>=40?'MED':'LOW';
+    const planIdx=(h+i)%COURSES_REC.length;
+    result.push({name:MOCK_NAMES[idx],prog,priority,plan:COURSES_REC[planIdx].name});
+  }
+  return result;
+}
+function mockSubjectsFor(name){
+  const h=strHash(name);
+  const subs=SUBJ_POOL[h%SUBJ_POOL.length];
+  return subs.map((s,i)=>({sub:s,pct:Math.round(35+((h+i*17)%46))}));
+}
+
+let esSaleSelected=null, esStuSelected=null;
+let saleSent={}, stuSent={};
+
+// ─── EMAIL: SALE ──────────────────────────────────────────────────────────────
+function renderEmailSale(){
+  const data=buildData().sort((a,b)=>b.conv.countAll-a.conv.countAll);
+  if(!esSaleSelected) esSaleSelected=data[0]?.name;
+  const tierCol={star:'#7C3AED',core:'#059669',risk:'#DC2626'};
+  const priorityBg={HIGH:'#059669',MED:'#D97706',LOW:'#DC2626'};
+  const monthTH=new Date().toLocaleDateString('th-TH',{month:'long',year:'numeric'});
+  const weekNum=Math.ceil(new Date().getDate()/7);
+  const week=`WK${weekNum} ${new Date().toLocaleDateString('th-TH',{month:'short',year:'numeric'})}`;
+  const today=new Date().toLocaleDateString('th-TH',{year:'numeric',month:'long',day:'numeric'});
+  const sel=data.find(d=>d.name===esSaleSelected)||data[0];
+  const remain=sel?Math.max(sel.conv.countAll-sel.conv.countConverted,0):0;
+  const students=sel?mockStudentsFor(sel):[];
+  const cr=sel?convRate(sel.conv):null;
+  const scriptName=students[0]?.name||'นักเรียน';
+  const scriptProg=students[0]?.prog||70;
+  const listItems=data.map(d=>{
+    const rem=Math.max(d.conv.countAll-d.conv.countConverted,0);
+    const cr2=convRate(d.conv);
+    const isSel=d.name===esSaleSelected;
+    return`<div class="em-person-item ${isSel?'selected':''}" onclick="esSelectSale('${d.name}')">
+      <div class="em-person-dot" style="background:${tierCol[d.tier]}"></div>
+      <div style="flex:1;min-width:0"><div style="font-weight:700;font-size:12px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${d.name}</div>
+      <div style="font-size:10px;color:var(--gray)">${d.area} · ค้าง ${rem} คน</div></div>
+      <span style="font-size:10px;font-weight:800;color:${cr2!==null?rateColor(cr2):'#94A3B8'}">${cr2!==null?cr2+'%':'—'}</span>
+    </div>`;
+  }).join('');
+  const studentRows=students.map(s=>`
+    <div class="em-student-card">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:6px">
+        <span class="em-student-name">${s.name}</span>
+        <span class="em-priority-badge" style="background:${priorityBg[s.priority]}">${s.priority}</span>
+      </div>
+      <div class="em-prog-row">
+        <div class="em-prog-bar"><div class="em-prog-fill" style="width:${s.prog}%;background:${s.prog>=60?'#059669':s.prog>=40?'#D97706':'#DC2626'}"></div></div>
+        <span style="font-size:11px;font-weight:700;min-width:30px">${s.prog}%</span>
+      </div>
+      <div style="font-size:10px;color:#6B7280;margin-top:3px">ความคืบหน้า: ${s.prog}% | แผน: ${s.plan}</div>
+    </div>`).join('');
+  const moreCount=remain>4?remain-4:0;
+  const courseItems=COURSES_REC.slice(0,3).map(c=>`
+    <div class="em-course-item">
+      <span class="em-course-icon">${c.icon}</span>
+      <div class="em-course-info"><div class="em-course-name">${c.name}</div><div class="em-course-desc">${c.desc}</div></div>
+      <span class="em-course-price">${c.price}</span>
+    </div>`).join('');
+  const noteText=cr!==null&&cr>=70?'⭐ นักเรียนมีความคืบหน้านำมาก — แนะนำให้ติดต่อเพื่อ upsell คอร์สต่อไปค่ะ':
+    cr!==null&&cr>=40?'📞 มีนักเรียนที่ต้องติดตามด่วน — โปรดดำเนินการภายในสัปดาห์นี้':
+    '⚡ ต้องการความช่วยเหลือ — นักเรียนหลายคนมีความคืบหน้าต่ำ โปรดติดตามด่วน';
+  const emailHTML=sel?`
+    <div class="em-brand-header">
+      <div class="em-brand-logo">ONDY</div>
+      <div class="em-brand-title">Backlog Alert — ${week} | สาขา${sel.area}</div>
+    </div>
+    <div class="em-body">
+      <div class="em-greeting">สวัสดี คุณ${sel.name} (สาขา${sel.area}) 👋</div>
+      <p style="font-size:12px;color:#6B7280;margin-bottom:12px">นี่คือรายงานความคืบหน้า Backlog ของนักเรียนในสาขาของคุณประจำสัปดาห์นี้ค่ะ โปรดตรวจสอบและติดตามนักเรียนที่มีความคืบหน้าต่ำกว่าเกณฑ์</p>
+      <div class="em-section">
+        <div class="em-section-title">🎯 นักเรียนที่ต้องติดตาม</div>
+        ${studentRows}${moreCount>0?`<div style="font-size:11px;color:var(--gray);padding:5px 8px">...และอีก ${moreCount} คน</div>`:''}
+      </div>
+      <div class="em-section" style="background:#FFFBEB;border-color:#FCD34D">
+        <div class="em-section-title" style="color:#92400E">📞 Script สำหรับการโทรหานักเรียน</div>
+        <div class="em-script-box">"สวัสดีค่ะ/ครับ ${scriptName} เรียนเป็นยังไงบ้างคะ เห็นว่าเรียนไปแล้ว ${scriptProg}% แล้ว เยี่ยมมากเลย! มีส่วนไหนที่ยังติดขัดไหมคะ อยากให้ปรึกษาอาจารย์เพิ่มได้นะคะ"</div>
+      </div>
+      <p style="font-size:11px;color:#DC2626;font-weight:600;margin:8px 0">★ ${noteText}</p>
+      <div class="em-section">
+        <div class="em-section-title" style="color:#D97706">💡 คอร์สแนะนำสำหรับนำเสนอ — ${monthTH}</div>
+        ${courseItems}
+      </div>
+      <hr style="border:none;border-top:1px solid #E5E7EB;margin:12px 0">
+      <div style="font-size:10px;color:#94A3B8;text-align:center">ONDY System | OnDemand Education | ${today}</div>
+    </div>`:'';
+  const isSentSale=sel&&saleSent[sel.name];
+  document.getElementById('email-et3').innerHTML=`
+    <div class="email-studio">
+      <div class="email-studio-left">
+        <div class="em-person-list">
+          <div class="em-person-header">📬 พนักงาน (${data.length} คน)</div>
+          <div class="em-person-scroll">${listItems}</div>
+        </div>
+      </div>
+      <div class="email-studio-right">
+        <div class="em-preview-frame">
+          <div class="em-preview-meta">
+            <div class="em-meta-row"><span class="em-meta-label">จาก:</span> noreply@ondemand.in.th (ONDY System)</div>
+            <div class="em-meta-row"><span class="em-meta-label">ถึง:</span> ${sel?sel.name.toLowerCase().replace(/\s/g,'')+'@ondemand.co.th':'—'}</div>
+            <div class="em-meta-row"><span class="em-meta-label">หัวข้อ:</span> [ONDY HQ] Backlog Alert สัปดาห์นี้ — สาขา${sel?.area||'—'}</div>
+            <div class="em-meta-row"><span class="em-meta-label">วันที่:</span> ${today} 09:00 น.</div>
+          </div>
+          <div class="em-html-wrap">${emailHTML}</div>
+          <div class="em-send-bar">
+            <span class="em-send-count">📬 ส่งถึง ${sel?.name||'—'} — ${sel?.area||''}</span>
+            <span style="flex:1"></span>
+            <button class="em-send-btn ${isSentSale?'sent':''}" onclick="esSendSale('${sel?.name||''}')">
+              ${isSentSale?'✓ ส่งแล้ว':'✉ ส่งอีเมล'}
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>`;
+}
+function esSelectSale(name){esSaleSelected=name;renderEmailSale();}
+function esSendSale(name){if(!name)return;saleSent[name]=true;renderEmailSale();}
+
+// ─── EMAIL: STUDENT NEW ────────────────────────────────────────────────────────
+function renderEmailStudent(){
+  const data=buildData().sort((a,b)=>b.conv.countAll-a.conv.countAll);
+  if(!esStuSelected) esStuSelected=data[0]?.name;
+  const tierCol={star:'#7C3AED',core:'#059669',risk:'#DC2626'};
+  const today=new Date().toLocaleDateString('th-TH',{year:'numeric',month:'long',day:'numeric'});
+  const monthTH=new Date().toLocaleDateString('th-TH',{month:'long',year:'numeric'});
+  const sel=data.find(d=>d.name===esStuSelected)||data[0];
+  const remain=sel?Math.max(sel.conv.countAll-sel.conv.countConverted,0):0;
+  const mockStu=sel?mockStudentsFor(sel):[];
+  const firstStu=mockStu[0];
+  const subjects=firstStu?mockSubjectsFor(firstStu.name):[];
+  const listItems=data.map(d=>{
+    const rem=Math.max(d.conv.countAll-d.conv.countConverted,0);
+    const isSel=d.name===esStuSelected;
+    return`<div class="em-person-item ${isSel?'selected':''}" onclick="esSelectStu('${d.name}')">
+      <div class="em-person-dot" style="background:${tierCol[d.tier]}"></div>
+      <div style="flex:1;min-width:0"><div style="font-weight:700;font-size:12px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${d.name}</div>
+      <div style="font-size:10px;color:var(--gray)">${d.area} · ส่งถึง ${rem} คน</div></div>
+      ${stuSent[d.name]?'<span style="font-size:10px;color:#059669;font-weight:700">✓</span>':''}
+    </div>`;
+  }).join('');
+  const subjBars=subjects.map(s=>`
+    <div style="margin:7px 0">
+      <div style="display:flex;justify-content:space-between;font-size:12px;margin-bottom:4px">
+        <span>${s.sub}</span><span style="font-weight:700">${s.pct}%</span>
+      </div>
+      <div class="em-prog-bar" style="height:10px">
+        <div class="em-prog-fill" style="width:${s.pct}%;background:${s.pct>=60?'#059669':s.pct>=40?'#D97706':'#DC2626'}"></div>
+      </div>
+    </div>`).join('');
+  const emailHTML=sel&&firstStu?`
+    <div class="em-brand-header">
+      <div class="em-brand-logo">ONDY</div>
+      <div class="em-brand-title">📊 อัปเดตความคืบหน้าการเรียน</div>
+      <div class="em-brand-sub">ประจำเดือน ${monthTH}</div>
+    </div>
+    <div class="em-body">
+      <div class="em-greeting">สวัสดี ${firstStu.name} 👋</div>
+      <p style="font-size:12px;color:#6B7280;margin-bottom:12px">เราอยากให้คุณรู้ว่าตอนนี้ความคืบหน้าของคุณอยู่ที่ <b>${firstStu.prog}%</b> แล้ว เยี่ยมมาก! อย่าหยุดนะ 🔥</p>
+      <div class="em-section">
+        <div class="em-section-title">📝 ความคืบหน้าตามวิชา</div>
+        ${subjBars}
+      </div>
+      <div class="em-promo-box">
+        <div class="em-promo-tag">โปรโมชั่นพิเศษ เดือน ${monthTH}</div>
+        <div class="em-promo-title">🎉 ONDY 500 — ลดทันที ฿500</div>
+        <div class="em-promo-sub">เมื่อลงทะเบียนคอร์สใหม่ผ่านพนักงานสาขา<br>แอด LINE เพื่อรับโปรโมชั่นและแผนการเรียนส่วนตัวฟรี!</div>
+      </div>
+      <div class="em-line-box">
+        <span style="font-size:20px">💬</span>
+        <div><div style="font-weight:700;font-size:13px">Add LINE สาขา${sel.area}</div>
+        <div style="font-size:11px;color:#6B7280">รับคำแนะนำแผนการเรียนส่วนตัว + รับโปรโมชั่นพิเศษสมาชิก ONDY ก่อนใคร</div></div>
+      </div>
+      <div class="em-line-btn">💬 Add LINE สาขา${sel.area}</div>
+      <p style="font-size:10px;color:#94A3B8;text-align:center;margin-top:8px">คลิกเพื่อแชทกับทีม Sale สาขา${sel.area} และรับโปร ONDY 500 ทันที</p>
+      <hr style="border:none;border-top:1px solid #E5E7EB;margin:12px 0">
+      <div style="font-size:10px;color:#94A3B8;text-align:center">ONDY System | OnDemand Education | ยกเลิกการรับอีเมล</div>
+    </div>`:'<div style="padding:40px;text-align:center;color:#94A3B8">เลือกพนักงานเพื่อดู preview</div>';
+  const isSentStu=sel&&stuSent[sel.name];
+  // Total across all salespeople
+  const totalRemain=data.reduce((s,d)=>s+Math.max(d.conv.countAll-d.conv.countConverted,0),0);
+  const totalSentPeople=data.filter(d=>stuSent[d.name]).length;
+  const totalSentStudents=data.filter(d=>stuSent[d.name]).reduce((s,d)=>s+Math.max(d.conv.countAll-d.conv.countConverted,0),0);
+  const allSent=totalSentPeople>=data.length;
+  const priorityBg={HIGH:'#059669',MED:'#D97706',LOW:'#DC2626'};
+
+  // Build individual student email cards
+  const studentCards=mockStu.map((stu,idx)=>{
+    const stuSubjs=mockSubjectsFor(stu.name);
+    const stuBars=stuSubjs.map(s=>`
+      <div style="margin:5px 0">
+        <div style="display:flex;justify-content:space-between;font-size:11px;margin-bottom:3px">
+          <span>${s.sub}</span><span style="font-weight:700">${s.pct}%</span>
+        </div>
+        <div class="em-prog-bar" style="height:8px">
+          <div class="em-prog-fill" style="width:${s.pct}%;background:${s.pct>=60?'#059669':s.pct>=40?'#D97706':'#DC2626'}"></div>
+        </div>
+      </div>`).join('');
+    const stuKey=`${sel.name}::${stu.name}`;
+    const indivSent=!!stuSent[stuKey];
+    return`<div class="em-stu-email-card">
+      <div class="em-stu-card-head">
+        <div class="em-stu-card-meta">
+          <b>${stu.name}</b>
+          <span style="color:#94A3B8">&lt;${stu.name.replace(/\s/g,'').toLowerCase()}@gmail.com&gt;</span>
+          <span class="em-priority-badge" style="background:${priorityBg[stu.priority]}">${stu.priority}</span>
+        </div>
+        <button class="em-stu-send-btn ${indivSent?'sent':''}" onclick="esSendOneStu('${sel.name}','${stu.name}')">
+          ${indivSent?'✓ ส่งแล้ว':'✉ ส่ง'}
+        </button>
+      </div>
+      <div class="em-stu-card-body">
+        <div class="em-brand-header" style="padding:10px 16px;display:flex;align-items:center;gap:12px;">
+          <div class="em-brand-logo" style="font-size:18px;letter-spacing:-1px">ONDY</div>
+          <div style="font-size:11px;font-weight:700;color:white">📊 อัปเดตความคืบหน้าการเรียน · ${monthTH}</div>
+        </div>
+        <div style="padding:12px 16px;">
+          <div style="font-size:13px;font-weight:800;color:#111827;margin-bottom:4px">สวัสดี ${stu.name} 👋</div>
+          <p style="font-size:11px;color:#6B7280;margin-bottom:8px">ความคืบหน้าของคุณอยู่ที่ <b>${stu.prog}%</b> แล้วค่ะ! 🔥</p>
+          <div class="em-section" style="margin:0 0 8px;padding:10px 12px;">
+            <div class="em-section-title" style="margin-bottom:6px">📝 ความคืบหน้าตามวิชา</div>
+            ${stuBars}
+          </div>
+          <div class="em-promo-box" style="padding:8px 12px;margin:6px 0;">
+            <div class="em-promo-tag" style="font-size:9px;padding:2px 8px">โปรพิเศษ ${monthTH}</div>
+            <div style="font-size:13px;font-weight:900;color:#92400E;margin-top:4px">🎉 ONDY 500 — ลดทันที ฿500</div>
+            <div style="font-size:10px;color:#78350F;margin-top:2px">เมื่อลงทะเบียนคอร์สใหม่ผ่านพนักงานสาขา</div>
+          </div>
+          <div class="em-line-btn" style="padding:8px;font-size:12px;border-radius:8px;margin-top:6px;">💬 Add LINE สาขา${sel?.area||''}</div>
+        </div>
+      </div>
+    </div>`;
+  }).join('');
+
+  const moreCount=remain>mockStu.length?remain-mockStu.length:0;
+  const rightPanel=mockStu.length>0?`
+    <div class="em-stu-cards-scroll">
+      ${studentCards}
+      ${moreCount>0?`<div class="em-stu-more-note">...และอีก <b>${moreCount}</b> คน ในสาขา${sel?.area||''} จะได้รับ email template เดียวกัน</div>`:''}
+    </div>
+  `:`<div style="padding:40px;text-align:center;color:#94A3B8">ไม่มีนักเรียนค้างของ ${sel?.name||'—'}</div>`;
+
+  document.getElementById('email-et4').innerHTML=`
+    <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap;background:white;border:1px solid var(--bd);border-radius:10px;padding:10px 16px;margin-bottom:12px;">
+      <div>
+        <div style="font-size:13px;font-weight:800;color:var(--dark)">📬 ส่ง Email หานักเรียน Backlog ทั้งหมด</div>
+        <div style="font-size:11px;color:var(--gray);margin-top:2px">นักเรียนที่ยังไม่ได้ซื้อ — รวมทุก salesperson</div>
+      </div>
+      <div style="display:flex;gap:16px;margin-left:auto;align-items:center;flex-wrap:wrap;">
+        <div style="text-align:center">
+          <div style="font-size:20px;font-weight:900;color:#DC2626">${totalRemain.toLocaleString()}</div>
+          <div style="font-size:10px;color:var(--gray)">คนที่ยังค้าง</div>
+        </div>
+        <div style="text-align:center">
+          <div style="font-size:20px;font-weight:900;color:#059669">${totalSentStudents.toLocaleString()}</div>
+          <div style="font-size:10px;color:var(--gray)">ส่งแล้ว</div>
+        </div>
+        <button class="em-send-btn ${allSent?'sent':''}" style="padding:10px 24px;font-size:13px;" onclick="sendAllStu()">
+          ${allSent?`✓ ส่งแล้วทั้งหมด ${totalSentStudents.toLocaleString()} คน`:`✉ ส่งทีเดียวทั้งหมด ${totalRemain.toLocaleString()} คน`}
+        </button>
+      </div>
+    </div>
+    <div class="email-studio">
+      <div class="email-studio-left">
+        <div class="em-person-list">
+          <div class="em-person-header">🎓 แยกตามพนักงาน</div>
+          <div class="em-person-scroll">${listItems}</div>
+        </div>
+      </div>
+      <div class="email-studio-right">${rightPanel}</div>
+    </div>`;
+}
+function esSelectStu(name){esStuSelected=name;renderEmailStudent();}
+function esSendStu(name){if(!name)return;stuSent[name]=true;renderEmailStudent();}
+function esSendOneStu(saleName,stuName){
+  const key=saleName+'::'+stuName;
+  stuSent[key]=true;
+  renderEmailStudent();
+}
+function sendAllStu(){
+  const data=buildData();
+  data.forEach(d=>{stuSent[d.name]=true;});
+  renderEmailStudent();
+}
+// ─── ORPHAN CLEANUP ──────────────────────────────────────────────────────────
+// (old card-based functions removed; new studio versions above)
+
+
+// ─── MODAL ────────────────────────────────────────────────────────────────────
+function openModal(){
+  const data=buildData();
+  const risks=data.filter(d=>d.tier==='risk').map(d=>d.name).join(', ');
+  const top=data.sort((a,b)=>b.grand-a.grand)[0];
+  const today=new Date().toLocaleDateString('th-TH',{year:'numeric',month:'long',day:'numeric'});
+  document.getElementById('modalBody').innerHTML=
+    `<b>วันที่:</b> ${today}<br><b>เรื่อง:</b> [ONDY HQ] Backlog Conversion Monitor Report<br><br>`
+    +`<b>สรุป:</b><br>• ⭐ Star: ${data.filter(d=>d.tier==='star').map(d=>d.name).join(', ')}<br>`
+    +`• 💚 Core: ${data.filter(d=>d.tier==='core').length} คน<br>`
+    +`• 🔴 Risk: <b>${risks}</b> — ต้องดำเนินการด่วน<br><br>`
+    +`<b>Top Performer:</b> ${top.name} (${top.area}) — ฿${fmt(top.grand)}<br><em>ส่งถึง: Branch Manager, Zone Head, ONDY HQ</em>`;
+  document.getElementById('sendModal').classList.add('show');
+}
+function closeModal(){document.getElementById('sendModal').classList.remove('show');}
+
+// ─── INIT ─────────────────────────────────────────────────────────────────────
+document.addEventListener('DOMContentLoaded',()=>{
+  document.getElementById('dateDisplay').textContent=
+    new Date().toLocaleDateString('th-TH',{year:'numeric',month:'long',day:'numeric'});
+  buildHQChips();
+  buildConvChips2();
+  renderKPI();
+  // Init sub-tab button state
+  document.getElementById('subBtn-all').classList.add('active','all');
+  renderHQ();
+});
+</script>
+</body>
+</html>

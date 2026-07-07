@@ -1,0 +1,942 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>ONDY Member Individual Planner</title>
+<style>
+:root{
+  --maroon:#7D0039;--pink-bg:#FCE4EC;--pink-light:#FFF0F6;--pink-border:#F8BBD9;
+  --gold:#FFC107;--orange:#F26522;
+  --navy:#1B2A4A;--gray0:#F8FAFC;--gray1:#F1F5F9;--gray2:#E2E8F0;
+  --gray3:#94A3B8;--gray4:#64748B;--dark:#1E293B;--white:#fff;
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:'Segoe UI',system-ui,sans-serif;background:var(--gray0);color:var(--dark);}
+header{background:var(--navy);padding:12px 20px;display:flex;align-items:center;justify-content:space-between;}
+.h-name{color:#fff;font-size:16px;font-weight:800;}
+.h-badge{background:var(--maroon);color:#fff;font-size:10px;font-weight:700;padding:3px 9px;border-radius:20px;margin-left:8px;}
+.h-sub{color:#90B8D8;font-size:11px;margin-top:1px;}
+.h-btns{display:flex;gap:6px;}
+.hbtn{background:rgba(255,255,255,.1);border:1.5px solid rgba(255,255,255,.2);color:#fff;font-size:11px;padding:6px 13px;border-radius:7px;cursor:pointer;transition:all .15s;}
+.hbtn:hover{background:rgba(255,255,255,.18);}
+.hbtn.active{background:var(--orange);border-color:var(--orange);}
+.hbtn.red{background:#EF4444;border-color:#EF4444;}
+.builder{display:grid;grid-template-columns:290px 1fr;gap:14px;padding:14px;max-width:1440px;margin:0 auto;}
+.lpanel{display:flex;flex-direction:column;gap:10px;}
+.bcard{background:var(--white);border-radius:10px;padding:14px;box-shadow:0 2px 8px rgba(0,0,0,.06);}
+.bcard-title{font-size:11px;font-weight:700;color:var(--navy);text-transform:uppercase;letter-spacing:1px;margin-bottom:11px;}
+.fgrid{display:grid;grid-template-columns:1fr 1fr;gap:8px;}
+.fgrid .full{grid-column:1/-1;}
+.flbl{font-size:11px;color:var(--gray4);display:block;margin-bottom:3px;}
+.finput{width:100%;padding:7px 9px;border:1.5px solid var(--gray2);border-radius:7px;font-size:12px;color:var(--dark);background:var(--gray0);transition:border .15s;}
+.finput:focus{outline:none;border-color:var(--navy);background:#fff;}
+.srow{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;}
+.scard{background:var(--navy);border-radius:8px;padding:11px;text-align:center;color:#fff;}
+.snum{font-size:26px;font-weight:800;color:var(--orange);}
+.slbl{font-size:9px;color:#90B8D8;margin-top:2px;}
+/* Calendar */
+.rpanel{display:flex;flex-direction:column;gap:10px;}
+.hint-bar{background:#FFFBEB;border:1px solid #FCD34D;border-radius:8px;padding:8px 12px;font-size:11px;color:#92400E;}
+.cal-wrap{background:var(--white);border-radius:10px;padding:14px;box-shadow:0 2px 8px rgba(0,0,0,.06);overflow-x:auto;}
+.cal-table{border-collapse:collapse;width:100%;min-width:900px;}
+.cal-table th{background:var(--navy);color:#fff;font-size:10px;font-weight:700;padding:7px 4px;text-align:center;border:1px solid rgba(255,255,255,.15);}
+.cal-table td{border:1px solid var(--gray2);vertical-align:top;padding:3px;min-height:52px;cursor:pointer;transition:background .1s;position:relative;}
+.cal-table td:hover{background:#EFF6FF;}
+.yrtd{background:var(--gray1)!important;cursor:default!important;padding:6px 8px;}
+.yrtd:hover{background:var(--gray1)!important;}
+.yr-main{font-size:13px;font-weight:800;color:var(--navy);}
+.yr-be{font-size:9px;color:var(--gray4);}
+.chip{display:flex;align-items:center;gap:3px;padding:2px 5px;border-radius:4px;margin-bottom:2px;background:rgba(0,0,0,.04);}
+.chipdot{width:7px;height:7px;border-radius:50%;flex-shrink:0;}
+.chipname{font-size:9px;color:var(--dark);flex:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:56px;}
+.chipx{font-size:10px;color:#EF4444;cursor:pointer;opacity:.5;flex-shrink:0;}
+.chipx:hover{opacity:1;}
+.cell-add{font-size:9px;color:var(--gray3);text-align:center;padding:4px 0;}
+.cell-add span{background:var(--navy);color:#fff;border-radius:3px;padding:1px 5px;font-size:8px;}
+
+/* MODAL */
+.modal-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.55);z-index:1000;align-items:center;justify-content:center;}
+.modal-overlay.open{display:flex;}
+.modal{background:#fff;border-radius:14px;width:520px;max-width:95vw;max-height:80vh;display:flex;flex-direction:column;overflow:hidden;box-shadow:0 20px 60px rgba(0,0,0,.3);}
+.modal-head{background:var(--navy);padding:14px 16px;display:flex;align-items:center;justify-content:space-between;}
+.modal-head-title{color:#fff;font-size:13px;font-weight:700;}
+.modal-head-sub{color:#90B8D8;font-size:10px;margin-top:2px;}
+.modal-close{background:rgba(255,255,255,.15);border:none;color:#fff;width:26px;height:26px;border-radius:50%;cursor:pointer;font-size:16px;display:flex;align-items:center;justify-content:center;}
+.modal-body{padding:12px 14px;overflow-y:auto;flex:1;}
+.mtabs{display:flex;gap:5px;flex-wrap:wrap;margin-bottom:10px;}
+.mtab{padding:4px 9px;border-radius:20px;font-size:11px;font-weight:600;border:1.5px solid var(--gray2);background:var(--white);cursor:pointer;color:var(--gray4);transition:all .13s;}
+.mtab:hover{border-color:var(--navy);color:var(--navy);}
+.mtab.active{background:var(--navy);color:#fff;border-color:var(--navy);}
+.mclist{display:flex;flex-direction:column;gap:5px;}
+.mcitem{display:flex;align-items:center;gap:8px;padding:8px 10px;border-radius:8px;border:2px solid var(--gray2);cursor:pointer;background:var(--white);transition:all .13s;}
+.mcitem:hover{border-color:var(--navy);}
+.mcitem.sel{border-color:var(--orange);background:#FFF4EE;}
+.mcdot{width:10px;height:10px;border-radius:50%;flex-shrink:0;}
+.mcname{font-size:12px;font-weight:600;color:var(--dark);flex:1;}
+.mcchk{width:16px;height:16px;border:2px solid var(--gray2);border-radius:4px;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+.mcchk.on{background:var(--orange);border-color:var(--orange);color:#fff;font-size:10px;}
+.mchrs{font-size:10px;font-weight:700;color:var(--navy);}
+.mcprice{font-size:10px;color:var(--gray3);transition:filter .2s;}
+.mcprice.blur{filter:blur(4px);}
+.modal-foot{padding:10px 14px;border-top:1px solid var(--gray2);display:flex;align-items:center;justify-content:space-between;background:var(--gray0);}
+.mf-info{font-size:11px;color:var(--gray4);}
+.mf-info strong{color:var(--navy);}
+.mf-btns{display:flex;gap:8px;}
+.mf-cancel{background:var(--white);border:1.5px solid var(--gray2);color:var(--dark);font-size:12px;padding:6px 14px;border-radius:7px;cursor:pointer;}
+.mf-confirm{background:var(--orange);border:none;color:#fff;font-size:12px;font-weight:700;padding:6px 18px;border-radius:7px;cursor:pointer;}
+
+/* ── PRINT VIEW ── */
+#pv{display:none;font-family:'Segoe UI',system-ui,sans-serif;background:#fff;}
+#pv .pvpage{width:297mm;min-height:210mm;background:var(--pink-bg);box-sizing:border-box;margin:0 auto;}
+#pv .pvbar{background:#334155;padding:9px 16px;display:flex;justify-content:space-between;align-items:center;}
+#pv .pvbar span{color:#fff;font-size:12px;font-weight:600;}
+#pv .pvclosebtn{background:#EF4444;border:none;color:#fff;padding:5px 12px;border-radius:6px;cursor:pointer;font-size:11px;font-weight:700;}
+#pv .pvtop{display:flex;align-items:stretch;}
+#pv .pvstud{background:#fff;border:2px solid var(--pink-border);border-radius:10px;margin:10px 0 10px 10px;padding:10px 12px;min-width:130px;max-width:155px;flex-shrink:0;}
+#pv .pvstud-title{font-size:8px;font-weight:700;color:var(--maroon);text-transform:uppercase;letter-spacing:.7px;margin-bottom:7px;border-bottom:1px solid var(--pink-border);padding-bottom:5px;}
+#pv .pvsr{display:flex;gap:5px;margin-bottom:4px;align-items:baseline;}
+#pv .pvslbl{font-size:8px;color:var(--gray4);min-width:36px;flex-shrink:0;}
+#pv .pvsval{font-size:9px;font-weight:700;color:var(--dark);}
+#pv .pvgoal{background:#fff;border:2px solid var(--pink-border);border-radius:10px;margin:10px;padding:10px 12px;min-width:110px;flex-shrink:0;display:flex;flex-direction:column;align-items:center;justify-content:center;}
+#pv .pvgcirc{width:50px;height:50px;border-radius:50%;background:var(--maroon);display:flex;align-items:center;justify-content:center;margin-bottom:7px;}
+#pv .pvgicon{color:var(--pink-border);font-size:20px;font-weight:900;}
+#pv .pvglbl{font-size:8px;color:var(--gray4);margin-bottom:3px;}
+#pv .pvgval{font-size:10px;font-weight:700;color:var(--dark);margin-bottom:7px;}
+#pv .pvgbtn{background:var(--maroon);color:#fff;font-size:8px;font-weight:700;padding:3px 9px;border-radius:20px;letter-spacing:.5px;}
+#pv .pvtitle{flex:1;background:var(--maroon);display:flex;flex-direction:column;justify-content:center;align-items:flex-end;padding:14px 18px;border-bottom-left-radius:18px;}
+#pv .pvmaintitle{font-size:30px;font-weight:900;color:var(--gold);line-height:1.05;text-align:right;}
+#pv .pvsubtitle{font-size:12px;color:var(--pink-border);text-align:right;margin-top:3px;margin-bottom:8px;}
+#pv .pvinfo{font-size:9px;color:var(--pink-border);text-align:right;line-height:1.6;}
+#pv .pvcal{margin:0 10px 10px;}
+#pv .pvct{border-collapse:collapse;width:100%;}
+#pv .pvct th{background:var(--maroon);color:#fff;font-size:9px;font-weight:700;padding:6px 3px;text-align:center;border:1px solid rgba(255,255,255,.15);}
+#pv .pvct th.pvcyr{width:58px;}
+#pv .pvct td{border:1px solid var(--pink-border);vertical-align:top;padding:2px;background:var(--pink-light);}
+#pv .pvyrtd{background:var(--pink-bg)!important;padding:6px 7px;}
+#pv .pvyr-main{font-size:13px;font-weight:900;color:var(--maroon);}
+#pv .pvyr-be{font-size:8px;color:#AD1457;}
+#pv .pvcard{border-radius:5px;padding:3px 5px;margin-bottom:2px;display:flex;flex-direction:column;min-height:52px;}
+#pv .pvcard-start{display:inline-block;background:var(--orange);color:#fff;font-size:6.5px;font-weight:700;padding:1px 4px;border-radius:2px;margin-bottom:2px;align-self:flex-start;}
+#pv .pvcard-name{font-size:8px;font-weight:700;color:#fff;line-height:1.2;flex:1;}
+#pv .pvcard-hrs{font-size:7px;color:rgba(255,255,255,.75);margin-top:1px;}
+#pv .pvcard-price{font-size:7.5px;color:var(--gold);font-weight:700;margin-top:2px;}
+#pv .pvbottom{display:grid;grid-template-columns:1fr auto auto;gap:10px;margin:0 10px 10px;align-items:start;}
+#pv .pvlegend{background:#fff;border:1.5px solid var(--pink-border);border-radius:8px;padding:9px 11px;}
+#pv .pvleg-title{font-size:8px;font-weight:700;color:var(--maroon);text-transform:uppercase;letter-spacing:.7px;margin-bottom:7px;}
+#pv .pvleg-item{display:flex;align-items:center;gap:6px;margin-bottom:4px;font-size:8.5px;color:var(--dark);}
+#pv .pvleg-dot{width:9px;height:9px;border-radius:50%;flex-shrink:0;}
+#pv .pvscores{background:#fff;border:2px solid var(--pink-border);border-radius:8px;padding:9px 11px;min-width:160px;}
+#pv .pvsc-title{font-size:8px;font-weight:700;color:var(--maroon);margin-bottom:7px;}
+#pv .pvsc-row{display:flex;justify-content:space-between;font-size:8px;margin-bottom:4px;padding-bottom:3px;border-bottom:1px solid var(--pink-bg);}
+#pv .pvsc-lbl{color:var(--gray4);}
+#pv .pvsc-val{font-weight:700;color:var(--maroon);}
+#pv .pvstats{display:grid;grid-template-columns:1fr 1fr;gap:6px;min-width:150px;}
+#pv .pvstat-box{background:#fff;border:1.5px solid var(--pink-border);border-radius:7px;padding:8px 6px;text-align:center;}
+#pv .pvstat-num{font-size:17px;font-weight:800;color:var(--maroon);}
+#pv .pvstat-lbl{font-size:7.5px;color:var(--gray4);margin-top:1px;}
+#pv .pvfooter{background:var(--maroon);color:var(--pink-border);font-size:8.5px;padding:7px 14px;display:flex;justify-content:space-between;align-items:center;}
+#pv .pvfooter-logo{font-size:11px;font-weight:800;color:var(--gold);}
+
+@media print{
+  *{-webkit-print-color-adjust:exact!important;print-color-adjust:exact!important;}
+  @page{size:A4 landscape;margin:0;}
+  body{background:#fff!important;margin:0!important;}
+  header,.builder,#pv .pvbar{display:none!important;}
+  #pv{display:block!important;}
+  #pv .pvpage{width:297mm;min-height:210mm;margin:0;}
+}
+</style>
+</head>
+<body>
+
+<!-- COURSE PICKER MODAL -->
+<div class="modal-overlay" id="modalOverlay">
+  <div class="modal">
+    <div class="modal-head">
+      <div>
+        <div class="modal-head-title" id="modalTitle">เลือกคอร์สสำหรับเดือนนี้</div>
+        <div class="modal-head-sub" id="modalSub">คลิกคอร์สเพื่อเลือก/ยกเลิก</div>
+      </div>
+      <button class="modal-close" onclick="closeModal()">&#x2715;</button>
+    </div>
+    <div class="modal-body">
+      <div class="mtabs" id="mtabs">
+        <div class="mtab active" onclick="mFilterCat('all',this)">ทั้งหมด</div>
+        <div class="mtab" onclick="mFilterCat('b99',this)">99B ปรับพื้นฐาน</div>
+        <div class="mtab" onclick="mFilterCat('pack-tcas',this)">Pack TCAS</div>
+        <div class="mtab" onclick="mFilterCat('pack-upskill',this)">TCAS + Upskill</div>
+        <div class="mtab" onclick="mFilterCat('alevel',this)">A-Level</div>
+        <div class="mtab" onclick="mFilterCat('tgat',this)">TGAT</div>
+        <div class="mtab" onclick="mFilterCat('tpat',this)">TPAT</div>
+        <div class="mtab" onclick="mFilterCat('bundle',this)">Bundle</div>
+        <div class="mtab" onclick="mFilterCat('sr',this)">ม.ปลาย เนื้อหา</div>
+        <div class="mtab" onclick="mFilterCat('jr',this)">ม.ต้น เนื้อหา</div>
+        <div class="mtab" onclick="mFilterCat('ielts',this)">IELTS/SAT</div>
+      </div>
+      <div class="mclist" id="mclist"></div>
+    </div>
+    <div class="modal-foot">
+      <div class="mf-info">เลือกแล้ว: <strong id="mSelCount">0</strong> คอร์ส</div>
+      <div class="mf-btns">
+        <button class="mf-cancel" onclick="closeModal()">ยกเลิก</button>
+        <button class="mf-confirm" onclick="confirmModal()">&#10003; ยืนยัน</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- PRINT VIEW -->
+<div id="pv">
+  <div class="pvbar">
+    <span>&#128065; Preview — ONDY Member Individual Planner (A4 Landscape)</span>
+    <button class="pvclosebtn" onclick="closePreview()">&#x2715; ปิด</button>
+  </div>
+  <div class="pvpage">
+    <div class="pvtop">
+      <div class="pvstud">
+        <div class="pvstud-title">ข้อมูลนักเรียน</div>
+        <div class="pvsr"><span class="pvslbl">ชื่อจริง:</span><span class="pvsval" id="pN"></span></div>
+        <div class="pvsr"><span class="pvslbl">ชื่อเล่น:</span><span class="pvsval" id="pNN"></span></div>
+        <div class="pvsr"><span class="pvslbl">ชั้น:</span><span class="pvsval" id="pLV"></span></div>
+        <div class="pvsr"><span class="pvslbl">โรงเรียน:</span><span class="pvsval" id="pSCH"></span></div>
+        <div class="pvsr"><span class="pvslbl">รหัส:</span><span class="pvsval" id="pCODE"></span></div>
+      </div>
+      <div class="pvgoal">
+        <div class="pvglbl">เป้าหมาย</div>
+        <div class="pvgcirc"><span class="pvgicon">&#9654;</span></div>
+        <div class="pvgval" id="pGPA"></div>
+        <div class="pvgbtn" id="pROUND">TCAS รอบ 3</div>
+      </div>
+      <div class="pvtitle">
+        <div class="pvmaintitle">Ondy Member</div>
+        <div class="pvsubtitle">Individual Planner</div>
+        <div class="pvinfo" id="pINFO"></div>
+      </div>
+    </div>
+    <div class="pvcal">
+      <table class="pvct">
+        <thead><tr id="pvCalHead"></tr></thead>
+        <tbody id="pvCalBody"></tbody>
+      </table>
+    </div>
+    <div class="pvbottom">
+      <div class="pvlegend">
+        <div class="pvleg-title">คอร์สในแผน ONDY</div>
+        <div id="pvLegend"></div>
+      </div>
+      <div class="pvscores">
+        <div class="pvsc-title">&#127919; เกณฑ์คะแนน / Target</div>
+        <div id="pvScores"></div>
+      </div>
+      <div class="pvstats" id="pvStats"></div>
+    </div>
+    <div class="pvfooter">
+      <div>OnDemand Education Co., Ltd. | www.ondemand.in.th | Tel: 02-251-9456 | <span id="pFOOTER"></span></div>
+      <div class="pvfooter-logo">Ondy Member</div>
+      <div style="display:flex;align-items:center;gap:6px;">
+        <div id="pvQrLabel" style="font-size:7px;color:rgba(255,255,255,.7);text-align:right;line-height:1.5;">แอด LINE<br>สาขาใกล้บ้าน<br>รับโปร + แผนฟรี</div>
+        <div style="width:44px;height:44px;background:#fff;border-radius:4px;padding:3px;flex-shrink:0;">
+          <svg viewBox="0 0 40 40" width="38" height="38" style="color:#7D0039;">
+            <rect width="40" height="40" fill="white"/>
+            <rect x="1" y="1" width="12" height="12" rx="1.5" fill="currentColor"/>
+            <rect x="3" y="3" width="8" height="8" rx="1" fill="white"/>
+            <rect x="5" y="5" width="4" height="4" rx=".5" fill="currentColor"/>
+            <rect x="27" y="1" width="12" height="12" rx="1.5" fill="currentColor"/>
+            <rect x="29" y="3" width="8" height="8" rx="1" fill="white"/>
+            <rect x="31" y="5" width="4" height="4" rx=".5" fill="currentColor"/>
+            <rect x="1" y="27" width="12" height="12" rx="1.5" fill="currentColor"/>
+            <rect x="3" y="29" width="8" height="8" rx="1" fill="white"/>
+            <rect x="5" y="31" width="4" height="4" rx=".5" fill="currentColor"/>
+            <rect x="15" y="1" width="2" height="2" fill="currentColor"/>
+            <rect x="19" y="1" width="4" height="2" fill="currentColor"/>
+            <rect x="25" y="1" width="2" height="2" fill="currentColor"/>
+            <rect x="15" y="5" width="4" height="2" fill="currentColor"/>
+            <rect x="21" y="5" width="2" height="4" fill="currentColor"/>
+            <rect x="15" y="9" width="2" height="4" fill="currentColor"/>
+            <rect x="19" y="11" width="4" height="2" fill="currentColor"/>
+            <rect x="1" y="15" width="4" height="2" fill="currentColor"/>
+            <rect x="7" y="15" width="2" height="4" fill="currentColor"/>
+            <rect x="11" y="15" width="4" height="2" fill="currentColor"/>
+            <rect x="15" y="15" width="2" height="2" fill="currentColor"/>
+            <rect x="19" y="15" width="4" height="2" fill="currentColor"/>
+            <rect x="25" y="15" width="2" height="4" fill="currentColor"/>
+            <rect x="29" y="15" width="4" height="2" fill="currentColor"/>
+            <rect x="35" y="15" width="4" height="2" fill="currentColor"/>
+            <rect x="1" y="19" width="2" height="4" fill="currentColor"/>
+            <rect x="5" y="19" width="4" height="2" fill="currentColor"/>
+            <rect x="11" y="19" width="2" height="2" fill="currentColor"/>
+            <rect x="15" y="19" width="6" height="2" fill="currentColor"/>
+            <rect x="23" y="19" width="2" height="2" fill="currentColor"/>
+            <rect x="27" y="19" width="4" height="2" fill="currentColor"/>
+            <rect x="33" y="19" width="6" height="2" fill="currentColor"/>
+            <rect x="3" y="23" width="2" height="2" fill="currentColor"/>
+            <rect x="7" y="23" width="4" height="2" fill="currentColor"/>
+            <rect x="13" y="23" width="2" height="4" fill="currentColor"/>
+            <rect x="17" y="23" width="4" height="2" fill="currentColor"/>
+            <rect x="23" y="23" width="2" height="2" fill="currentColor"/>
+            <rect x="27" y="23" width="6" height="2" fill="currentColor"/>
+            <rect x="35" y="23" width="4" height="4" fill="currentColor"/>
+            <rect x="15" y="27" width="2" height="2" fill="currentColor"/>
+            <rect x="19" y="27" width="4" height="2" fill="currentColor"/>
+            <rect x="25" y="27" width="2" height="2" fill="currentColor"/>
+            <rect x="29" y="27" width="4" height="2" fill="currentColor"/>
+            <rect x="15" y="31" width="4" height="2" fill="currentColor"/>
+            <rect x="21" y="31" width="2" height="4" fill="currentColor"/>
+            <rect x="25" y="31" width="4" height="2" fill="currentColor"/>
+            <rect x="31" y="31" width="2" height="2" fill="currentColor"/>
+            <rect x="35" y="31" width="4" height="2" fill="currentColor"/>
+            <rect x="15" y="35" width="2" height="4" fill="currentColor"/>
+            <rect x="19" y="37" width="6" height="2" fill="currentColor"/>
+            <rect x="27" y="35" width="2" height="4" fill="currentColor"/>
+            <rect x="31" y="35" width="4" height="2" fill="currentColor"/>
+          </svg>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- HEADER -->
+<header>
+  <div>
+    <div style="display:flex;align-items:center;gap:8px;">
+      <span class="h-name">ONDY Member</span>
+      <span class="h-badge">INDIVIDUAL PLANNER</span>
+    </div>
+    <div class="h-sub">วางแผนคอร์สรายบุคคล — OnDemand Academy</div>
+  </div>
+  <div class="h-btns">
+    <button class="hbtn" id="guruBtn" onclick="toggleGuru()">&#128274; Guru View</button>
+    <button class="hbtn" id="prevBtn" onclick="togglePreview()">&#128065; Preview</button>
+    <button class="hbtn" onclick="printPlan()">&#128424; Print / PDF</button>
+  </div>
+</header>
+
+<!-- BUILDER -->
+<div class="builder">
+  <div class="lpanel">
+    <div class="bcard">
+      <div class="bcard-title">&#128100; ข้อมูลนักเรียน</div>
+      <div class="fgrid">
+        <div><label class="flbl">ชื่อจริง</label><input class="finput" id="stName" type="text" placeholder="ชื่อ นามสกุล" oninput="updateAll()"></div>
+        <div><label class="flbl">ชื่อเล่น</label><input class="finput" id="stNick" type="text" placeholder="ชื่อเล่น" oninput="updateAll()"></div>
+        <div><label class="flbl">ชั้นปัจจุบัน</label>
+          <select class="finput" id="stLevel" onchange="renderCal();applyPersonaPrefill();updateAll()">
+            <option>ม.4</option><option>ม.5</option><option>ม.6</option>
+          </select></div>
+        <div><label class="flbl">GPA</label><input class="finput" id="stGpa" type="number" step="0.01" min="0" max="4" placeholder="0.00" oninput="updateAll()"></div>
+        <div class="full"><label class="flbl">โรงเรียน</label><input class="finput" id="stSch" type="text" placeholder="ชื่อโรงเรียน" oninput="updateAll()"></div>
+        <div><label class="flbl">รหัสนักเรียน</label><input class="finput" id="stCode" type="text" placeholder="รหัส" oninput="updateAll()"></div>
+        <div><label class="flbl">Guru ผู้วางแผน</label><input class="finput" id="stGuru" type="text" placeholder="ชื่อ Guru" oninput="updateAll()"></div>
+        <div class="full"><label class="flbl">สาขา OnDemand</label>
+          <select class="finput" id="stBranch" onchange="updateAll()">
+            <optgroup label="── AM: AOR │ Hub: Zee ──">
+              <option>MBK</option>
+              <option>PKL</option>
+            </optgroup>
+            <optgroup label="── AM: AOR │ Hub: Simp ──">
+              <option>SNR</option>
+              <option>WST</option>
+              <option>NGW</option>
+              <option>RST</option>
+            </optgroup>
+            <optgroup label="── AM: AOR │ Hub: Gift ──">
+              <option>VVY</option>
+              <option>NPT</option>
+              <option>PKS</option>
+            </optgroup>
+            <optgroup label="── AM: TAE │ Hub: TAE ──">
+              <option>HYD</option>
+              <option>SNI</option>
+              <option>NRT</option>
+              <option>TRG</option>
+              <option>CPN</option>
+              <option>PKT</option>
+              <option>RBR</option>
+              <option>SPB</option>
+              <option>PBI</option>
+            </optgroup>
+            <optgroup label="── AM: BOTUN │ Hub: BOTUN ──">
+              <option>NSN</option>
+              <option>LRI</option>
+              <option>SRI</option>
+              <option>AYA</option>
+              <option>CMI</option>
+              <option>CRI</option>
+              <option>LPG</option>
+              <option>PLK</option>
+            </optgroup>
+            <optgroup label="── AM: TALAY │ Hub: NIM ──">
+              <option>UBN</option>
+              <option>NMA</option>
+              <option>BRM</option>
+            </optgroup>
+            <optgroup label="── AM: TALAY │ Hub: TALAY ──">
+              <option>UDN</option>
+              <option>KKN</option>
+              <option>RET</option>
+            </optgroup>
+            <optgroup label="── AM: TALAY │ Hub: Most ──">
+              <option>CBI</option>
+              <option>RYG</option>
+              <option>COO</option>
+            </optgroup>
+            <optgroup label="── ออนไลน์ ──">
+              <option>Online</option>
+            </optgroup>
+          </select></div>
+      </div>
+    </div>
+    <div class="bcard">
+      <div class="bcard-title">&#127919; เป้าหมาย TCAS</div>
+      <div class="fgrid">
+        <div class="full"><label class="flbl">TCAS Round</label>
+          <select class="finput" id="stRound" onchange="updateAll()">
+            <option value="1">รอบ 1 — Portfolio</option>
+            <option value="2">รอบ 2 — Quota</option>
+            <option value="3" selected>รอบ 3 — Admission</option>
+            <option value="4">รอบ 4 — Direct</option>
+          </select></div>
+        <div class="full"><label class="flbl">🎓 ONDY Persona — คณะเป้าหมาย</label>
+          <select class="finput" id="stPersona" onchange="applyPersonaPrefill();updateAll()">
+            <option value="">— ไม่ระบุ (กำหนดเอง) —</option>
+            <option value="แพทย์">🏥 แพทย์ / สัตวแพทย์</option>
+            <option value="วิศวะ">⚙️ วิศวกรรมศาสตร์</option>
+            <option value="Business">📊 Business / บัญชี / เศรษฐศาสตร์</option>
+            <option value="นิติศาสตร์">⚖️ นิติศาสตร์ / รัฐศาสตร์</option>
+          </select></div>
+        <div class="full"><label class="flbl">มหาวิทยาลัยเป้าหมาย</label><input class="finput" id="stUni" type="text" placeholder="เช่น จุฬา" oninput="updateAll()"></div>
+        <div class="full"><label class="flbl">คณะ / สาขาเป้าหมาย</label><input class="finput" id="stFac" type="text" placeholder="เช่น วิศวกรรมคอมพิวเตอร์" oninput="updateAll()"></div>
+      </div>
+    </div>
+    <div class="bcard">
+      <div class="bcard-title">&#128200; เกณฑ์คะแนนที่ต้องการ</div>
+      <div class="fgrid">
+        <div><label class="flbl">TGAT</label><input class="finput" id="scTgat" type="number" placeholder="%" oninput="updateAll()"></div>
+        <div><label class="flbl">ฟิสิกส์</label><input class="finput" id="scPhy" type="number" placeholder="%" oninput="updateAll()"></div>
+        <div><label class="flbl">คณิตศาสตร์</label><input class="finput" id="scMath" type="number" placeholder="%" oninput="updateAll()"></div>
+        <div><label class="flbl">เคมี</label><input class="finput" id="scChem" type="number" placeholder="%" oninput="updateAll()"></div>
+        <div><label class="flbl">ชีววิทยา</label><input class="finput" id="scBio" type="number" placeholder="%" oninput="updateAll()"></div>
+        <div><label class="flbl">ภาษาอังกฤษ</label><input class="finput" id="scEng" type="number" placeholder="%" oninput="updateAll()"></div>
+      </div>
+    </div>
+  </div>
+  <div class="rpanel">
+    <div class="hint-bar">&#128161; <strong>วิธีใช้:</strong> คลิกช่องเดือนในปฏิทินเพื่อเปิดหน้าต่างเลือกคอร์ส | คลิก ✕ บนชิปเพื่อลบ</div>
+    <div class="cal-wrap">
+      <div class="bcard-title" style="margin-bottom:10px;">&#128197; ปฏิทินแผนการเรียน 3 ปี <span style="font-size:10px;font-weight:400;color:var(--gray3);text-transform:none;letter-spacing:0;">(คลิกช่องเดือนเพื่อเพิ่มคอร์ส)</span></div>
+      <div style="overflow-x:auto;">
+        <table class="cal-table">
+          <thead id="calHead"></thead>
+          <tbody id="calBody"></tbody>
+        </table>
+      </div>
+    </div>
+    <div class="srow" id="statsRow"></div>
+  </div>
+</div>
+
+<script>
+var MONTHS = ['ม.ค.','ก.พ.','มี.ค.','เม.ย.','พ.ค.','มิ.ย.','ก.ค.','ส.ค.','ก.ย.','ต.ค.','พ.ย.','ธ.ค.'];
+var LEVELS = ['ม.4','ม.5','ม.6'];
+var COURSES = [
+  // ── 99B ปรับพื้นฐาน ──────────────────────────────────
+  {id:'b99-math',cat:'b99',name:'ปรับพื้นฐาน คณิตศาสตร์ ม.ปลาย',  hours:10,price:99},
+  {id:'b99-phy', cat:'b99',name:'ปรับพื้นฐาน ฟิสิกส์ ม.4',         hours:10,price:99},
+  {id:'b99-chem',cat:'b99',name:'ปรับพื้นฐาน เคมี',                 hours:10,price:99},
+  {id:'b99-bio', cat:'b99',name:'ปรับพื้นฐาน ชีววิทยา',             hours:10,price:99},
+  {id:'b99-eng', cat:'b99',name:'ปรับพื้นฐาน ภาษาอังกฤษ ม.ปลาย',  hours:10,price:99},
+  {id:'b99-tp1', cat:'b99',name:'ปรับพื้นฐาน TPAT1 ความถนัดแพทย์', hours:8, price:99},
+  {id:'b99-tp3', cat:'b99',name:'ปรับพื้นฐาน TPAT3 วิทย์-เทคโนโลยี',hours:8,price:99},
+  {id:'b99-3a',  cat:'b99',name:'Special Pack 99B คณิต+ชีวะ+เคมี',  hours:30,price:297},
+  {id:'b99-3b',  cat:'b99',name:'Special Pack 99B ฟิสิกส์+ชีวะ+เคมี',hours:30,price:297},
+  {id:'b99-3c',  cat:'b99',name:'Special Pack 99B ฟิสิกส์+คณิต+ชีวะ',hours:30,price:297},
+  {id:'b99-pmath',cat:'b99',name:'Special Pack ปรับพื้นฐาน คณิต TCAS',hours:10,price:99},
+  {id:'b99-pphy', cat:'b99',name:'Special Pack ปรับพื้นฐาน ฟิสิกส์ TCAS',hours:10,price:99},
+  {id:'b99-pbio', cat:'b99',name:'Special Pack ปรับพื้นฐาน ชีวะ TCAS',hours:10,price:99},
+  {id:'b99-peng', cat:'b99',name:'Special Pack ปรับพื้นฐาน อังกฤษ TCAS',hours:10,price:99},
+  {id:'b99-med',  cat:'b99',name:'Special Pack ปรับพื้นฐาน หมอ 6 วิชา',hours:60,price:594},
+  {id:'b99-eng2', cat:'b99',name:'Special Pack ปรับพื้นฐาน วิศวะ 5 วิชา',hours:50,price:495},
+  // ── Pack TCAS ─────────────────────────────────────────
+  {id:'pk-math',cat:'pack-tcas',name:'Pack TCAS คณิตศาสตร์',         hours:40,price:9500,hot:1},
+  {id:'pk-phy', cat:'pack-tcas',name:'Pack TCAS ฟิสิกส์',             hours:40,price:9500,hot:1},
+  {id:'pk-chem',cat:'pack-tcas',name:'Pack TCAS เคมี',                hours:38,price:9500},
+  {id:'pk-bio', cat:'pack-tcas',name:'Pack TCAS ชีววิทยา',            hours:36,price:9500},
+  {id:'pk-eng', cat:'pack-tcas',name:'Pack TCAS ภาษาอังกฤษ',          hours:32,price:8500},
+  // ── Pack TCAS + Upskill ───────────────────────────────
+  {id:'up-math',cat:'pack-upskill',name:'Pack TCAS + Upskill คณิตศาสตร์',hours:55,price:11900,hot:1},
+  {id:'up-phy', cat:'pack-upskill',name:'Pack TCAS + Upskill ฟิสิกส์',   hours:55,price:11900},
+  {id:'up-chem',cat:'pack-upskill',name:'Pack TCAS + Upskill เคมี',       hours:52,price:11900},
+  {id:'up-bio', cat:'pack-upskill',name:'Pack TCAS + Upskill ชีววิทยา',  hours:50,price:11900},
+  {id:'up-eng', cat:'pack-upskill',name:'Pack TCAS + Upskill ภาษาอังกฤษ',hours:45,price:11000},
+  {id:'up-4',   cat:'pack-upskill',name:'Pack Upskill TCAS 4 วิชา (ฟิสิกส์,เคมี,ชีวะ,คณิต)',hours:200,price:11900,hot:1},
+  // ── A-Level Upskill ───────────────────────────────────
+  {id:'al-math',cat:'alevel',name:'Upskill คณิตศาสตร์ประยุกต์ A-Level',hours:50,price:4000,hot:1},
+  {id:'al-phy', cat:'alevel',name:'Upskill ฟิสิกส์ A-Level',           hours:50,price:4000,hot:1},
+  {id:'al-chem',cat:'alevel',name:'Upskill เคมี A-Level',               hours:48,price:4000},
+  {id:'al-bio', cat:'alevel',name:'Upskill ชีววิทยา A-Level',           hours:50,price:4000},
+  {id:'al-eng', cat:'alevel',name:'A-Level ภาษาอังกฤษ',                 hours:40,price:4000},
+  // ── TGAT ──────────────────────────────────────────────
+  {id:'tgat1',cat:'tgat',name:'TGAT 1 การสื่อสารภาษาอังกฤษ',            hours:25,price:4900,hot:1},
+  {id:'tgat23',cat:'tgat',name:'TGAT 2 & 3 การคิดเชิงเหตุผล+สมรรถนะ',   hours:30,price:1890},
+  {id:'tgat2',cat:'tgat',name:'TGAT 2 การคิดอย่างมีเหตุผล',              hours:20,price:3900},
+  {id:'tgat3',cat:'tgat',name:'TGAT 3 สมรรถนะการทำงาน',                  hours:18,price:3500},
+  // ── TPAT ──────────────────────────────────────────────
+  {id:'tpat1',cat:'tpat',name:'TPAT 1 ความถนัดแพทย์',                    hours:30,price:5500,hot:1},
+  {id:'tpat2',cat:'tpat',name:'TPAT 2 ความถนัดศิลปะ',                    hours:24,price:4200},
+  {id:'tpat3',cat:'tpat',name:'TPAT 3 ความถนัดวิทยาศาสตร์-เทคโนโลยี',   hours:28,price:5200},
+  {id:'tpat4',cat:'tpat',name:'TPAT 4 ความถนัดสถาปัตยกรรม',              hours:26,price:4600},
+  {id:'tpat5',cat:'tpat',name:'TPAT 5 ความถนัดครุศาสตร์-ศึกษาศาสตร์',   hours:22,price:3900},
+  // ── Bundle ────────────────────────────────────────────
+  {id:'bnd-med',cat:'bundle',name:'Pack เข้าแพทย์ 6 วิชา',              hours:60,price:594,hot:1},
+  {id:'bnd-eng',cat:'bundle',name:'Pack วิศวะ 5 วิชา',                   hours:50,price:495},
+  // ── ม.ปลาย เนื้อหา ──────────────────────────────────
+  {id:'sr-phy1',cat:'sr',name:'ฟิสิกส์: บทนำและการวัด',                  hours:6, price:1100},
+  {id:'sr-phy2',cat:'sr',name:'ฟิสิกส์: การเคลื่อนที่แนวตรง',             hours:10,price:1800},
+  {id:'sr-phy3',cat:'sr',name:'ฟิสิกส์: กฎของนิวตัน',                     hours:8, price:1500},
+  {id:'sr-phy4',cat:'sr',name:'ฟิสิกส์: สมดุลกล',                         hours:8, price:1500},
+  {id:'sr-phy5',cat:'sr',name:'ฟิสิกส์: การเคลื่อนที่แบบหมุน',            hours:8, price:1400},
+  {id:'sr-phyp1',cat:'sr',name:'ฟิสิกส์ Pack: กลศาสตร์ 1 (4 บท)',        hours:30,price:4500},
+  {id:'sr-phy6',cat:'sr',name:'ฟิสิกส์: การเคลื่อนที่แบบฮาร์มอนิก',      hours:7, price:1300},
+  {id:'sr-phy7',cat:'sr',name:'ฟิสิกส์: คลื่น',                           hours:10,price:1900},
+  {id:'sr-phy8',cat:'sr',name:'ฟิสิกส์: แสงเชิงรังสีและเชิงคลื่น',        hours:12,price:2500},
+  {id:'sr-phyp2',cat:'sr',name:'ฟิสิกส์ Pack: คลื่น+ฮาร์มอนิก+แสง',     hours:30,price:5500},
+  {id:'sr-chem1',cat:'sr',name:'เคมี: สมดุลเคมี',                          hours:10,price:1900},
+  {id:'sr-bio1', cat:'sr',name:'ชีววิทยา: ธรรมชาติของสิ่งมีชีวิต',        hours:5, price:600},
+  {id:'sr-engp', cat:'sr',name:'อังกฤษ Pack: เสริมทักษะการอ่าน ม.ปลาย',  hours:40,price:7600},
+  // ── ม.ต้น เนื้อหา ───────────────────────────────────
+  {id:'jr-phy1',cat:'jr',name:'ฟิสิกส์ ม.ต้น: กลศาสตร์ 1',              hours:12,price:2200},
+  {id:'jr-phy2',cat:'jr',name:'ฟิสิกส์ ม.ต้น: กลศาสตร์ 2',              hours:9, price:1600},
+  {id:'jr-phy3',cat:'jr',name:'ฟิสิกส์ ม.ต้น: คลื่น',                    hours:9, price:1700},
+  {id:'jr-phy4',cat:'jr',name:'ฟิสิกส์ ม.ต้น: สมบัติสารและอุตุนิยมวิทยา',hours:9,price:1700},
+  {id:'jr-phy5',cat:'jr',name:'ฟิสิกส์ ม.ต้น: ไฟฟ้าและอิเล็กทรอนิกส์',   hours:9, price:1600},
+  {id:'jr-phyp',cat:'jr',name:'ฟิสิกส์ ม.ต้น Pack: กลศาสตร์ 1+2+สมบัติสาร',hours:30,price:4200},
+  {id:'jr-chem1',cat:'jr',name:'เคมี ม.ต้น: พื้นฐานเคมี สารรอบตัว',      hours:7, price:1300},
+  {id:'jr-math1',cat:'jr',name:'คณิต ม.ต้น: จำนวนและตัวเลข',              hours:12,price:2400},
+  {id:'jr-math2',cat:'jr',name:'คณิต ม.ต้น: พาราโบลา',                    hours:10,price:1900},
+  {id:'jr-math3',cat:'jr',name:'คณิต ม.ต้น: ทฤษฎีบทเส้นขนานและวงกลม',   hours:12,price:2200},
+  {id:'jr-eng1', cat:'jr',name:'อังกฤษ ม.ต้น: ปรับพื้นฐาน',               hours:15,price:2899},
+  {id:'jr-eng2', cat:'jr',name:'อังกฤษ ม.ต้น: Grammar 1',                  hours:15,price:2899},
+  {id:'jr-eng3', cat:'jr',name:'อังกฤษ ม.ต้น: Grammar 2',                  hours:15,price:2899},
+  {id:'jr-engp', cat:'jr',name:'อังกฤษ ม.ต้น Pack: Grammar 1+2',           hours:30,price:4999},
+  // ── IELTS / International ─────────────────────────────
+  {id:'ielts',cat:'ielts',name:'IELTS Prep Course',                        hours:45,price:7500,hot:1},
+  {id:'sat',  cat:'ielts',name:'SAT Math + English',                        hours:50,price:8500},
+];
+
+function getColor(c){
+  var id=c.id, nm=c.name, cat=c.cat;
+  // Category-level color first
+  if(cat==='sr') return '#546E7A';      // ม.ปลาย = blue-grey
+  if(cat==='jr') return '#00695C';      // ม.ต้น = teal
+  if(cat==='alevel') return '#1B5E20';  // A-Level = dark green
+  if(cat==='ielts') return '#4527A0';   // IELTS/SAT = deep purple
+  // Subject colors
+  if(id.indexOf('math')>=0||nm.indexOf('คณิต')>=0) return '#C62828';
+  if(id.indexOf('phy')>=0||nm.indexOf('ฟิสิกส์')>=0) return '#1565C0';
+  if(id.indexOf('chem')>=0||nm.indexOf('เคมี')>=0) return '#E65100';
+  if(id.indexOf('bio')>=0||nm.indexOf('ชีว')>=0) return '#2E7D32';
+  if(id.indexOf('eng')>=0||id.indexOf('ielts')>=0||id.indexOf('sat')>=0) return '#6A1B9A';
+  if(id.indexOf('tgat')>=0) return '#00838F';
+  if(id.indexOf('tpat1')>=0||id.indexOf('tp1')>=0||id.indexOf('med')>=0) return '#880E4F';
+  if(id.indexOf('tpat2')>=0) return '#AD1457';
+  if(id.indexOf('tpat3')>=0||id.indexOf('tp3')>=0) return '#37474F';
+  if(id.indexOf('tpat4')>=0) return '#4E342E';
+  if(id.indexOf('tpat5')>=0) return '#1B5E20';
+  if(id.indexOf('bnd')>=0||id.indexOf('med')>=0) return '#4A148C';
+  return '#455A64';
+}
+
+// ── PERSONA PREFILL DATA (per level) ─────────────────────────────
+// Structure: PERSONA_PLANS_BY_LEVEL[persona][level][rowIndex][monthIndex]
+// rowIndex: 0=ม.4 row, 1=ม.5 row, 2=ม.6 row
+// monthIndex: 2=มี.ค.(ซัมเมอร์), 4=พ.ค.(เทอม1), 9=ต.ค.(เทอม2)
+var PERSONA_PLANS_BY_LEVEL = {
+  'แพทย์': {
+    'ม.4': { // 3 ปี — ค่อยๆ สะสม
+      0: { 4:['b99-med'],                       9:['pk-math','pk-phy'],          2:['pk-chem']            },
+      1: { 4:['pk-bio','pk-eng'],               9:['tgat1','tgat23'],             2:['tpat1']              },
+      2: { 4:['al-bio','al-chem','al-phy'],      9:['al-math','al-eng'],           2:[]                     }
+    },
+    'ม.5': { // 2 ปี — เร่ง Pack ตั้งแต่ต้น
+      1: { 4:['b99-med','pk-math','pk-phy'],     9:['pk-chem','pk-bio','pk-eng'],  2:['tgat1','tgat23']     },
+      2: { 4:['al-bio','al-chem','al-phy'],      9:['al-math','al-eng'],           2:['tpat1']              }
+    },
+    'ม.6': { // 1 ปี — เร่งด่วนทุกวิชา
+      2: { 4:['pk-bio','pk-chem','tgat1','tgat23'], 9:['pk-math','pk-phy','al-bio','al-chem'], 2:['al-phy','al-math','al-eng','tpat1'] }
+    }
+  },
+  'วิศวะ': {
+    'ม.4': { // 3 ปี
+      0: { 4:['b99-eng2'],                      9:['pk-math','pk-phy'],           2:['pk-chem']            },
+      1: { 4:['pk-eng','tgat1'],                9:['tgat23','tpat3'],              2:['al-math']            },
+      2: { 4:['al-phy','al-chem'],              9:['al-math','al-eng'],            2:[]                     }
+    },
+    'ม.5': { // 2 ปี
+      1: { 4:['pk-math','pk-phy','pk-eng'],      9:['pk-chem','tgat1','tgat23'],   2:['al-math','tpat3']    },
+      2: { 4:['al-phy','al-chem'],               9:['al-math','al-eng'],            2:[]                    }
+    },
+    'ม.6': { // 1 ปี
+      2: { 4:['pk-math','pk-phy','tgat1','tgat23'], 9:['pk-chem','pk-eng','al-math','al-phy'], 2:['al-chem','al-eng','tpat3'] }
+    }
+  },
+  'Business': {
+    'ม.4': { // 3 ปี
+      0: { 4:['b99-math','b99-eng'],             9:['pk-math','pk-eng'],           2:[]                     },
+      1: { 4:['tgat1'],                          9:['tgat23'],                     2:['al-math']            },
+      2: { 4:['al-eng'],                         9:['al-math'],                    2:[]                     }
+    },
+    'ม.5': { // 2 ปี
+      1: { 4:['pk-math','pk-eng','tgat1'],        9:['tgat23'],                    2:['al-math']            },
+      2: { 4:['al-eng'],                          9:['al-math'],                   2:[]                     }
+    },
+    'ม.6': { // 1 ปี
+      2: { 4:['pk-math','pk-eng','tgat1','tgat23'], 9:['al-math','al-eng'],        2:[]                     }
+    }
+  },
+  'นิติศาสตร์': {
+    'ม.4': { // 3 ปี
+      0: { 4:['b99-eng','b99-math'],             9:['pk-eng'],                    2:['pk-math']             },
+      1: { 4:['pk-math','tgat1'],                9:['tgat23'],                    2:['al-eng']              },
+      2: { 4:['al-eng'],                         9:['al-math'],                   2:[]                      }
+    },
+    'ม.5': { // 2 ปี
+      1: { 4:['pk-eng','pk-math','tgat1'],        9:['tgat23'],                   2:['al-eng']              },
+      2: { 4:['al-eng'],                          9:['al-math'],                  2:[]                      }
+    },
+    'ม.6': { // 1 ปี
+      2: { 4:['pk-eng','pk-math','tgat1','tgat23'], 9:['al-eng','al-math'],       2:[]                      }
+    }
+  }
+};
+
+function applyPersonaPrefill(){
+  var persona = document.getElementById('stPersona') ? document.getElementById('stPersona').value : '';
+  if(!persona) return;
+  var lv = document.getElementById('stLevel').value;
+  var startRow = lv === 'ม.6' ? 2 : (lv === 'ม.5' ? 1 : 0);
+  var personaPlans = PERSONA_PLANS_BY_LEVEL[persona];
+  if(!personaPlans) return;
+  var plan = personaPlans[lv];
+  if(!plan) return;
+  // Clear current and future rows
+  for(var li = startRow; li < 3; li++){
+    for(var mi = 0; mi < 12; mi++) cal[li][mi] = [];
+  }
+  // Fill rows from level-specific plan
+  for(var row = startRow; row < 3; row++){
+    var rowPlan = plan[row];
+    if(!rowPlan) continue;
+    [2, 4, 9].forEach(function(month){
+      if(rowPlan[month] && rowPlan[month].length){
+        cal[row][month] = rowPlan[month].slice();
+      }
+    });
+  }
+  renderCal(); calcStats();
+}
+
+var cal = [
+  Array.from({length:12},function(){return [];}),
+  Array.from({length:12},function(){return [];}),
+  Array.from({length:12},function(){return [];})
+];
+var guruMode = false;
+var prevOpen = false;
+
+// Modal state
+var modalLi = -1;
+var modalMi = -1;
+var modalCat = 'all';
+var modalTemp = []; // temp selected IDs
+
+function getYears(){
+  var lv = document.getElementById('stLevel').value;
+  var n = parseInt(lv.replace('ม.',''));
+  var base = new Date().getFullYear() + 543 - (n - 4);
+  return [base, base+1, base+2];
+}
+function getStartRow(){
+  var lv = document.getElementById('stLevel').value;
+  return lv === 'ม.6' ? 2 : (lv === 'ม.5' ? 1 : 0);
+}
+
+function init(){ renderCal(); calcStats(); }
+
+function toggleGuru(){
+  guruMode = !guruMode;
+  var btn = document.getElementById('guruBtn');
+  btn.textContent = guruMode ? '🔓 Guru (ON)' : '🔒 Guru View';
+  btn.classList.toggle('active', guruMode);
+  updateAll();
+}
+
+// ─── MODAL ───────────────────────────────────────────
+function openModal(li, mi){
+  modalLi = li; modalMi = mi;
+  modalTemp = cal[li][mi].slice(); // copy current selections
+  var lv = LEVELS[li];
+  var mn = MONTHS[mi];
+  document.getElementById('modalTitle').textContent = 'เลือกคอร์ส — ' + lv + ' เดือน ' + mn;
+  document.getElementById('modalSub').textContent = 'คลิกเพื่อเลือก/ยกเลิก | กดยืนยันเพื่อบันทึก';
+  modalCat = 'all';
+  document.querySelectorAll('.mtab').forEach(function(t){ t.classList.remove('active'); });
+  document.querySelector('.mtab').classList.add('active');
+  renderModalList();
+  document.getElementById('modalOverlay').classList.add('open');
+}
+
+function closeModal(){
+  document.getElementById('modalOverlay').classList.remove('open');
+}
+
+function confirmModal(){
+  cal[modalLi][modalMi] = modalTemp.slice();
+  renderCal(); calcStats();
+  closeModal();
+}
+
+function mFilterCat(cat, el){
+  modalCat = cat;
+  document.querySelectorAll('.mtab').forEach(function(t){ t.classList.remove('active'); });
+  el.classList.add('active');
+  renderModalList();
+}
+
+function renderModalList(){
+  var list = modalCat === 'all' ? COURSES : COURSES.filter(function(c){ return c.cat === modalCat; });
+  var el = document.getElementById('mclist');
+  el.innerHTML = '';
+  list.forEach(function(c){
+    var isSel = modalTemp.indexOf(c.id) >= 0;
+    var clr = getColor(c);
+    var div = document.createElement('div');
+    div.className = 'mcitem' + (isSel ? ' sel' : '');
+    div.dataset.id = c.id;
+    var pBlur = guruMode ? '' : ' blur';
+    div.innerHTML = '<div class="mcdot" style="background:' + clr + '"></div>' +
+      '<span class="mcname">' + c.name + (c.hot ? ' 🔥' : '') + '</span>' +
+      '<span class="mchrs">' + c.hours + 'ชม.</span>' +
+      '<span class="mcprice' + pBlur + '">฿' + c.price.toLocaleString() + '</span>' +
+      '<div class="mcchk' + (isSel ? ' on' : '') + '">' + (isSel ? '✓' : '') + '</div>';
+    div.addEventListener('click', function(){
+      var id = this.dataset.id;
+      var idx = modalTemp.indexOf(id);
+      if(idx >= 0) modalTemp.splice(idx, 1);
+      else modalTemp.push(id);
+      renderModalList();
+    });
+    el.appendChild(div);
+  });
+  document.getElementById('mSelCount').textContent = modalTemp.length;
+}
+
+// Close modal on overlay click
+document.getElementById('modalOverlay').addEventListener('click', function(e){
+  if(e.target === this) closeModal();
+});
+
+// ─── CALENDAR ────────────────────────────────────────
+function removeFromCell(li, mi, id, e){
+  e.stopPropagation();
+  var arr = cal[li][mi];
+  var idx = arr.indexOf(id);
+  if(idx >= 0) arr.splice(idx, 1);
+  renderCal(); calcStats();
+}
+
+function renderCal(){
+  var years = getYears();
+  var startRow = getStartRow();
+  document.getElementById('calHead').innerHTML =
+    '<tr><th style="width:68px;">ชั้น/ปี</th>' +
+    MONTHS.map(function(m){ return '<th style="min-width:72px;">' + m + '</th>'; }).join('') + '</tr>';
+
+  var body = document.getElementById('calBody');
+  body.innerHTML = '';
+  for(var li=startRow; li<3; li++){
+    var tr = document.createElement('tr');
+    var yrtd = document.createElement('td');
+    yrtd.className = 'yrtd';
+    yrtd.innerHTML = '<div class="yr-main">' + LEVELS[li] + '</div><div class="yr-be">ปี ' + years[li] + '</div>';
+    tr.appendChild(yrtd);
+    for(var mi=0; mi<12; mi++){
+      (function(li, mi){
+        var td = document.createElement('td');
+        var courses = cal[li][mi];
+        var inner = '';
+        courses.forEach(function(cid){
+          var c = COURSES.find(function(x){ return x.id === cid; });
+          if(!c) return;
+          inner += '<div class="chip"><div class="chipdot" style="background:' + getColor(c) + '"></div>' +
+            '<span class="chipname">' + c.name + '</span>' +
+            '<span class="chipx" data-li="'+li+'" data-mi="'+mi+'" data-cid="'+cid+'">✕</span></div>';
+        });
+        inner += '<div class="cell-add"><span>+ เพิ่ม</span></div>';
+        td.innerHTML = inner;
+        td.querySelectorAll('.chipx').forEach(function(x){
+          x.addEventListener('click', function(e){
+            removeFromCell(parseInt(this.dataset.li), parseInt(this.dataset.mi), this.dataset.cid, e);
+          });
+        });
+        td.addEventListener('click', function(){ openModal(li, mi); });
+        tr.appendChild(td);
+      })(li, mi);
+    }
+    body.appendChild(tr);
+  }
+}
+
+function calcStats(){
+  var placed = {};
+  var monthsSet = {};
+  var startRow = getStartRow();
+  for(var li=startRow; li<3; li++){
+    for(var mi=0; mi<12; mi++){
+      if(cal[li][mi].length > 0) monthsSet[li+'_'+mi] = 1;
+      cal[li][mi].forEach(function(id){ placed[id]=1; });
+    }
+  }
+  var ids = Object.keys(placed);
+  var totalHrs=0, totalPrice=0;
+  ids.forEach(function(id){
+    var c = COURSES.find(function(x){ return x.id===id; });
+    if(c){ totalHrs += c.hours; totalPrice += c.price; }
+  });
+  var months = Object.keys(monthsSet).length;
+  var pFilter = guruMode ? '' : 'filter:blur(6px);';
+  document.getElementById('statsRow').innerHTML =
+    '<div class="scard"><div class="snum">'+ids.length+'</div><div class="slbl">จำนวนคอร์ส</div></div>' +
+    '<div class="scard"><div class="snum">'+totalHrs+'</div><div class="slbl">ชั่วโมงทั้งหมด</div></div>' +
+    '<div class="scard"><div class="snum">'+months+'</div><div class="slbl">เดือนที่มีคอร์ส</div></div>' +
+    '<div class="scard"><div class="snum" style="'+pFilter+'">฿'+totalPrice.toLocaleString()+'</div><div class="slbl">มูลค่ารวม</div></div>';
+}
+
+function updateAll(){ calcStats(); }
+function gv(id){ return document.getElementById(id).value || '—'; }
+
+function populatePrintView(){
+  document.getElementById('pN').textContent = gv('stName');
+  document.getElementById('pNN').textContent = gv('stNick');
+  document.getElementById('pLV').textContent = gv('stLevel');
+  document.getElementById('pSCH').textContent = gv('stSch');
+  document.getElementById('pCODE').textContent = gv('stCode');
+  var gpa = document.getElementById('stGpa').value;
+  document.getElementById('pGPA').textContent = gpa ? 'GPA ' + gpa : '—';
+  var rm = {'1':'รอบ 1 — Portfolio','2':'รอบ 2 — Quota','3':'รอบ 3 — Admission','4':'รอบ 4 — Direct'};
+  document.getElementById('pROUND').textContent = 'TCAS ' + rm[document.getElementById('stRound').value];
+  var branch = document.getElementById('stBranch').value;
+  var guru = document.getElementById('stGuru').value;
+  var uni = document.getElementById('stUni').value;
+  var fac = document.getElementById('stFac').value;
+  var lines = ['สาขา: ' + branch.split(' — ')[0]];
+  if(guru) lines.push('Guru: ' + guru);
+  lines.push('GPA: ' + (gpa || '—'));
+  if(uni) lines.push('เป้า: ' + uni);
+  if(fac) lines.push(fac);
+  document.getElementById('pINFO').innerHTML = lines.join('<br>');
+  document.getElementById('pFOOTER').textContent = 'Guru: '+(guru||'—')+' | สาขา '+branch.split(' — ')[0]+' | รหัส: '+(document.getElementById('stCode').value||'—');
+  document.getElementById('pvQrLabel').innerHTML = 'แอด LINE<br><strong style="color:#fff;">สาขา '+branch+'</strong><br>รับโปร + แผนฟรี';
+
+  var years = getYears();
+  document.getElementById('pvCalHead').innerHTML =
+    '<tr><th class="pvcyr">ชั้น/ปี</th>' +
+    MONTHS.map(function(m){ return '<th>'+m+'</th>'; }).join('') + '</tr>';
+
+  var body = document.getElementById('pvCalBody');
+  body.innerHTML = '';
+  var pvStartRow = getStartRow();
+  for(var li=pvStartRow; li<3; li++){
+    var tr = document.createElement('tr');
+    var yrtd = document.createElement('td');
+    yrtd.className = 'pvyrtd';
+    yrtd.innerHTML = '<div class="pvyr-main">'+LEVELS[li]+'</div><div class="pvyr-be">ปี '+years[li]+'</div>';
+    tr.appendChild(yrtd);
+    for(var mi=0; mi<12; mi++){
+      var td = document.createElement('td');
+      var courses = cal[li][mi];
+      if(courses.length > 0){
+        var html2 = '';
+        courses.forEach(function(cid){
+          var c = COURSES.find(function(x){ return x.id===cid; });
+          if(!c) return;
+          var clr = getColor(c);
+          var priceStr = guruMode ? '฿'+c.price.toLocaleString() : '';
+          html2 += '<div class="pvcard" style="background:'+clr+';">'+
+            '<span class="pvcard-start">&#9654; START</span>'+
+            '<div class="pvcard-name">'+c.name+'</div>'+
+            '<div class="pvcard-hrs">&#9202; '+c.hours+' ชม.</div>'+
+            (priceStr ? '<div class="pvcard-price">'+priceStr+'</div>' : '')+
+            '</div>';
+        });
+        td.innerHTML = html2;
+      }
+      tr.appendChild(td);
+    }
+    body.appendChild(tr);
+  }
+
+  var placed = {};
+  var pvSR = getStartRow();
+  for(var li2=pvSR;li2<3;li2++) for(var mi2=0;mi2<12;mi2++) cal[li2][mi2].forEach(function(id){ placed[id]=1; });
+  var pids = Object.keys(placed);
+  var legEl = document.getElementById('pvLegend');
+  if(pids.length === 0){
+    legEl.innerHTML = '<div style="font-size:9px;color:#94A3B8;font-style:italic;">ยังไม่มีคอร์สในแผน</div>';
+  } else {
+    legEl.innerHTML = pids.map(function(id){
+      var c = COURSES.find(function(x){ return x.id===id; });
+      if(!c) return '';
+      return '<div class="pvleg-item"><div class="pvleg-dot" style="background:'+getColor(c)+'"></div>'+c.name+'</div>';
+    }).join('');
+  }
+
+  var scoreFields=[['scTgat','TGAT'],['scMath','คณิตศาสตร์'],['scPhy','ฟิสิกส์'],['scChem','เคมี'],['scBio','ชีววิทยา'],['scEng','ภาษาอังกฤษ']];
+  var scHtml='', uni2=document.getElementById('stUni').value, fac2=document.getElementById('stFac').value;
+  if(uni2||fac2) scHtml+='<div class="pvsc-row"><span class="pvsc-lbl">เป้าหมาย</span><span class="pvsc-val">'+(uni2||'')+(fac2?' / '+fac2:'')+'</span></div>';
+  scoreFields.forEach(function(sf){
+    var v=document.getElementById(sf[0]).value;
+    if(v) scHtml+='<div class="pvsc-row"><span class="pvsc-lbl">+ '+sf[1]+'</span><span class="pvsc-val">'+v+'%</span></div>';
+  });
+  if(!scHtml) scHtml='<div style="font-size:8px;color:#94A3B8;font-style:italic;">กรอกข้อมูลด้านซ้ายเพื่อแสดง</div>';
+  document.getElementById('pvScores').innerHTML = scHtml;
+
+  var totalHrs2=0, totalPrice2=0, monthsSet2={};
+  pids.forEach(function(id){ var c=COURSES.find(function(x){return x.id===id;}); if(c){totalHrs2+=c.hours;totalPrice2+=c.price;} });
+  for(var li3=0;li3<3;li3++) for(var mi3=0;mi3<12;mi3++) if(cal[li3][mi3].length>0) monthsSet2[li3+'_'+mi3]=1;
+  document.getElementById('pvStats').innerHTML=
+    '<div class="pvstat-box"><div class="pvstat-num">'+Object.keys(monthsSet2).length+'</div><div class="pvstat-lbl">เดือนที่มีคอร์ส</div></div>'+
+    '<div class="pvstat-box"><div class="pvstat-num">'+(guruMode?'฿'+totalPrice2.toLocaleString():'—')+'</div><div class="pvstat-lbl">มูลค่ารวม</div></div>'+
+    '<div class="pvstat-box"><div class="pvstat-num">'+totalHrs2+'</div><div class="pvstat-lbl">ชม.รวม</div></div>'+
+    '<div class="pvstat-box"><div class="pvstat-num">'+pids.length+'</div><div class="pvstat-lbl">คอร์สทั้งหมด</div></div>';
+}
+
+function togglePreview(){
+  prevOpen = !prevOpen;
+  var btn = document.getElementById('prevBtn');
+  var pv = document.getElementById('pv');
+  if(prevOpen){
+    populatePrintView();
+    pv.style.cssText = 'display:block;position:fixed;inset:0;z-index:9999;overflow-y:auto;';
+    btn.textContent = '✕ ปิด Preview';
+    btn.classList.add('red');
+  } else {
+    pv.style.cssText = 'display:none;';
+    btn.textContent = '👁 Preview';
+    btn.classList.remove('red');
+  }
+}
+
+function closePreview(){ prevOpen=true; togglePreview(); }
+
+function printPlan(){
+  populatePrintView();
+  document.getElementById('pv').style.cssText = 'display:block;';
+  setTimeout(function(){ window.print(); setTimeout(function(){ if(!prevOpen) document.getElementById('pv').style.cssText='display:none;'; },800); },150);
+}
+
+window.addEventListener('load', init);
+</script>
+</body>
+</html>
