@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ONDY Tools Hub</title>
+<style>
+:root{--navy:#1B2A4A;--orange:#F26522;--red:#CC0033;--green:#059669;--bd:#E2E8F0;--bg:#F0F4F8;}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:'Segoe UI',Arial,sans-serif;background:var(--bg);min-height:100vh;}
+
+header{
+  background:linear-gradient(135deg,#0F1B2D 0%,#1B2A4A 60%,#2D1B69 100%);
+  padding:36px 40px 32px;text-align:center;
+  box-shadow:0 4px 24px rgba(0,0,0,.4);
+}
+.logo{font-size:48px;font-weight:900;color:#F59E0B;letter-spacing:-2px;line-height:1;}
+.logo span{color:#fff;font-size:20px;font-weight:400;display:block;margin-top:4px;letter-spacing:2px;opacity:.7;}
+.tagline{font-size:13px;color:#94A3B8;margin-top:10px;}
+
+.sync-bar{
+  display:flex;align-items:center;justify-content:center;gap:16px;
+  background:#0F172A;padding:10px 24px;
+  font-size:12px;color:#64748B;
+  border-bottom:1px solid #1E293B;
+  flex-wrap:wrap;
+}
+#syncBadgeHub{font-weight:700;padding:2px 10px;border-radius:10px;background:#334155;color:#94A3B8;}
+#syncTimeHub{color:#64748B;}
+button.refresh-btn{
+  background:#1E293B;border:1px solid #334155;color:#94A3B8;
+  padding:4px 14px;border-radius:8px;font-size:11px;cursor:pointer;font-weight:600;
+}
+button.refresh-btn:hover{background:#334155;color:#fff;}
+
+main{max-width:960px;margin:40px auto;padding:0 20px 60px;}
+h2{font-size:13px;font-weight:700;color:#64748B;text-transform:uppercase;letter-spacing:1px;margin-bottom:20px;}
+
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:20px;margin-bottom:40px;}
+
+.card{
+  background:white;border:1px solid var(--bd);border-radius:16px;
+  overflow:hidden;text-decoration:none;color:inherit;
+  box-shadow:0 2px 8px rgba(0,0,0,.06);
+  transition:transform .15s,box-shadow .15s;
+  display:block;
+}
+.card:hover{transform:translateY(-3px);box-shadow:0 8px 24px rgba(0,0,0,.12);}
+.card-header{padding:22px 22px 14px;display:flex;align-items:flex-start;gap:14px;}
+.card-icon{width:48px;height:48px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:22px;flex-shrink:0;}
+.card-title{font-size:15px;font-weight:800;color:#0F172A;margin-bottom:3px;}
+.card-sub{font-size:11px;color:#64748B;line-height:1.5;}
+.card-body{padding:0 22px 18px;font-size:12px;color:#475569;line-height:1.7;border-top:1px solid #F1F5F9;}
+.card-body ul{margin-left:16px;margin-top:10px;}
+.card-body li{margin-bottom:3px;}
+.card-footer{padding:10px 22px;background:#F8FAFC;display:flex;align-items:center;justify-content:space-between;font-size:11px;color:#94A3B8;}
+.pill{display:inline-block;padding:2px 9px;border-radius:20px;font-size:10px;font-weight:700;}
+
+.kpi-row{display:flex;gap:12px;flex-wrap:wrap;margin-bottom:32px;}
+.kpi{flex:1;min-width:140px;background:white;border:1px solid var(--bd);border-radius:12px;padding:16px 18px;}
+.kpi-val{font-size:24px;font-weight:900;color:#0F172A;line-height:1;}
+.kpi-lbl{font-size:10px;color:#64748B;margin-top:4px;font-weight:600;text-transform:uppercase;}
+.kpi-sub{font-size:11px;color:#94A3B8;margin-top:2px;}
+
+footer{text-align:center;font-size:11px;color:#94A3B8;padding:24px;border-top:1px solid var(--bd);background:white;}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="logo">ONDY <span>TOOLS HUB</span></div>
+  <div class="tagline">OnDemand Internal Tools · Synced with Tableau Backlog Dashboard · Auto-refresh every 30 min</div>
+</header>
+
+<div class="sync-bar">
+  <span id="syncBadgeHub" style="background:#334155;color:#94A3B8;">⬤ Loading…</span>
+  <span id="syncTimeHub">กำลังโหลดข้อมูล…</span>
+  <button class="refresh-btn" onclick="loadData(true)">⟳ Refresh Now</button>
+  <span>|</span>
+  <a href="https://bi.learn.co.th/#/site/LearnCorp/views/OndyOnlyTrackingDashboard/2_Backlog"
+     target="_blank" style="color:#60A5FA;font-size:11px;text-decoration:none;">
+    🔗 Open Tableau Dashboard ↗
+  </a>
+</div>
+
+<main>
+
+  <div class="kpi-row" id="kpiRow">
+    <div class="kpi"><div class="kpi-val">—</div><div class="kpi-lbl">Salespersons</div><div class="kpi-sub">ที่มีข้อมูล Backlog</div></div>
+    <div class="kpi"><div class="kpi-val" id="kpiBacklog">—</div><div class="kpi-lbl">Total Backlog Leads</div><div class="kpi-sub">ยังไม่ Convert</div></div>
+    <div class="kpi"><div class="kpi-val" id="kpiConvRate">—</div><div class="kpi-lbl">Avg Conv Rate</div><div class="kpi-sub">เฉลี่ยทุกพนักงาน</div></div>
+    <div class="kpi"><div class="kpi-val" id="kpiLastSync">—</div><div class="kpi-lbl">Last Sync</div><div class="kpi-sub">จาก Tableau</div></div>
+  </div>
+
+  <h2>🛠 Tools</h2>
+  <div class="grid">
+
+    <a class="card" href="ONDY_HQ_Backlog_Monitor.html">
+      <div class="card-header">
+        <div class="card-icon" style="background:#EEF2FF;">🏢</div>
+        <div>
+          <div class="card-title">HQ Backlog Monitor</div>
+          <div class="card-sub">Dashboard หลัก — ติดตาม Backlog × Conversion</div>
+        </div>
+      </div>
+      <div class="card-body">
+        ดูยอดจริงรายเดือน, Conv Rate แยก Tier, Email Alert ส่ง Sale/นักเรียน
+        <ul>
+          <li>HQ Monitor matrix รายพนักงาน</li>
+          <li>Tier Performance</li>
+          <li>📧 Email Studio (Sale + Student)</li>
+        </ul>
+      </div>
+      <div class="card-footer">
+        <span class="pill" style="background:#EEF2FF;color:#4F46E5;">● Live Tableau Data</span>
+        <span>→ เปิด Dashboard</span>
+      </div>
+    </a>
+
+    <a class="card" href="ONDY_Individual_Planner_Generator.html">
+      <div class="card-header">
+        <div class="card-icon" style="background:#FFF7ED;">📅</div>
+        <div>
+          <div class="card-title">Individual Planner Generator</div>
+          <div class="card-sub">สร้างแผนการเรียนส่วนตัวอัตโนมัติ</div>
+        </div>
+      </div>
+      <div class="card-body">
+        Sale กรอกข้อมูลนักเรียน → ระบบสร้าง study plan พร้อม timeline
+        <ul>
+          <li>เลือก Track (แพทย์ / วิศวะ / บัญชี ฯลฯ)</li>
+          <li>ระดับชั้น ม.4 / ม.5 / ม.6</li>
+          <li>แสดงคอร์สแนะนำ + timeline สอบ</li>
+        </ul>
+      </div>
+      <div class="card-footer">
+        <span class="pill" style="background:#FFF7ED;color:#EA580C;">● Standalone</span>
+        <span>→ สร้าง Planner</span>
+      </div>
+    </a>
+
+    <a class="card" href="ONDY_Lead_Scoring_System.html">
+      <div class="card-header">
+        <div class="card-icon" style="background:#FEF2F2;">🎯</div>
+        <div>
+          <div class="card-title">Lead Scoring System</div>
+          <div class="card-sub">บันทึก Lead + คำนวณ Score อัตโนมัติ</div>
+        </div>
+      </div>
+      <div class="card-body">
+        กรอกข้อมูล Lead ตาม Lark Form → ได้ HOT / WARM / COLD + Track แนะนำ
+        <ul>
+          <li>Demographic score (โรงเรียน / คณะ / เกรด)</li>
+          <li>Behavioral score (Intent signals)</li>
+          <li>Alert template พร้อมส่ง Guru</li>
+        </ul>
+      </div>
+      <div class="card-footer">
+        <span class="pill" style="background:#FEF2F2;color:#DC2626;">● Lead Intake</span>
+        <span>→ บันทึก Lead</span>
+      </div>
+    </a>
+
+  </div>
+
+  <h2>📋 Setup Guide</h2>
+  <div style="background:white;border:1px solid var(--bd);border-radius:12px;padding:20px 24px;font-size:12px;color:#374151;line-height:1.9;">
+    <b style="font-size:13px;color:#0F172A;">วิธี deploy บน GitHub Pages</b>
+    <ol style="margin-left:18px;margin-top:12px;margin-bottom:16px;">
+      <li>สร้าง GitHub repo ใหม่ (public หรือ private + Pages enabled)</li>
+      <li>Push ไฟล์ทั้งหมดในโฟลเดอร์นี้ขึ้น repo</li>
+      <li>ไปที่ Settings → Pages → Source: <b>main branch / root</b></li>
+      <li>เพิ่ม Secrets (Settings → Secrets → Actions):
+        <ul style="margin-left:16px;">
+          <li><code>TABLEAU_USERNAME</code> = email เข้า bi.learn.co.th</li>
+          <li><code>TABLEAU_PASSWORD</code> = password</li>
+        </ul>
+      </li>
+      <li>GitHub Actions จะ sync ข้อมูลทุก 30 นาทีโดยอัตโนมัติ</li>
+      <li>URL ของเว็บจะเป็น <code>https://[username].github.io/[repo-name]/</code></li>
+    </ol>
+    <b>Manual trigger:</b> GitHub → Actions tab → "Sync Tableau Data" → Run workflow
+  </div>
+
+</main>
+
+<footer>ONDY Tools Hub · OnDemand Internal · Data synced from Tableau via GitHub Actions</footer>
+
+<script>
+async function loadData(manual=false) {
+  const badge = document.getElementById('syncBadgeHub');
+  const timeEl = document.getElementById('syncTimeHub');
+  try {
+    const r = await fetch('./data/backlog.json?t=' + Date.now());
+    if (!r.ok) throw new Error('HTTP ' + r.status);
+    const d = await r.json();
+
+    // KPIs
+    const salespeople = (d.raw || []).length;
+    const totalBacklog = Object.values(d.conv || {}).reduce((s,v) => s + Math.max((v.countAll||0)-(v.countConverted||0),0), 0);
+    const rates = Object.values(d.conv || {}).map(v => v.countAll > 0 ? v.countConverted/v.countAll : null).filter(x=>x!==null);
+    const avgRate = rates.length ? (rates.reduce((a,b)=>a+b,0)/rates.length*100).toFixed(1)+'%' : '—';
+    const lastSync = d.lastUpdated
+      ? new Date(d.lastUpdated).toLocaleString('th-TH',{day:'2-digit',month:'short',hour:'2-digit',minute:'2-digit'})
+      : '—';
+
+    document.querySelector('.kpi-row .kpi .kpi-val').textContent = salespeople;
+    document.getElementById('kpiBacklog').textContent = totalBacklog.toLocaleString();
+    document.getElementById('kpiConvRate').textContent = avgRate;
+    document.getElementById('kpiLastSync').textContent = lastSync;
+
+    const isLive = d.source && d.source.includes('Tableau');
+    badge.textContent = isLive ? '● LIVE' : '● CACHED';
+    badge.style.background = isLive ? '#14532D' : '#1E3A5F';
+    badge.style.color = isLive ? '#86EFAC' : '#93C5FD';
+    timeEl.textContent = 'อัปเดตล่าสุด ' + lastSync;
+  } catch(e) {
+    badge.textContent = '● OFFLINE';
+    badge.style.background = '#7F1D1D';
+    badge.style.color = '#FCA5A5';
+    timeEl.textContent = 'ไม่สามารถโหลดข้อมูลได้ — ' + e.message;
+  }
+}
+loadData();
+</script>
+</body>
+</html>
