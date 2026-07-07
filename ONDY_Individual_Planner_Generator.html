@@ -1,0 +1,814 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ONDY Individual Planner Generator | OnDemand</title>
+<style>
+:root {
+  --navy: #1B2A4A;
+  --orange: #F26522;
+  --light-navy: #2D4270;
+  --bg: #F0F3F8;
+  --card: #FFFFFF;
+  --text: #2C3E50;
+  --muted: #7F8C8D;
+  --border: #DEE2E8;
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: 'Segoe UI', Arial, sans-serif; background: var(--bg); color: var(--text); }
+
+/* ===== FORM PAGE ===== */
+.form-page { max-width: 860px; margin: 0 auto; padding: 24px 16px; }
+
+.site-header {
+  background: linear-gradient(135deg, var(--navy) 0%, #2D4270 100%);
+  color: white; padding: 24px 32px; border-radius: 14px; margin-bottom: 24px;
+  display: flex; justify-content: space-between; align-items: center;
+  box-shadow: 0 4px 20px rgba(27,42,74,0.3);
+}
+.site-header h1 { font-size: 20px; font-weight: 800; margin-bottom: 4px; }
+.site-header p { font-size: 13px; opacity: 0.75; }
+.site-logo { font-size: 26px; font-weight: 900; color: var(--orange); letter-spacing: -1px; }
+
+/* Steps */
+.steps { display: flex; gap: 8px; margin-bottom: 24px; }
+.step {
+  flex: 1; padding: 10px 14px; background: #DDE2ED; border-radius: 10px;
+  font-size: 12px; font-weight: 600; color: #7F8C8D; display: flex; align-items: center; gap: 8px;
+  transition: all 0.3s;
+}
+.step.active { background: var(--navy); color: white; box-shadow: 0 3px 10px rgba(27,42,74,0.25); }
+.step.done { background: #27AE60; color: white; }
+.step-num {
+  width: 22px; height: 22px; border-radius: 50%; background: rgba(255,255,255,0.25);
+  display: flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 800; flex-shrink: 0;
+}
+
+/* Cards */
+.card {
+  background: white; border-radius: 12px; padding: 24px; margin-bottom: 16px;
+  box-shadow: 0 2px 10px rgba(0,0,0,0.06); border: 1px solid var(--border);
+}
+.card-title {
+  font-size: 15px; font-weight: 800; color: var(--navy); margin-bottom: 18px;
+  padding-bottom: 12px; border-bottom: 2.5px solid var(--orange);
+  display: flex; align-items: center; gap: 8px;
+}
+
+/* Form elements */
+.form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+.form-group { display: flex; flex-direction: column; gap: 6px; }
+.form-group.full { grid-column: 1 / -1; }
+label { font-size: 12px; font-weight: 700; color: var(--navy); }
+label .req { color: var(--orange); }
+input, select, textarea {
+  padding: 10px 14px; border: 1.5px solid var(--border); border-radius: 8px;
+  font-size: 14px; font-family: inherit; background: white; transition: border-color 0.2s;
+}
+input:focus, select:focus, textarea:focus { outline: none; border-color: var(--orange); }
+
+/* Track cards */
+.track-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; }
+.track-card {
+  border: 2px solid var(--border); border-radius: 12px; padding: 16px 12px;
+  cursor: pointer; transition: all 0.2s; text-align: center;
+}
+.track-card:hover { border-color: var(--orange); box-shadow: 0 3px 12px rgba(242,101,34,0.15); transform: translateY(-2px); }
+.track-card.selected { border-color: var(--orange); background: #FFF5EE; box-shadow: 0 3px 12px rgba(242,101,34,0.2); }
+.track-icon { font-size: 30px; margin-bottom: 8px; }
+.track-name { font-weight: 800; color: var(--navy); font-size: 14px; }
+.track-desc { font-size: 11px; color: var(--muted); margin-top: 4px; min-height: 28px; }
+.track-exams { margin-top: 8px; display: flex; flex-wrap: wrap; gap: 4px; justify-content: center; }
+.badge { font-size: 9px; padding: 2px 7px; border-radius: 20px; background: var(--navy); color: white; font-weight: 700; }
+.badge.or { background: var(--orange); }
+
+/* Subject grid */
+.subject-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; }
+.subject-item {
+  display: flex; align-items: center; gap: 8px; padding: 10px;
+  border: 1.5px solid var(--border); border-radius: 8px; cursor: pointer; transition: all 0.2s;
+}
+.subject-item:hover { border-color: var(--orange); }
+.subject-item.checked { border-color: var(--orange); background: #FFF5EE; }
+.subject-item input[type="checkbox"] { width: 15px; height: 15px; cursor: pointer; padding: 0; flex-shrink: 0; }
+.subject-label { font-size: 12px; font-weight: 700; }
+.subject-code { font-size: 10px; color: var(--muted); margin-top: 2px; }
+
+/* Score grid */
+.score-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; }
+.score-item input { padding: 8px 12px; font-size: 14px; }
+
+/* Buttons */
+.btn {
+  padding: 11px 24px; border-radius: 9px; font-size: 14px; font-weight: 700;
+  cursor: pointer; border: none; font-family: inherit; transition: all 0.2s;
+}
+.btn-primary { background: var(--orange); color: white; }
+.btn-primary:hover { background: #D4541C; transform: translateY(-1px); box-shadow: 0 4px 12px rgba(242,101,34,0.3); }
+.btn-navy { background: var(--navy); color: white; }
+.btn-navy:hover { background: #243558; }
+.btn-outline { background: white; color: var(--navy); border: 2px solid var(--navy); }
+.btn-outline:hover { background: var(--navy); color: white; }
+.btn-actions { display: flex; gap: 12px; justify-content: flex-end; margin-top: 20px; }
+
+/* ===== PLANNER PAGE ===== */
+#plannerPage { display: none; max-width: 1500px; margin: 0 auto; padding: 20px 16px; }
+
+.plan-header {
+  background: var(--navy); color: white; padding: 18px 28px; border-radius: 12px 12px 0 0;
+  display: flex; justify-content: space-between; align-items: center;
+}
+.plan-header-logo { font-size: 22px; font-weight: 900; color: var(--orange); }
+.plan-header-title { font-size: 17px; font-weight: 800; margin-bottom: 2px; }
+.plan-header-sub { font-size: 12px; opacity: 0.7; }
+
+.student-bar {
+  display: grid; grid-template-columns: repeat(5, 1fr); gap: 1px;
+  background: var(--border); border: 1px solid var(--border); border-top: none;
+}
+.student-cell { background: white; padding: 10px 16px; }
+.student-label { font-size: 10px; color: var(--muted); font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; }
+.student-value { font-size: 14px; font-weight: 800; color: var(--navy); margin-top: 2px; }
+
+/* Planner Grid */
+.grid-wrap { overflow-x: auto; border: 1px solid var(--border); border-top: none; }
+table.plan-table { width: 100%; border-collapse: collapse; font-size: 11px; }
+table.plan-table th {
+  background: var(--navy); color: white; padding: 7px 5px; text-align: center;
+  font-weight: 700; white-space: nowrap; border: 1px solid rgba(255,255,255,0.15);
+}
+table.plan-table th.subj-col { background: #243558; text-align: left; padding-left: 12px; min-width: 130px; width: 130px; }
+table.plan-table th.yr-hd { font-size: 12px; background: var(--navy); }
+table.plan-table th.mo-hd { font-size: 10px; background: var(--light-navy); padding: 5px 3px; min-width: 72px; }
+table.plan-table th.mo-exam { background: #D14B0A !important; }
+table.plan-table td { border: 1px solid var(--border); padding: 0; vertical-align: middle; }
+table.plan-table td.subj-cell {
+  background: #EEF1F8; padding: 8px 12px; font-weight: 800; color: var(--navy);
+  border-right: 3px solid var(--navy); white-space: nowrap;
+}
+table.plan-table td.subj-cell .sub-tech { font-size: 10px; font-weight: 400; color: var(--muted); }
+
+.pcell {
+  height: 52px; display: flex; flex-direction: column; align-items: center;
+  justify-content: center; gap: 2px; padding: 3px;
+}
+.pcell.empty { background: #F9FAFB; }
+.pcell.found { background: #EAF4FB; }
+.pcell.adv { background: #FEF9E7; }
+.pcell.prep { background: #FDECEA; }
+.pcell.exam { background: var(--orange); }
+.pcell.done { background: #F0F0F0; }
+.pcell .cc { font-size: 10px; font-weight: 800; }
+.pcell.found .cc { color: #2471A3; }
+.pcell.adv .cc { color: #B7770D; }
+.pcell.prep .cc { color: #C0392B; }
+.pcell.exam .cc { color: white; font-size: 11px; }
+.pcell.done .cc { color: #AAA; }
+.pcell .hrs { font-size: 9px; color: #999; }
+.pcell.exam .hrs { color: rgba(255,255,255,0.8); }
+
+.exam-row td { background: #FFF8F5 !important; }
+
+.legend {
+  display: flex; align-items: center; gap: 14px; padding: 10px 16px; flex-wrap: wrap;
+  background: white; border: 1px solid var(--border); border-top: none; border-radius: 0 0 12px 12px;
+}
+.leg { display: flex; align-items: center; gap: 5px; font-size: 11px; }
+.leg-dot { width: 14px; height: 14px; border-radius: 3px; border: 1px solid rgba(0,0,0,0.1); }
+
+.stats-row { display: grid; grid-template-columns: repeat(5, 1fr); gap: 12px; margin-top: 16px; }
+.stat-card { background: white; border: 1px solid var(--border); border-radius: 10px; padding: 14px; text-align: center; }
+.stat-num { font-size: 26px; font-weight: 900; color: var(--orange); }
+.stat-lbl { font-size: 11px; color: var(--muted); margin-top: 3px; }
+
+.recs-box { background: white; border: 1px solid var(--border); border-radius: 10px; padding: 20px; margin-top: 16px; }
+.recs-title { font-weight: 800; color: var(--navy); font-size: 15px; margin-bottom: 14px; display: flex; align-items: center; gap: 8px; }
+.rec-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; }
+.rec-item { border: 1px solid var(--border); border-radius: 8px; padding: 12px; border-left: 3px solid var(--orange); }
+.rec-item .rec-when { font-size: 10px; color: var(--muted); text-transform: uppercase; font-weight: 700; margin-bottom: 4px; }
+.rec-item .rec-act { font-size: 12px; font-weight: 600; color: var(--navy); line-height: 1.5; }
+
+/* Priority highlight */
+.priority-high { background: #FDEDEC !important; }
+.priority-med { background: #FEF9E7 !important; }
+
+@media print {
+  body { background: white; }
+  #formPage { display: none !important; }
+  #plannerPage { display: block !important; padding: 0; max-width: 100%; }
+  .no-print { display: none !important; }
+  .grid-wrap { overflow: visible; }
+  .pcell { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+  table.plan-table th, table.plan-table td { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+  .stat-card, .rec-item { break-inside: avoid; }
+}
+@media (max-width: 700px) {
+  .form-grid { grid-template-columns: 1fr; }
+  .track-grid { grid-template-columns: 1fr 1fr; }
+  .subject-grid { grid-template-columns: 1fr 1fr; }
+  .score-grid { grid-template-columns: 1fr 1fr; }
+  .stats-row { grid-template-columns: 1fr 1fr; }
+  .rec-grid { grid-template-columns: 1fr; }
+}
+</style>
+</head>
+<body>
+
+<!-- ==================== FORM PAGE ==================== -->
+<div id="formPage" class="form-page">
+
+  <div class="site-header">
+    <div>
+      <h1>🎯 ONDY Individual Planner Generator</h1>
+      <p>Sale กรอกข้อมูลน้อง → ระบบสร้างแผนการเรียนส่วนตัวให้อัตโนมัติ</p>
+    </div>
+    <div class="site-logo">OnDemand</div>
+  </div>
+
+  <div class="steps">
+    <div class="step active" id="s1-ind"><div class="step-num">1</div>ข้อมูลนักเรียน</div>
+    <div class="step" id="s2-ind"><div class="step-num">2</div>เป้าหมาย &amp; สาย</div>
+    <div class="step" id="s3-ind"><div class="step-num">3</div>วิชา &amp; คะแนน</div>
+  </div>
+
+  <!-- STEP 1 -->
+  <div id="step1">
+    <div class="card">
+      <div class="card-title">👤 ข้อมูลนักเรียน</div>
+      <div class="form-grid">
+        <div class="form-group">
+          <label>ชื่อ-นามสกุลนักเรียน <span class="req">*</span></label>
+          <input type="text" id="sName" placeholder="เช่น น.ส. สมหญิง ใจดี" />
+        </div>
+        <div class="form-group">
+          <label>โรงเรียน</label>
+          <input type="text" id="sSchool" placeholder="เช่น โรงเรียนเตรียมอุดมพัฒนาการ" />
+        </div>
+        <div class="form-group">
+          <label>ระดับชั้นปัจจุบัน <span class="req">*</span></label>
+          <select id="sGrade">
+            <option value="">-- เลือกระดับชั้น --</option>
+            <option value="m4">กำลังเรียน ม.4 (สายยาว 3 ปี)</option>
+            <option value="m5">กำลังเรียน ม.5 (สายกลาง ~2 ปี)</option>
+            <option value="m6">กำลังเรียน ม.6 (โค้งสุดท้าย ~9 เดือน)</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>แผนการเรียนในโรงเรียน <span class="req">*</span></label>
+          <select id="sStream">
+            <option value="">-- เลือกแผน --</option>
+            <option value="sci-math">วิทย์-คณิต</option>
+            <option value="arts-math">ศิลป์-คณิต</option>
+            <option value="arts-lang">ศิลป์-ภาษา</option>
+            <option value="other">อื่นๆ</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>เบอร์โทรนักเรียน / ผู้ปกครอง</label>
+          <input type="tel" id="sPhone" placeholder="08X-XXX-XXXX" />
+        </div>
+        <div class="form-group">
+          <label>GPA ปัจจุบัน</label>
+          <input type="number" id="sGPA" placeholder="เช่น 3.45" step="0.01" min="0" max="4" />
+        </div>
+        <div class="form-group">
+          <label>Sale ผู้ดูแล</label>
+          <input type="text" id="saleName" placeholder="ชื่อ Sale" />
+        </div>
+        <div class="form-group">
+          <label>สาขา OnDemand</label>
+          <select id="sBranch">
+            <option value="">-- เลือกสาขา --</option>
+            <option>MBK</option><option>PKL พัฒนาการ</option><option>SNR สนามเป้า</option>
+            <option>WST วัสุกรี</option><option>NGW นครหลวง</option><option>VVY วิวัฒนา</option>
+            <option>NPT นครปฐม</option><option>PKS ปากเกร็ด</option><option>RST รังสิต</option>
+            <option>HYD หาดใหญ่</option><option>SNI สงขลา</option><option>NRT นราธิวาส</option>
+            <option>TRG ตรัง</option><option>PKT ภูเก็ต</option><option>RBR ระนอง</option>
+            <option>SPB สุพรรณบุรี</option><option>PBI เพชรบุรี</option>
+            <option>NSN นครศรีธรรมราช</option><option>LRI ลำปาง</option>
+            <option>CMI เชียงใหม่</option><option>KKN ขอนแก่น</option>
+            <option>UBN อุบลราชธานี</option><option>NMA นครราชสีมา</option>
+            <option>TEN อุดรธานี</option><option>BRM บุรีรัมย์</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>วันที่สมัคร</label>
+          <input type="date" id="sDate" />
+        </div>
+        <div class="form-group">
+          <label>มูลค่าแผน ONDY (บาท)</label>
+          <input type="number" id="sPlanValue" placeholder="เช่น 25000" step="1000" />
+        </div>
+      </div>
+    </div>
+    <div class="btn-actions">
+      <button class="btn btn-primary" onclick="go(2)">ถัดไป → เป้าหมายการสอบ ›</button>
+    </div>
+  </div>
+
+  <!-- STEP 2 -->
+  <div id="step2" style="display:none">
+    <div class="card">
+      <div class="card-title">🎯 สายการเรียน / เป้าหมาย TCAS</div>
+      <div class="track-grid">
+        <div class="track-card" data-track="medical" onclick="pickTrack(this)">
+          <div class="track-icon">🏥</div>
+          <div class="track-name">สายแพทย์</div>
+          <div class="track-desc">แพทย์ ทันตแพทย์ เภสัช สัตวแพทย์</div>
+          <div class="track-exams">
+            <span class="badge">A-Level 5 วิชา</span>
+            <span class="badge or">TGAT + TPAT1</span>
+          </div>
+        </div>
+        <div class="track-card" data-track="engineering" onclick="pickTrack(this)">
+          <div class="track-icon">⚙️</div>
+          <div class="track-name">สายวิศวะ / IT</div>
+          <div class="track-desc">วิศวกรรมศาสตร์ เทคโนโลยี วิทยาการ</div>
+          <div class="track-exams">
+            <span class="badge">A-Level 4 วิชา</span>
+            <span class="badge or">TGAT + TPAT3</span>
+          </div>
+        </div>
+        <div class="track-card" data-track="business" onclick="pickTrack(this)">
+          <div class="track-icon">📊</div>
+          <div class="track-name">สายบริหาร</div>
+          <div class="track-desc">บริหาร บัญชี เศรษฐศาสตร์ การเงิน</div>
+          <div class="track-exams">
+            <span class="badge">A-Level 4 วิชา</span>
+            <span class="badge or">TGAT</span>
+          </div>
+        </div>
+        <div class="track-card" data-track="science" onclick="pickTrack(this)">
+          <div class="track-icon">🔬</div>
+          <div class="track-name">วิทย์ทั่วไป</div>
+          <div class="track-desc">วิทย์ ทรัพยากร สิ่งแวดล้อม เกษตร</div>
+          <div class="track-exams">
+            <span class="badge">A-Level 5 วิชา</span>
+            <span class="badge or">TGAT + TPAT3</span>
+          </div>
+        </div>
+        <div class="track-card" data-track="arts" onclick="pickTrack(this)">
+          <div class="track-icon">📚</div>
+          <div class="track-name">สายศิลป์ / ภาษา</div>
+          <div class="track-desc">อักษร มนุษย์ รัฐศาสตร์ นิติ สังคม</div>
+          <div class="track-exams">
+            <span class="badge">A-Level 4 วิชา</span>
+            <span class="badge or">TGAT</span>
+          </div>
+        </div>
+        <div class="track-card" data-track="custom" onclick="pickTrack(this)">
+          <div class="track-icon">✏️</div>
+          <div class="track-name">กำหนดเอง</div>
+          <div class="track-desc">เลือกวิชาเองในขั้นตอนถัดไป</div>
+          <div class="track-exams">
+            <span class="badge">Custom</span>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-title">🎓 คณะ / มหาวิทยาลัยเป้าหมาย</div>
+      <div class="form-grid">
+        <div class="form-group">
+          <label>คณะเป้าหมาย <span class="req">*</span></label>
+          <input type="text" id="sfaculty" placeholder="เช่น คณะแพทยศาสตร์ จุฬาลงกรณ์มหาวิทยาลัย" />
+        </div>
+        <div class="form-group">
+          <label>รอบ TCAS ที่เน้น</label>
+          <select id="tcasR">
+            <option value="3">รอบ 3 Admission (A-Level)</option>
+            <option value="2">รอบ 2 Quota</option>
+            <option value="1">รอบ 1 Portfolio</option>
+            <option value="all">ทุกรอบ</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>ชั่วโมงเรียนต่อสัปดาห์ (เฉลี่ย)</label>
+          <select id="wkHrs">
+            <option value="5">น้อยกว่า 5 ชม. (เสริมเบาๆ)</option>
+            <option value="10" selected>5-10 ชม. (ปกติ)</option>
+            <option value="15">10-15 ชม. (เข้มข้น)</option>
+            <option value="20">มากกว่า 15 ชม. (Full mode)</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>จุดอ่อนหลัก</label>
+          <select id="weak">
+            <option value="content">เนื้อหา (ไม่เข้าใจ)</option>
+            <option value="practice">ทำโจทย์ (ผิดบ่อย / ช้า)</option>
+            <option value="exam">เทคนิคสอบ (บริหารเวลา)</option>
+            <option value="all">ทุกด้าน</option>
+          </select>
+        </div>
+        <div class="form-group full">
+          <label>หมายเหตุ / ความต้องการพิเศษ</label>
+          <textarea id="sNotes" rows="2" placeholder="เช่น น้องเน้นฟิสิกส์, มีสอบ Mock ที่โรงเรียนทุก 2 เดือน..."></textarea>
+        </div>
+      </div>
+    </div>
+    <div class="btn-actions">
+      <button class="btn btn-outline" onclick="go(1)">‹ ย้อนกลับ</button>
+      <button class="btn btn-primary" onclick="go(3)">ถัดไป → เลือกวิชา ›</button>
+    </div>
+  </div>
+
+  <!-- STEP 3 -->
+  <div id="step3" style="display:none">
+    <div class="card">
+      <div class="card-title">📖 วิชาในแผน ONDY (เลือก/ยกเลิกได้)</div>
+      <div class="subject-grid" id="subjGrid"></div>
+    </div>
+    <div class="card">
+      <div class="card-title">🎯 เป้าหมายคะแนน A-Level (ไม่บังคับ)</div>
+      <div class="score-grid" id="scoreGrid"></div>
+    </div>
+    <div class="btn-actions">
+      <button class="btn btn-outline" onclick="go(2)">‹ ย้อนกลับ</button>
+      <button class="btn btn-primary" style="font-size:15px;padding:13px 32px" onclick="genPlanner()">✨ สร้างแผนการเรียน ONDY !</button>
+    </div>
+  </div>
+</div>
+
+<!-- ==================== PLANNER PAGE ==================== -->
+<div id="plannerPage">
+  <div class="plan-header">
+    <div>
+      <div class="plan-header-logo">OnDemand</div>
+      <div class="plan-header-title">📋 ONDY Individual Study Planner</div>
+      <div class="plan-header-sub">แผนการเรียนรายบุคคล — สร้างโดย ONDY System</div>
+    </div>
+    <div style="display:flex;gap:10px" class="no-print">
+      <button class="btn btn-outline" style="border-color:rgba(255,255,255,0.5);color:white;font-size:12px" onclick="window.print()">🖨️ Print / บันทึก PDF</button>
+      <button class="btn btn-outline" style="border-color:rgba(255,255,255,0.5);color:white;font-size:12px" onclick="backForm()">✏️ แก้ไขข้อมูล</button>
+    </div>
+  </div>
+
+  <div class="student-bar" id="studentBar"></div>
+
+  <div class="grid-wrap">
+    <table class="plan-table" id="planTable"></table>
+  </div>
+
+  <div class="legend">
+    <div style="font-size:11px;font-weight:800;color:var(--navy);margin-right:4px">ตำนาน:</div>
+    <div class="leg"><div class="leg-dot" style="background:#EAF4FB"></div>🔵 พื้นฐาน</div>
+    <div class="leg"><div class="leg-dot" style="background:#FEF9E7"></div>🟡 เข้มข้น</div>
+    <div class="leg"><div class="leg-dot" style="background:#FDECEA"></div>🔴 เตรียมสอบ</div>
+    <div class="leg"><div class="leg-dot" style="background:#F26522"></div>🟠 สอบจริง</div>
+    <div class="leg"><div class="leg-dot" style="background:#F0F0F0"></div>⚪ เสร็จแล้ว</div>
+    <div style="margin-left:auto;font-size:10px;color:#aaa" id="planGenDate"></div>
+  </div>
+
+  <div class="stats-row" id="statsRow"></div>
+  <div class="recs-box" id="recsBox"></div>
+</div>
+
+<!-- ==================== SCRIPT ==================== -->
+<script>
+// ---- DATA ----
+const TRACKS = {
+  medical:     { name: 'สายแพทย์',    subjs: ['PHY','CHEM','BIO','MATH1','ENG','TGAT','TPAT1'] },
+  engineering: { name: 'สายวิศวะ/IT', subjs: ['PHY','CHEM','MATH1','ENG','TGAT','TPAT3'] },
+  business:    { name: 'สายบริหาร',   subjs: ['MATH1','MATH2','ENG','SOC','TGAT'] },
+  science:     { name: 'วิทย์ทั่วไป', subjs: ['PHY','CHEM','BIO','MATH1','ENG','TGAT'] },
+  arts:        { name: 'สายศิลป์',    subjs: ['ENG','THAI','SOC','MATH2','TGAT'] },
+  custom:      { name: 'Custom',       subjs: [] },
+};
+
+const SUBJ = {
+  PHY:   { n:'ฟิสิกส์',        e:'⚡', col:'#2471A3', tech:'SUPER MAP', codes:['SM-PHY-1','SM-PHY-2','SM-PHY-3'] },
+  CHEM:  { n:'เคมี',           e:'🧪', col:'#8E44AD', tech:'K-TIPS',    codes:['KT-CHEM-1','KT-CHEM-2','KT-CHEM-3'] },
+  BIO:   { n:'ชีววิทยา',       e:'🧬', col:'#1E8449', tech:'BIO MAP',   codes:['BM-BIO-1','BM-BIO-2','BM-BIO-3'] },
+  MATH1: { n:'คณิตศาสตร์ 1',   e:'📐', col:'#C0392B', tech:'A-Point',   codes:['AP-M1-1','AP-M1-2','AP-M1-3'] },
+  MATH2: { n:'คณิตศาสตร์ 2',   e:'📏', col:'#D35400', tech:'A-Point',   codes:['AP-M2-1','AP-M2-2'] },
+  ENG:   { n:'ภาษาอังกฤษ',     e:'🔤', col:'#148F77', tech:'Premier Tips',codes:['PT-ENG-1','PT-ENG-2','PT-ENG-3'] },
+  THAI:  { n:'ภาษาไทย',        e:'📜', col:'#935116', tech:'',          codes:['THAI-1','THAI-2'] },
+  SOC:   { n:'สังคมศึกษา',      e:'🌏', col:'#717D7E', tech:'',          codes:['SOC-1','SOC-2'] },
+  TGAT:  { n:'TGAT',           e:'🧠', col:'#1B2A4A', tech:'',          codes:['TGAT-1','TGAT-2','TGAT-3'] },
+  TPAT1: { n:'TPAT1 (แพทย์)',  e:'🏥', col:'#B03A2E', tech:'',          codes:['TPAT1-1','TPAT1-2'] },
+  TPAT3: { n:'TPAT3 (วิศวะ)',  e:'⚙️', col:'#117A65', tech:'',          codes:['TPAT3-1','TPAT3-2'] },
+};
+
+const TH_MONTHS = ['ม.ค.','ก.พ.','มี.ค.','เม.ย.','พ.ค.','มิ.ย.','ก.ค.','ส.ค.','ก.ย.','ต.ค.','พ.ย.','ธ.ค.'];
+
+// Exam offsets from July 2026 (index 0)
+function examOffsets(grade) {
+  // m6: TGAT=Oct26(+3), TPAT=Dec26(+5), A-Level=Mar27(+8)
+  // m5: TGAT=Oct27(+15), TPAT=Dec27(+17), A-Level=Mar28(+20)
+  // m4: TGAT=Oct28(+27), TPAT=Dec28(+29), A-Level=Mar29(+32)
+  const base = { m6: 0, m5: 12, m4: 24 }[grade] || 0;
+  return {
+    TGAT:  { off: base + 3,  lbl: 'TGAT' },
+    TPAT1: { off: base + 5,  lbl: 'TPAT1' },
+    TPAT3: { off: base + 5,  lbl: 'TPAT3' },
+    ALEVEL:{ off: base + 8,  lbl: 'A-Level' },
+  };
+}
+
+function monthCount(grade) { return { m6: 10, m5: 22, m4: 34 }[grade] || 10; }
+
+function getPhase(code, idx, exams) {
+  const aOff = exams.ALEVEL.off;
+  if (code === 'TGAT') {
+    const x = exams.TGAT.off;
+    if (idx > x) return 'done';
+    if (idx === x) return 'exam';
+    if (idx >= x - 2) return 'prep';
+    if (idx >= x - 6) return 'adv';
+    return 'found';
+  }
+  if (code === 'TPAT1' || code === 'TPAT3') {
+    const x = (code === 'TPAT1') ? exams.TPAT1.off : exams.TPAT3.off;
+    if (idx > x) return 'done';
+    if (idx === x) return 'exam';
+    if (idx >= x - 2) return 'prep';
+    if (idx >= x - 5) return 'adv';
+    return 'found';
+  }
+  if (idx > aOff) return 'done';
+  if (idx === aOff) return 'exam';
+  if (idx >= aOff - 3) return 'prep';
+  if (idx >= aOff - 8) return 'adv';
+  return 'found';
+}
+
+function courseCode(code, phase) {
+  const s = SUBJ[code]; if (!s) return '';
+  if (phase === 'found') return s.codes[0];
+  if (phase === 'adv')   return s.codes[1] || s.codes[0];
+  if (phase === 'prep')  return s.codes[2] || s.codes[1] || s.codes[0];
+  if (phase === 'exam')  return '📝 สอบ';
+  return '✅';
+}
+
+function hrs(wk, phase) {
+  const h = parseInt(wk) || 10;
+  const mult = { found: 0.5, adv: 0.75, prep: 1.0 }[phase];
+  if (!mult) return '';
+  return Math.round(h * 4 * mult) + ' ชม.';
+}
+
+// ---- STATE ----
+let track = '', selSubjs = [];
+
+// ---- NAVIGATION ----
+function go(n) {
+  if (n === 2 && !validate1()) return;
+  if (n === 3) {
+    if (!track) { alert('กรุณาเลือกสายการเรียน'); return; }
+    buildSubjGrid();
+  }
+  [1,2,3].forEach(i => {
+    const el = document.getElementById('step'+i);
+    if (el) el.style.display = i === n ? 'block' : 'none';
+    const ind = document.getElementById('s'+i+'-ind');
+    if (ind) { ind.className = 'step'; if (i===n) ind.className+=' active'; if (i<n) ind.className+=' done'; }
+  });
+}
+
+function validate1() {
+  if (!document.getElementById('sName').value.trim()) { alert('กรุณากรอกชื่อนักเรียน'); return false; }
+  if (!document.getElementById('sGrade').value) { alert('กรุณาเลือกระดับชั้น'); return false; }
+  if (!document.getElementById('sStream').value) { alert('กรุณาเลือกแผนการเรียน'); return false; }
+  return true;
+}
+
+function pickTrack(el) {
+  document.querySelectorAll('.track-card').forEach(c => c.classList.remove('selected'));
+  el.classList.add('selected');
+  track = el.dataset.track;
+}
+
+function buildSubjGrid() {
+  const base = track === 'custom' ? Object.keys(SUBJ) : (TRACKS[track]?.subjs || []);
+  selSubjs = [...base];
+  const grid = document.getElementById('subjGrid');
+  const allKeys = Object.keys(SUBJ);
+  const extras = allKeys.filter(k => !base.includes(k));
+
+  grid.innerHTML = [...base, ...extras].map(code => {
+    const s = SUBJ[code]; const inBase = base.includes(code);
+    return `<div class="subject-item ${inBase?'checked':''}" id="si-${code}" onclick="toggleSubj('${code}',this)">
+      <input type="checkbox" id="cb-${code}" ${inBase?'checked':''} style="padding:0;width:15px;height:15px">
+      <div>
+        <div class="subject-label">${s.e} ${s.n}</div>
+        <div class="subject-code">${s.tech?s.tech+' | ':''}${s.codes[0]}</div>
+      </div>
+    </div>`;
+  }).join('');
+
+  const scoreGrid = document.getElementById('scoreGrid');
+  scoreGrid.innerHTML = base.filter(c => !['TGAT','TPAT1','TPAT3'].includes(c)).map(code => {
+    const s = SUBJ[code];
+    return `<div class="score-item">
+      <label style="font-size:12px">${s.e} ${s.n}</label>
+      <input type="number" id="sc-${code}" placeholder="เป้า 0-100" min="0" max="100" />
+    </div>`;
+  }).join('');
+}
+
+function toggleSubj(code, el) {
+  const cb = document.getElementById('cb-'+code);
+  cb.checked = !cb.checked;
+  el.classList.toggle('checked', cb.checked);
+  if (cb.checked) { if (!selSubjs.includes(code)) selSubjs.push(code); }
+  else { selSubjs = selSubjs.filter(s => s !== code); }
+}
+
+// ---- GENERATE ----
+function genPlanner() {
+  if (!selSubjs.length) { alert('กรุณาเลือกอย่างน้อย 1 วิชา'); return; }
+
+  const name   = document.getElementById('sName').value;
+  const grade  = document.getElementById('sGrade').value;
+  const school = document.getElementById('sSchool').value;
+  const faculty= document.getElementById('sface') ? document.getElementById('sface').value : '';
+  const sfac   = document.getElementById('sacity') ? document.getElementById('sacity').value : (document.getElementById('sacity')?.value || document.getElementById('sacity') || '');
+  // re-get safely
+  const targetFac = document.getElementById('sacity')?.value || document.getElementById('sacity') ? '' : '';
+  const facEl  = document.getElementById('sacity');
+  const facVal = document.getElementById('sactory') ? document.getElementById('sactory').value : '';
+
+  // grab faculty
+  let fac = '';
+  try { fac = document.getElementById('sacity').value; } catch(e) {}
+  if (!fac) { try { fac = document.getElementById('sacity') ? document.getElementById('sacity').value : ''; } catch(e) {} }
+  // Use direct IDs
+  const sf = document.getElementById('sacity');
+  const fv = sf ? sf.value : '';
+
+  const tFac   = document.getElementById('sfac')?.value || document.getElementById('sacity')?.value || '';
+  const facInput = document.getElementById('sacity');
+
+  // Simpler: just grab it
+  const faculty2 = (() => { const el = document.getElementById('sacity'); return el ? el.value : ''; })();
+
+  // Fix: use correct ID
+  const facultyFinal = document.getElementById('sfaculty') ? document.getElementById('sfaculty').value
+                      : document.getElementById('sacity') ? document.getElementById('sacity').value
+                      : document.getElementById('sacity')?.value || '';
+
+  const facFinal = (() => {
+    // Try all possible IDs
+    for (const id of ['sfaculty','sacity','sface','sfac']) {
+      const e = document.getElementById(id);
+      if (e && e.value) return e.value;
+    }
+    // Try the input in step2 card
+    const ins = document.querySelectorAll('#step2 input[type=text]');
+    for (const inp of ins) { if (inp.value) return inp.value; }
+    return '';
+  })();
+
+  const facActual = document.getElementById('sacity') ? document.getElementById('sacity').value : '';
+  const facText = document.querySelector('#step2 input[placeholder*="คณะ"]')?.value || document.getElementById('sacity')?.value || TRACKS[track]?.name || '';
+
+  const wk     = document.getElementById('wkHrs').value;
+  const brnch  = document.getElementById('sBranch').value;
+  const sale   = document.getElementById('saleName').value;
+  const enrollD= document.getElementById('sDate').value;
+  const weak   = document.getElementById('weak').value;
+  const planVal= document.getElementById('sPlanValue').value;
+
+  const gL = { m4:'ม.4', m5:'ม.5', m6:'ม.6' }[grade] || grade;
+  const trackName = TRACKS[track]?.name || '';
+  const nMo = monthCount(grade);
+  const exams = examOffsets(grade);
+
+  // Month array
+  const months = [];
+  const start = new Date(2026, 6, 1);
+  for (let i = 0; i < nMo; i++) {
+    const d = new Date(start); d.setMonth(d.getMonth() + i);
+    months.push({ lbl: TH_MONTHS[d.getMonth()], yr: d.getFullYear() + 543, mo: d.getMonth(), i });
+  }
+
+  // Year groups
+  const yrMap = {};
+  months.forEach(m => { if (!yrMap[m.yr]) yrMap[m.yr] = 0; yrMap[m.yr]++; });
+
+  // ---- Student bar ----
+  const facDisplay = document.querySelector('#step2 input[type="text"]')?.value || trackName;
+  document.getElementById('studentBar').innerHTML = `
+    <div class="student-cell"><div class="student-label">นักเรียน</div><div class="student-value">👤 ${name||'-'}</div></div>
+    <div class="student-cell"><div class="student-label">ระดับ | โรงเรียน</div><div class="student-value">${gL} | ${school||'-'}</div></div>
+    <div class="student-cell"><div class="student-label">เป้าหมาย</div><div class="student-value">🎯 ${facDisplay||trackName||'-'}</div></div>
+    <div class="student-cell"><div class="student-label">Sale | สาขา</div><div class="student-value">${sale||'-'} | ${brnch||'-'}</div></div>
+    <div class="student-cell"><div class="student-label">วันที่ | แผน ONDY</div><div class="student-value">${enrollD||new Date().toLocaleDateString('th-TH')} ${planVal?'| ฿'+parseInt(planVal).toLocaleString():''}</div></div>
+  `;
+
+  // ---- Build table ----
+  let html = '<thead>';
+  // Year row
+  html += '<tr><th class="subj-col yr-hd" rowspan="2">วิชา / เดือน</th>';
+  Object.entries(yrMap).forEach(([yr, cnt]) => {
+    html += `<th class="yr-hd" colspan="${cnt}">ปี ${yr} (${parseInt(yr)-543})</th>`;
+  });
+  html += '</tr>';
+  // Month row
+  html += '<tr>';
+  months.forEach(m => {
+    const isEx = Object.values(exams).some(e => e.off === m.i);
+    const exLbl = isEx ? Object.values(exams).find(e => e.off === m.i)?.lbl : '';
+    html += isEx
+      ? `<th class="mo-hd mo-exam">${m.lbl}<br><span style="font-size:9px">${exLbl}</span></th>`
+      : `<th class="mo-hd">${m.lbl}</th>`;
+  });
+  html += '</tr></thead><tbody>';
+
+  // Subject rows
+  let totalH = 0;
+  selSubjs.forEach(code => {
+    const s = SUBJ[code]; if (!s) return;
+    html += `<tr><td class="subj-cell" style="border-left:4px solid ${s.col}">
+      ${s.e} ${s.n}${s.tech?`<br><span class="sub-tech">${s.tech}</span>`:''}
+    </td>`;
+    months.forEach(m => {
+      const ph = getPhase(code, m.i, exams);
+      const cc = courseCode(code, ph);
+      const h  = hrs(wk, ph);
+      if (h) { const n=parseInt(h); if(!isNaN(n)) totalH+=n; }
+      if (ph === 'done') {
+        html += `<td><div class="pcell done"><span class="cc">✅</span></div></td>`;
+      } else if (ph === 'exam') {
+        html += `<td><div class="pcell exam">
+          <span class="cc">📝 สอบ</span>
+          <span class="hrs">${s.n}</span>
+        </div></td>`;
+      } else {
+        html += `<td><div class="pcell ${ph}">
+          <span class="cc" style="color:${s.col}">${cc}</span>
+          <span class="hrs">${h}</span>
+        </div></td>`;
+      }
+    });
+    html += '</tr>';
+  });
+
+  // Exam timeline row
+  html += `<tr class="exam-row"><td class="subj-cell" style="color:var(--orange);font-size:11px">📅 ปฏิทินสอบ TCAS</td>`;
+  months.forEach(m => {
+    const exEntry = Object.entries(exams).find(([k,e]) => e.off === m.i);
+    html += exEntry
+      ? `<td style="background:var(--orange);color:white;text-align:center;font-size:10px;font-weight:800;padding:3px">${exEntry[1].lbl}</td>`
+      : '<td style="background:#FFF8F5"></td>';
+  });
+  html += '</tr>';
+
+  html += '</tbody>';
+  document.getElementById('planTable').innerHTML = html;
+
+  // ---- Stats ----
+  const examCount = Object.values(exams).filter(e => e.off < nMo).length;
+  const planValNum = parseInt(planVal) || 0;
+  document.getElementById('statsRow').innerHTML = `
+    <div class="stat-card"><div class="stat-num">${selSubjs.length}</div><div class="stat-lbl">วิชาในแผน</div></div>
+    <div class="stat-card"><div class="stat-num">${nMo}</div><div class="stat-lbl">เดือนทั้งหมด</div></div>
+    <div class="stat-card"><div class="stat-num">${totalH.toLocaleString()}</div><div class="stat-lbl">ชม. เรียนรวม (ประมาณ)</div></div>
+    <div class="stat-card"><div class="stat-num">${examCount}</div><div class="stat-lbl">รอบสอบในแผน</div></div>
+    ${planValNum ? `<div class="stat-card"><div class="stat-num" style="font-size:20px">฿${planValNum.toLocaleString()}</div><div class="stat-lbl">มูลค่าแผน ONDY</div></div>` : ''}
+  `;
+
+  // ---- Recommendations ----
+  const recs = [];
+  recs.push({ when: 'เดือนที่ 1-2', act: `เริ่มพื้นฐาน ${selSubjs.slice(0,3).map(c=>SUBJ[c]?.e+SUBJ[c]?.n).join(', ')} ด้วยเทคนิคเฉพาะของ OnDemand` });
+  recs.push({ when: 'ทุก 2 เดือน', act: 'ทำ Mock Exam ประเมินคะแนน → ปรับแผนการเรียนรายวิชา' });
+  recs.push({ when: grade === 'm6' ? '⚠️ เร่งด่วน ม.6' : 'ก่อนสอบ 4 สัปดาห์', act: grade === 'm6' ? 'TGAT ต.ค. → TPAT ธ.ค. → A-Level มี.ค. ทบทวนอย่างเข้มข้น ห้ามข้ามสัปดาห์' : 'เข้าสู่ช่วง Exam Prep เต็มรูปแบบ ทำข้อสอบย้อนหลัง 5 ปี' });
+  if (weak === 'content') recs.push({ when: '💡 Content', act: 'ดูวิดีโอ 2 รอบ + จดสรุปด้วยตัวเอง + ทำโจทย์ท้ายบทก่อนก้าวไปบทถัดไป' });
+  if (weak === 'practice') recs.push({ when: '💡 Practice', act: 'ทำโจทย์ min 30 ข้อ/วิชา/สัปดาห์ เน้น timing 1.5 นาที/ข้อ บันทึกข้อที่ผิดซ้ำ' });
+  if (weak === 'exam') recs.push({ when: '💡 Exam Technique', act: 'ฝึก Mock ทุกเดือน จับเวลา 3 ชม. บริหาร Part A/B/C วิเคราะห์หลังสอบทุกครั้ง' });
+  recs.push({ when: '🏆 เป้าหมาย', act: facDisplay || trackName ? `${facDisplay || trackName} — OnDemand จะอยู่เคียงข้างน้องตลอดเส้นทาง 💪` : 'OnDemand พร้อมดูแลน้องทุกก้าว 💪' });
+
+  document.getElementById('recsBox').innerHTML = `
+    <div class="recs-title">💡 คำแนะนำส่วนตัวสำหรับ ${name||'น้อง'} (${trackName})</div>
+    <div class="rec-grid">${recs.map(r => `
+      <div class="rec-item">
+        <div class="rec-when">${r.when}</div>
+        <div class="rec-act">${r.act}</div>
+      </div>`).join('')}
+    </div>
+  `;
+
+  document.getElementById('planGenDate').textContent = 'Generated: ' + new Date().toLocaleDateString('th-TH', {year:'numeric',month:'long',day:'numeric'});
+
+  document.getElementById('formPage').style.display  = 'none';
+  document.getElementById('plannerPage').style.display = 'block';
+  window.scrollTo(0, 0);
+}
+
+function backForm() {
+  document.getElementById('formPage').style.display   = 'block';
+  document.getElementById('plannerPage').style.display = 'none';
+}
+
+// Init
+document.addEventListener('DOMContentLoaded', () => {
+  document.getElementById('sDate').value = new Date().toISOString().split('T')[0];
+  // Fix the faculty input ID so it works
+  const facInputEl = document.querySelector('#step2 input[type="text"]');
+  if (facInputEl && !facInputEl.id) facInputEl.id = 'sacity';
+});
+</script>
+</body>
+</html>
