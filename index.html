@@ -5,10 +5,42 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>ONDY Tools Hub</title>
 <style>
-:root{--navy:#1B2A4A;--orange:#F26522;--red:#CC0033;--green:#059669;--bd:#E2E8F0;--bg:#F0F4F8;}
+:root{--navy:#1B2A4A;--orange:#F26522;--maroon:#7D0039;--red:#CC0033;--green:#059669;--bd:#E2E8F0;--bg:#F0F4F8;}
 *{box-sizing:border-box;margin:0;padding:0;}
 body{font-family:'Segoe UI',Arial,sans-serif;background:var(--bg);min-height:100vh;}
 
+/* ════ LOGIN SCREEN ════ */
+#loginScreen{
+  position:fixed;inset:0;z-index:9999;
+  background:linear-gradient(135deg,#0F1B2D 0%,#1B2A4A 55%,#2D1B69 100%);
+  display:flex;align-items:center;justify-content:center;
+}
+.login-box{
+  background:#fff;border-radius:18px;padding:40px 36px;width:380px;max-width:92vw;
+  text-align:center;box-shadow:0 24px 64px rgba(0,0,0,.45);
+}
+.login-logo{font-size:42px;font-weight:900;color:#F59E0B;letter-spacing:-2px;line-height:1;}
+.login-sub{font-size:11px;color:#94A3B8;letter-spacing:2.5px;text-transform:uppercase;margin-bottom:28px;margin-top:4px;}
+.login-inp{
+  width:100%;padding:11px 14px;border:1.5px solid var(--bd);border-radius:9px;
+  font-size:13px;margin-bottom:10px;font-family:inherit;color:#0F172A;
+  transition:border .15s;
+}
+.login-inp:focus{outline:none;border-color:var(--navy);}
+#loginErr{
+  display:none;color:#DC2626;font-size:11px;margin-bottom:10px;
+  padding:8px 12px;background:#FEF2F2;border-radius:7px;text-align:left;
+}
+.login-btn{
+  width:100%;background:var(--navy);color:#fff;border:none;
+  padding:13px;border-radius:9px;font-size:14px;font-weight:700;cursor:pointer;
+  font-family:inherit;transition:background .15s;margin-top:2px;
+}
+.login-btn:hover{background:#2D4270;}
+.login-footer{font-size:10px;color:#CBD5E1;margin-top:18px;}
+
+/* ════ MAIN APP ════ */
+#mainApp{display:none;}
 header{
   background:linear-gradient(135deg,#0F1B2D 0%,#1B2A4A 60%,#2D1B69 100%);
   padding:36px 40px 32px;text-align:center;
@@ -17,13 +49,17 @@ header{
 .logo{font-size:48px;font-weight:900;color:#F59E0B;letter-spacing:-2px;line-height:1;}
 .logo span{color:#fff;font-size:20px;font-weight:400;display:block;margin-top:4px;letter-spacing:2px;opacity:.7;}
 .tagline{font-size:13px;color:#94A3B8;margin-top:10px;}
+.logout-btn{
+  position:absolute;top:16px;right:20px;background:rgba(255,255,255,.1);
+  border:1px solid rgba(255,255,255,.2);color:#94A3B8;font-size:11px;
+  padding:5px 13px;border-radius:8px;cursor:pointer;font-family:inherit;
+}
+.logout-btn:hover{background:rgba(255,255,255,.18);color:#fff;}
 
 .sync-bar{
   display:flex;align-items:center;justify-content:center;gap:16px;
-  background:#0F172A;padding:10px 24px;
-  font-size:12px;color:#64748B;
-  border-bottom:1px solid #1E293B;
-  flex-wrap:wrap;
+  background:#0F172A;padding:10px 24px;font-size:12px;color:#64748B;
+  border-bottom:1px solid #1E293B;flex-wrap:wrap;
 }
 #syncBadgeHub{font-weight:700;padding:2px 10px;border-radius:10px;background:#334155;color:#94A3B8;}
 #syncTimeHub{color:#64748B;}
@@ -43,7 +79,7 @@ h2{font-size:13px;font-weight:700;color:#64748B;text-transform:uppercase;letter-
   overflow:hidden;text-decoration:none;color:inherit;
   box-shadow:0 2px 8px rgba(0,0,0,.06);
   transition:transform .15s,box-shadow .15s;
-  display:block;
+  display:block;cursor:pointer;
 }
 .card:hover{transform:translateY(-3px);box-shadow:0 8px 24px rgba(0,0,0,.12);}
 .card-header{padding:22px 22px 14px;display:flex;align-items:flex-start;gap:14px;}
@@ -63,165 +99,542 @@ h2{font-size:13px;font-weight:700;color:#64748B;text-transform:uppercase;letter-
 .kpi-sub{font-size:11px;color:#94A3B8;margin-top:2px;}
 
 footer{text-align:center;font-size:11px;color:#94A3B8;padding:24px;border-top:1px solid var(--bd);background:white;}
+
+/* ════ PLANNER MODAL ════ */
+#plannerModal{
+  display:none;position:fixed;inset:0;z-index:1500;
+  flex-direction:column;background:#F0F4F8;
+}
+#plannerModal.open{display:flex;}
+.planner-modal-bar{
+  background:var(--navy);padding:12px 18px;
+  display:flex;align-items:center;justify-content:space-between;
+  flex-shrink:0;gap:10px;flex-wrap:wrap;
+}
+.planner-modal-title{color:#fff;font-size:14px;font-weight:800;display:flex;align-items:center;gap:8px;}
+.planner-modal-badge{
+  background:var(--maroon);color:#fff;font-size:10px;font-weight:700;
+  padding:2px 9px;border-radius:20px;
+}
+.planner-modal-actions{display:flex;gap:8px;flex-wrap:wrap;}
+.pm-btn{
+  border:none;font-family:inherit;font-size:12px;font-weight:700;
+  padding:7px 16px;border-radius:7px;cursor:pointer;transition:all .15s;
+}
+.pm-btn-email{background:#059669;color:#fff;}
+.pm-btn-email:hover{background:#047857;}
+.pm-btn-print{background:rgba(255,255,255,.15);color:#fff;border:1.5px solid rgba(255,255,255,.2);}
+.pm-btn-print:hover{background:rgba(255,255,255,.25);}
+.pm-btn-close{background:#EF4444;color:#fff;}
+.pm-btn-close:hover{background:#DC2626;}
+#plannerFrame{
+  flex:1;border:none;width:100%;height:0;
+  background:#F0F4F8;
+}
+
+/* ════ EMAIL COMPOSE MODAL ════ */
+#emailModal{
+  display:none;position:fixed;inset:0;z-index:3000;
+  background:rgba(0,0,0,.6);align-items:center;justify-content:center;
+}
+#emailModal.open{display:flex;}
+.email-box{
+  background:#fff;border-radius:14px;width:560px;max-width:96vw;
+  box-shadow:0 20px 60px rgba(0,0,0,.4);overflow:hidden;
+}
+.email-head{
+  background:var(--navy);padding:14px 18px;
+  display:flex;align-items:center;justify-content:space-between;
+}
+.email-head-title{color:#fff;font-weight:700;font-size:14px;}
+.email-close-btn{
+  background:rgba(255,255,255,.15);border:none;color:#fff;
+  width:26px;height:26px;border-radius:50%;cursor:pointer;font-size:15px;
+  display:flex;align-items:center;justify-content:center;
+}
+.email-body{padding:18px;}
+.email-field{margin-bottom:12px;}
+.email-lbl{font-size:11px;font-weight:700;color:#64748B;display:block;margin-bottom:4px;}
+.email-inp{
+  width:100%;padding:9px 11px;border:1.5px solid var(--bd);border-radius:7px;
+  font-size:12px;font-family:inherit;color:#0F172A;transition:border .15s;
+}
+.email-inp:focus{outline:none;border-color:var(--navy);}
+textarea.email-inp{resize:vertical;min-height:130px;line-height:1.65;}
+.email-foot{
+  padding:12px 18px;border-top:1px solid var(--bd);
+  display:flex;gap:8px;justify-content:flex-end;align-items:center;
+  background:#F8FAFC;
+}
+.e-btn{
+  padding:8px 16px;border-radius:7px;font-size:12px;font-weight:600;
+  cursor:pointer;border:none;font-family:inherit;transition:all .15s;
+}
+.e-btn-cancel{background:#fff;border:1.5px solid var(--bd);color:#374151;}
+.e-btn-cancel:hover{background:#F1F5F9;}
+.e-btn-copy{background:#F1F5F9;border:1.5px solid var(--bd);color:#1B2A4A;font-weight:700;}
+.e-btn-copy:hover{background:#E2E8F0;}
+.e-btn-send{background:#1B2A4A;color:#fff;}
+.e-btn-send:hover{background:#2D4270;}
+#copyDone{display:none;color:#059669;font-size:11px;font-weight:600;}
+
+/* ════ TOAST ════ */
+.hub-toast{
+  display:none;position:fixed;bottom:24px;right:24px;
+  background:var(--navy);color:#fff;padding:12px 20px;border-radius:10px;
+  font-size:13px;font-weight:600;z-index:8000;
+  box-shadow:0 4px 16px rgba(0,0,0,.3);align-items:center;gap:10px;
+}
+.hub-toast.show{display:flex;}
 </style>
 </head>
 <body>
 
-<header>
-  <div class="logo">ONDY <span>TOOLS HUB</span></div>
-  <div class="tagline">OnDemand Internal Tools · Synced with Tableau Backlog Dashboard · Auto-refresh every 30 min</div>
-</header>
-
-<div class="sync-bar">
-  <span id="syncBadgeHub" style="background:#334155;color:#94A3B8;">⬤ Loading…</span>
-  <span id="syncTimeHub">กำลังโหลดข้อมูล…</span>
-  <button class="refresh-btn" onclick="loadData(true)">⟳ Refresh Now</button>
-  <span>|</span>
-  <a href="https://bi.learn.co.th/#/site/LearnCorp/views/OndyOnlyTrackingDashboard/2_Backlog"
-     target="_blank" style="color:#60A5FA;font-size:11px;text-decoration:none;">
-    🔗 Open Tableau Dashboard ↗
-  </a>
+<!-- ════════════════════════════════
+     LOGIN SCREEN
+     ════════════════════════════════ -->
+<div id="loginScreen">
+  <div class="login-box">
+    <div class="login-logo">ONDY</div>
+    <div class="login-sub">Tools Hub · Internal</div>
+    <input class="login-inp" type="text" id="loginUser" placeholder="Username" autocomplete="username"
+           onkeydown="if(event.key==='Enter')document.getElementById('loginPass').focus()"/>
+    <input class="login-inp" type="password" id="loginPass" placeholder="Password" autocomplete="current-password"
+           onkeydown="if(event.key==='Enter')doLogin()"/>
+    <div id="loginErr"></div>
+    <button class="login-btn" onclick="doLogin()">🔓 เข้าสู่ระบบ</button>
+    <div class="login-footer">OnDemand Education · ระบบสำหรับพนักงานเท่านั้น</div>
+  </div>
 </div>
 
-<main>
+<!-- ════════════════════════════════
+     PLANNER MODAL (full-screen)
+     ════════════════════════════════ -->
+<div id="plannerModal">
+  <div class="planner-modal-bar">
+    <div class="planner-modal-title">
+      📅 Individual Planner Generator
+      <span class="planner-modal-badge">ONDY MEMBER</span>
+    </div>
+    <div class="planner-modal-actions">
+      <button class="pm-btn pm-btn-email" onclick="openEmailModal()">
+        📧 ส่ง Email ให้นักเรียน
+      </button>
+      <button class="pm-btn pm-btn-print" onclick="printPlan()">
+        🖨 Print / PDF
+      </button>
+      <button class="pm-btn pm-btn-close" onclick="closePlanner()">
+        ✕ ปิด
+      </button>
+    </div>
+  </div>
+  <iframe id="plannerFrame" src="ONDY_Member_Planner.html"></iframe>
+</div>
 
-  <div class="kpi-row" id="kpiRow">
-    <div class="kpi"><div class="kpi-val">—</div><div class="kpi-lbl">Salespersons</div><div class="kpi-sub">ที่มีข้อมูล Backlog</div></div>
-    <div class="kpi"><div class="kpi-val" id="kpiBacklog">—</div><div class="kpi-lbl">Total Backlog Leads</div><div class="kpi-sub">ยังไม่ Convert</div></div>
-    <div class="kpi"><div class="kpi-val" id="kpiConvRate">—</div><div class="kpi-lbl">Avg Conv Rate</div><div class="kpi-sub">เฉลี่ยทุกพนักงาน</div></div>
-    <div class="kpi"><div class="kpi-val" id="kpiLastSync">—</div><div class="kpi-lbl">Last Sync</div><div class="kpi-sub">จาก Tableau</div></div>
+<!-- ════════════════════════════════
+     EMAIL COMPOSE MODAL
+     ════════════════════════════════ -->
+<div id="emailModal">
+  <div class="email-box">
+    <div class="email-head">
+      <div class="email-head-title">📧 ส่ง Email แผนการเรียน ONDY</div>
+      <button class="email-close-btn" onclick="closeEmailModal()">✕</button>
+    </div>
+    <div class="email-body">
+      <div class="email-field">
+        <label class="email-lbl">ถึง (Email นักเรียน / ผู้ปกครอง)</label>
+        <input class="email-inp" type="email" id="emailTo" placeholder="student@email.com"/>
+      </div>
+      <div class="email-field">
+        <label class="email-lbl">CC (ไม่บังคับ)</label>
+        <input class="email-inp" type="email" id="emailCc" placeholder="parent@email.com หรือ guru@ondemand.in.th"/>
+      </div>
+      <div class="email-field">
+        <label class="email-lbl">หัวข้อ Email</label>
+        <input class="email-inp" type="text" id="emailSubject"/>
+      </div>
+      <div class="email-field">
+        <label class="email-lbl">เนื้อหา</label>
+        <textarea class="email-inp" id="emailBody" rows="9"></textarea>
+      </div>
+    </div>
+    <div class="email-foot">
+      <span id="copyDone">✅ คัดลอกแล้ว!</span>
+      <button class="e-btn e-btn-cancel" onclick="closeEmailModal()">ยกเลิก</button>
+      <button class="e-btn e-btn-copy" onclick="copyEmailContent()">📋 คัดลอกเนื้อหา</button>
+      <button class="e-btn e-btn-send" onclick="sendViaMailto()">📤 เปิด Email Client</button>
+    </div>
+  </div>
+</div>
+
+<!-- ════════════════════════════════
+     MAIN APP
+     ════════════════════════════════ -->
+<div id="mainApp">
+  <header style="position:relative;">
+    <div class="logo">ONDY <span>TOOLS HUB</span></div>
+    <div class="tagline">OnDemand Internal Tools · Synced with Tableau Backlog Dashboard · Auto-refresh every 30 min</div>
+    <button class="logout-btn" onclick="doLogout()">🔒 ออกจากระบบ</button>
+  </header>
+
+  <div class="sync-bar">
+    <span id="syncBadgeHub" style="background:#334155;color:#94A3B8;">⬤ Loading…</span>
+    <span id="syncTimeHub">กำลังโหลดข้อมูล…</span>
+    <button class="refresh-btn" onclick="loadData(true)">⟳ Refresh Now</button>
+    <span>|</span>
+    <a href="https://bi.learn.co.th/#/site/LearnCorp/views/OndyOnlyTrackingDashboard/2_Backlog"
+       target="_blank" style="color:#60A5FA;font-size:11px;text-decoration:none;">
+      🔗 Open Tableau Dashboard ↗
+    </a>
   </div>
 
-  <h2>🛠 Tools</h2>
-  <div class="grid">
+  <main>
+    <div class="kpi-row" id="kpiRow">
+      <div class="kpi"><div class="kpi-val" id="kpiSales">—</div><div class="kpi-lbl">Salespersons</div><div class="kpi-sub">ที่มีข้อมูล Backlog</div></div>
+      <div class="kpi"><div class="kpi-val" id="kpiBacklog">—</div><div class="kpi-lbl">Total Backlog Leads</div><div class="kpi-sub">ยังไม่ Convert</div></div>
+      <div class="kpi"><div class="kpi-val" id="kpiConvRate">—</div><div class="kpi-lbl">Avg Conv Rate</div><div class="kpi-sub">เฉลี่ยทุกพนักงาน</div></div>
+      <div class="kpi"><div class="kpi-val" id="kpiLastSync">—</div><div class="kpi-lbl">Last Sync</div><div class="kpi-sub">จาก Tableau</div></div>
+    </div>
 
-    <a class="card" href="ONDY_HQ_Backlog_Monitor.html">
-      <div class="card-header">
-        <div class="card-icon" style="background:#EEF2FF;">🏢</div>
-        <div>
-          <div class="card-title">HQ Backlog Monitor</div>
-          <div class="card-sub">Dashboard หลัก — ติดตาม Backlog × Conversion</div>
+    <h2>🛠 Tools</h2>
+    <div class="grid">
+
+      <!-- HQ Backlog Monitor -->
+      <a class="card" href="ONDY_HQ_Backlog_Monitor.html">
+        <div class="card-header">
+          <div class="card-icon" style="background:#EEF2FF;">🏢</div>
+          <div>
+            <div class="card-title">HQ Backlog Monitor</div>
+            <div class="card-sub">Dashboard หลัก — ติดตาม Backlog × Conversion</div>
+          </div>
+        </div>
+        <div class="card-body">
+          ดูยอดจริงรายเดือน, Conv Rate แยก Tier, Email Alert ส่ง Sale/นักเรียน
+          <ul>
+            <li>HQ Monitor matrix รายพนักงาน</li>
+            <li>Tier Performance</li>
+            <li>📧 Email Studio (Sale + Student)</li>
+          </ul>
+        </div>
+        <div class="card-footer">
+          <span class="pill" style="background:#EEF2FF;color:#4F46E5;">● Live Tableau Data</span>
+          <span>→ เปิด Dashboard</span>
+        </div>
+      </a>
+
+      <!-- Individual Planner Generator — opens in MODAL -->
+      <div class="card" onclick="openPlanner()">
+        <div class="card-header">
+          <div class="card-icon" style="background:#FFF7ED;">📅</div>
+          <div>
+            <div class="card-title">Individual Planner Generator</div>
+            <div class="card-sub">สร้างแผนการเรียนส่วนตัว + ส่ง Email ให้นักเรียน</div>
+          </div>
+        </div>
+        <div class="card-body">
+          กรอกข้อมูลนักเรียน → ระบบสร้างแผน ONDY พร้อม calendar 3 ปี
+          <ul>
+            <li>🎯 Auto-Generate Plan (3 ขั้นตอน)</li>
+            <li>ระดับชั้น ม.4 / ม.5 / ม.6 × 4 Persona</li>
+            <li>📧 ส่ง Email แผนการเรียนให้นักเรียนได้ทันที</li>
+          </ul>
+        </div>
+        <div class="card-footer">
+          <span class="pill" style="background:#FFF7ED;color:#EA580C;">● ONDY Member Planner</span>
+          <span>→ เปิดใช้งาน ↗</span>
         </div>
       </div>
-      <div class="card-body">
-        ดูยอดจริงรายเดือน, Conv Rate แยก Tier, Email Alert ส่ง Sale/นักเรียน
-        <ul>
-          <li>HQ Monitor matrix รายพนักงาน</li>
-          <li>Tier Performance</li>
-          <li>📧 Email Studio (Sale + Student)</li>
-        </ul>
-      </div>
-      <div class="card-footer">
-        <span class="pill" style="background:#EEF2FF;color:#4F46E5;">● Live Tableau Data</span>
-        <span>→ เปิด Dashboard</span>
-      </div>
-    </a>
 
-    <a class="card" href="ONDY_Individual_Planner_Generator.html">
-      <div class="card-header">
-        <div class="card-icon" style="background:#FFF7ED;">📅</div>
-        <div>
-          <div class="card-title">Individual Planner Generator</div>
-          <div class="card-sub">สร้างแผนการเรียนส่วนตัวอัตโนมัติ</div>
+      <!-- Lead Scoring System -->
+      <a class="card" href="ONDY_Lead_Scoring_System.html">
+        <div class="card-header">
+          <div class="card-icon" style="background:#FEF2F2;">🎯</div>
+          <div>
+            <div class="card-title">Lead Scoring System</div>
+            <div class="card-sub">บันทึก Lead + คำนวณ Score อัตโนมัติ</div>
+          </div>
         </div>
-      </div>
-      <div class="card-body">
-        Sale กรอกข้อมูลนักเรียน → ระบบสร้าง study plan พร้อม timeline
-        <ul>
-          <li>เลือก Track (แพทย์ / วิศวะ / บัญชี ฯลฯ)</li>
-          <li>ระดับชั้น ม.4 / ม.5 / ม.6</li>
-          <li>แสดงคอร์สแนะนำ + timeline สอบ</li>
-        </ul>
-      </div>
-      <div class="card-footer">
-        <span class="pill" style="background:#FFF7ED;color:#EA580C;">● Standalone</span>
-        <span>→ สร้าง Planner</span>
-      </div>
-    </a>
-
-    <a class="card" href="ONDY_Lead_Scoring_System.html">
-      <div class="card-header">
-        <div class="card-icon" style="background:#FEF2F2;">🎯</div>
-        <div>
-          <div class="card-title">Lead Scoring System</div>
-          <div class="card-sub">บันทึก Lead + คำนวณ Score อัตโนมัติ</div>
+        <div class="card-body">
+          กรอกข้อมูล Lead ตาม Lark Form → ได้ HOT / WARM / COLD + Track แนะนำ
+          <ul>
+            <li>Demographic score (โรงเรียน / คณะ / เกรด)</li>
+            <li>Behavioral score (Intent signals)</li>
+            <li>Alert template พร้อมส่ง Guru</li>
+          </ul>
         </div>
-      </div>
-      <div class="card-body">
-        กรอกข้อมูล Lead ตาม Lark Form → ได้ HOT / WARM / COLD + Track แนะนำ
-        <ul>
-          <li>Demographic score (โรงเรียน / คณะ / เกรด)</li>
-          <li>Behavioral score (Intent signals)</li>
-          <li>Alert template พร้อมส่ง Guru</li>
-        </ul>
-      </div>
-      <div class="card-footer">
-        <span class="pill" style="background:#FEF2F2;color:#DC2626;">● Lead Intake</span>
-        <span>→ บันทึก Lead</span>
-      </div>
-    </a>
+        <div class="card-footer">
+          <span class="pill" style="background:#FEF2F2;color:#DC2626;">● Lead Intake</span>
+          <span>→ บันทึก Lead</span>
+        </div>
+      </a>
 
-  </div>
+    </div>
 
-  <h2>📋 Setup Guide</h2>
-  <div style="background:white;border:1px solid var(--bd);border-radius:12px;padding:20px 24px;font-size:12px;color:#374151;line-height:1.9;">
-    <b style="font-size:13px;color:#0F172A;">วิธี deploy บน GitHub Pages</b>
-    <ol style="margin-left:18px;margin-top:12px;margin-bottom:16px;">
-      <li>สร้าง GitHub repo ใหม่ (public หรือ private + Pages enabled)</li>
-      <li>Push ไฟล์ทั้งหมดในโฟลเดอร์นี้ขึ้น repo</li>
-      <li>ไปที่ Settings → Pages → Source: <b>main branch / root</b></li>
-      <li>เพิ่ม Secrets (Settings → Secrets → Actions):
-        <ul style="margin-left:16px;">
-          <li><code>TABLEAU_USERNAME</code> = email เข้า bi.learn.co.th</li>
-          <li><code>TABLEAU_PASSWORD</code> = password</li>
-        </ul>
-      </li>
-      <li>GitHub Actions จะ sync ข้อมูลทุก 30 นาทีโดยอัตโนมัติ</li>
-      <li>URL ของเว็บจะเป็น <code>https://[username].github.io/[repo-name]/</code></li>
-    </ol>
-    <b>Manual trigger:</b> GitHub → Actions tab → "Sync Tableau Data" → Run workflow
-  </div>
+    <h2>📋 Setup Guide</h2>
+    <div style="background:white;border:1px solid var(--bd);border-radius:12px;padding:20px 24px;font-size:12px;color:#374151;line-height:1.9;">
+      <b style="font-size:13px;color:#0F172A;">วิธี deploy บน GitHub Pages</b>
+      <ol style="margin-left:18px;margin-top:12px;margin-bottom:16px;">
+        <li>สร้าง GitHub repo ใหม่ (public หรือ private + Pages enabled)</li>
+        <li>Push ไฟล์ทั้งหมดในโฟลเดอร์นี้ขึ้น repo</li>
+        <li>ไปที่ Settings → Pages → Source: <b>main branch / root</b></li>
+        <li>เพิ่ม Secrets (Settings → Secrets → Actions):
+          <ul style="margin-left:16px;">
+            <li><code>TABLEAU_USERNAME</code> = email เข้า bi.learn.co.th</li>
+            <li><code>TABLEAU_PASSWORD</code> = password</li>
+          </ul>
+        </li>
+        <li>GitHub Actions จะ sync ข้อมูลทุก 30 นาทีโดยอัตโนมัติ</li>
+        <li>URL ของเว็บจะเป็น <code>https://[username].github.io/[repo-name]/</code></li>
+      </ol>
+      <b>Manual trigger:</b> GitHub → Actions tab → "Sync Tableau Data" → Run workflow
+    </div>
+  </main>
 
-</main>
+  <footer>ONDY Tools Hub · OnDemand Internal · Data synced from Tableau via GitHub Actions</footer>
+</div>
 
-<footer>ONDY Tools Hub · OnDemand Internal · Data synced from Tableau via GitHub Actions</footer>
+<!-- TOAST -->
+<div class="hub-toast" id="hubToast">
+  <span id="hubToastMsg"></span>
+</div>
 
 <script>
-async function loadData(manual=false) {
-  const badge = document.getElementById('syncBadgeHub');
-  const timeEl = document.getElementById('syncTimeHub');
-  try {
-    const r = await fetch('./data/backlog.json?t=' + Date.now());
-    if (!r.ok) throw new Error('HTTP ' + r.status);
-    const d = await r.json();
+// ════════════════════════════════════════════
+//  LOGIN
+// ════════════════════════════════════════════
+var VALID_USER = 'Ondemand2026';
+var VALID_PASS = '123456';
 
-    // KPIs
-    const salespeople = (d.raw || []).length;
-    const totalBacklog = Object.values(d.conv || {}).reduce((s,v) => s + Math.max((v.countAll||0)-(v.countConverted||0),0), 0);
-    const rates = Object.values(d.conv || {}).map(v => v.countAll > 0 ? v.countConverted/v.countAll : null).filter(x=>x!==null);
-    const avgRate = rates.length ? (rates.reduce((a,b)=>a+b,0)/rates.length*100).toFixed(1)+'%' : '—';
-    const lastSync = d.lastUpdated
+function doLogin(){
+  var user = document.getElementById('loginUser').value.trim();
+  var pass = document.getElementById('loginPass').value;
+  var errEl = document.getElementById('loginErr');
+  if(user === VALID_USER && pass === VALID_PASS){
+    errEl.style.display = 'none';
+    errEl.textContent = '';
+    document.getElementById('loginScreen').style.display = 'none';
+    document.getElementById('mainApp').style.display = 'block';
+    sessionStorage.setItem('ondyAuth','1');
+    loadData();
+  } else {
+    errEl.textContent = '⚠ Username หรือ Password ไม่ถูกต้อง กรุณาลองใหม่';
+    errEl.style.display = 'block';
+    errEl.style.cssText = 'display:block;color:#DC2626;font-size:11px;margin-bottom:10px;padding:8px 12px;background:#FEF2F2;border-radius:7px;text-align:left;';
+    document.getElementById('loginPass').value = '';
+    document.getElementById('loginPass').focus();
+  }
+}
+
+function doLogout(){
+  sessionStorage.removeItem('ondyAuth');
+  document.getElementById('mainApp').style.display = 'none';
+  document.getElementById('loginScreen').style.display = 'flex';
+  document.getElementById('loginUser').value = '';
+  document.getElementById('loginPass').value = '';
+}
+
+// Auto-login check on load
+window.addEventListener('DOMContentLoaded', function(){
+  if(sessionStorage.getItem('ondyAuth') === '1'){
+    document.getElementById('loginScreen').style.display = 'none';
+    document.getElementById('mainApp').style.display = 'block';
+    loadData();
+  } else {
+    document.getElementById('loginScreen').style.display = 'flex';
+    document.getElementById('loginUser').focus();
+  }
+});
+
+// ════════════════════════════════════════════
+//  PLANNER MODAL
+// ════════════════════════════════════════════
+var plannerLoaded = false;
+
+function openPlanner(){
+  var modal = document.getElementById('plannerModal');
+  modal.classList.add('open');
+  if(!plannerLoaded){
+    document.getElementById('plannerFrame').src = 'ONDY_Member_Planner.html';
+    plannerLoaded = true;
+  }
+  document.body.style.overflow = 'hidden';
+}
+
+function closePlanner(){
+  document.getElementById('plannerModal').classList.remove('open');
+  document.body.style.overflow = '';
+}
+
+function printPlan(){
+  var frame = document.getElementById('plannerFrame');
+  try{
+    frame.contentWindow.printPlan();
+  }catch(e){
+    frame.contentWindow.print();
+  }
+}
+
+// ════════════════════════════════════════════
+//  EMAIL COMPOSE MODAL
+// ════════════════════════════════════════════
+function openEmailModal(){
+  var frame = document.getElementById('plannerFrame');
+  var fdoc = null;
+  try{ fdoc = frame.contentDocument || frame.contentWindow.document; }catch(e){}
+
+  var name='', nick='', email='', phone='', school='', level='', fac='', uni='', guru='', branch='', gpa='';
+
+  if(fdoc){
+    name   = (fdoc.getElementById('stName')   || {}).value  || '';
+    nick   = (fdoc.getElementById('stNick')   || {}).value  || '';
+    email  = (fdoc.getElementById('stEmail')  || {}).value  || '';
+    phone  = (fdoc.getElementById('stPhone')  || {}).value  || '';
+    school = (fdoc.getElementById('stSch')    || {}).value  || '';
+    level  = (fdoc.getElementById('stLevel')  || {}).value  || '';
+    fac    = (fdoc.getElementById('stFac')    || {}).value  || '';
+    uni    = (fdoc.getElementById('stUni')    || {}).value  || '';
+    guru   = (fdoc.getElementById('stGuru')   || {}).value  || '';
+    branch = (fdoc.getElementById('stBranch') || {}).value  || '';
+    gpa    = (fdoc.getElementById('stGpa')    || {}).value  || '';
+  }
+
+  var displayName = (name || nick || 'นักเรียน');
+
+  // Pre-fill email fields
+  document.getElementById('emailTo').value = email;
+  document.getElementById('emailCc').value = '';
+  document.getElementById('emailSubject').value = 'แผนการเรียน ONDY สำหรับ ' + displayName;
+
+  var bodyLines = [
+    'เรียน คุณ' + displayName + (nick && nick !== name ? ' (' + nick + ')' : '') + ' และผู้ปกครอง',
+    '',
+    'สวัสดีครับ/ค่ะ ทีมงาน OnDemand ' + (branch ? 'สาขา ' + branch : '') + ' ขอส่งแผนการเรียน ONDY',
+    'ที่ออกแบบเฉพาะสำหรับ' + displayName + ' โดยเฉพาะดังนี้',
+    '',
+    '══════════════════════════════',
+    '📋 ข้อมูลนักเรียน',
+    '══════════════════════════════',
+    '• ชื่อ: ' + (name || '—') + (nick ? ' (ชื่อเล่น: ' + nick + ')' : ''),
+    '• ระดับชั้น: ' + (level || '—'),
+    (school ? '• โรงเรียน: ' + school : ''),
+    (gpa    ? '• GPA: ' + gpa : ''),
+    '',
+    '══════════════════════════════',
+    '🎯 เป้าหมาย TCAS',
+    '══════════════════════════════',
+    (uni  ? '• มหาวิทยาลัย: ' + uni : ''),
+    (fac  ? '• คณะ / สาขา: ' + fac : ''),
+    '',
+    '══════════════════════════════',
+    '👨‍🏫 ทีม ONDY ผู้วางแผน',
+    '══════════════════════════════',
+    '• Guru: ' + (guru || '—'),
+    '• สาขา OnDemand: ' + (branch || '—'),
+    '',
+    'สามารถดูและพิมพ์แผนการเรียนเพิ่มเติมได้ที่:',
+    'https://nutsyover.github.io/ondy-tools/ONDY_Member_Planner.html',
+    '',
+    'หากมีข้อสงสัยหรือต้องการปรับแผน สามารถติดต่อ Guru ได้โดยตรงครับ/ค่ะ',
+    '',
+    'ด้วยความปรารถนาดี',
+    'ทีมงาน OnDemand Academy',
+    'www.ondemand.in.th | Tel: 02-251-9456',
+  ].filter(function(l){ return l !== undefined && l !== null; }).join('\n');
+
+  document.getElementById('emailBody').value = bodyLines;
+  document.getElementById('copyDone').style.display = 'none';
+  document.getElementById('emailModal').classList.add('open');
+}
+
+function closeEmailModal(){
+  document.getElementById('emailModal').classList.remove('open');
+}
+
+function copyEmailContent(){
+  var subject = document.getElementById('emailSubject').value;
+  var body = document.getElementById('emailBody').value;
+  var full = 'หัวข้อ: ' + subject + '\n\n' + body;
+  navigator.clipboard.writeText(full).then(function(){
+    var done = document.getElementById('copyDone');
+    done.style.display = 'inline';
+    showHubToast('📋 คัดลอกเนื้อหา Email เรียบร้อยแล้ว');
+    setTimeout(function(){ done.style.display = 'none'; }, 3000);
+  }).catch(function(){
+    // Fallback
+    var ta = document.getElementById('emailBody');
+    ta.select();
+    document.execCommand('copy');
+    showHubToast('📋 คัดลอกแล้ว (Ctrl+C)');
+  });
+}
+
+function sendViaMailto(){
+  var to      = document.getElementById('emailTo').value.trim();
+  var cc      = document.getElementById('emailCc').value.trim();
+  var subject = document.getElementById('emailSubject').value;
+  var body    = document.getElementById('emailBody').value;
+
+  var link = 'mailto:' + to
+    + (cc ? '?cc=' + encodeURIComponent(cc) + '&' : '?')
+    + 'subject=' + encodeURIComponent(subject)
+    + '&body=' + encodeURIComponent(body);
+
+  window.open(link, '_blank');
+  showHubToast('📧 เปิด Email Client แล้ว — กรุณาตรวจสอบและส่ง');
+}
+
+// ════════════════════════════════════════════
+//  TOAST
+// ════════════════════════════════════════════
+function showHubToast(msg){
+  var t = document.getElementById('hubToast');
+  document.getElementById('hubToastMsg').textContent = msg;
+  t.classList.add('show');
+  setTimeout(function(){ t.classList.remove('show'); }, 3500);
+}
+
+// ════════════════════════════════════════════
+//  TABLEAU DATA LOADER
+// ════════════════════════════════════════════
+async function loadData(manual){
+  var badge  = document.getElementById('syncBadgeHub');
+  var timeEl = document.getElementById('syncTimeHub');
+  try{
+    var r = await fetch('./data/backlog.json?t=' + Date.now());
+    if(!r.ok) throw new Error('HTTP ' + r.status);
+    var d = await r.json();
+
+    var salespeople  = (d.raw || []).length;
+    var totalBacklog = Object.values(d.conv || {}).reduce(function(s,v){
+      return s + Math.max((v.countAll||0)-(v.countConverted||0), 0);
+    }, 0);
+    var rates = Object.values(d.conv || {}).map(function(v){
+      return v.countAll > 0 ? v.countConverted/v.countAll : null;
+    }).filter(function(x){ return x !== null; });
+    var avgRate = rates.length
+      ? (rates.reduce(function(a,b){return a+b;},0)/rates.length*100).toFixed(1)+'%'
+      : '—';
+    var lastSync = d.lastUpdated
       ? new Date(d.lastUpdated).toLocaleString('th-TH',{day:'2-digit',month:'short',hour:'2-digit',minute:'2-digit'})
       : '—';
 
-    document.querySelector('.kpi-row .kpi .kpi-val').textContent = salespeople;
-    document.getElementById('kpiBacklog').textContent = totalBacklog.toLocaleString();
+    document.getElementById('kpiSales').textContent    = salespeople;
+    document.getElementById('kpiBacklog').textContent  = totalBacklog.toLocaleString();
     document.getElementById('kpiConvRate').textContent = avgRate;
     document.getElementById('kpiLastSync').textContent = lastSync;
 
-    const isLive = d.source && d.source.includes('Tableau');
-    badge.textContent = isLive ? '● LIVE' : '● CACHED';
-    badge.style.background = isLive ? '#14532D' : '#1E3A5F';
-    badge.style.color = isLive ? '#86EFAC' : '#93C5FD';
-    timeEl.textContent = 'อัปเดตล่าสุด ' + lastSync;
-  } catch(e) {
-    badge.textContent = '● OFFLINE';
+    var isLive = d.source && d.source.includes('Tableau');
+    badge.textContent       = isLive ? '● LIVE' : '● CACHED';
+    badge.style.background  = isLive ? '#14532D' : '#1E3A5F';
+    badge.style.color       = isLive ? '#86EFAC' : '#93C5FD';
+    timeEl.textContent      = 'อัปเดตล่าสุด ' + lastSync;
+  }catch(e){
+    badge.textContent      = '● OFFLINE';
     badge.style.background = '#7F1D1D';
-    badge.style.color = '#FCA5A5';
-    timeEl.textContent = 'ไม่สามารถโหลดข้อมูลได้ — ' + e.message;
+    badge.style.color      = '#FCA5A5';
+    timeEl.textContent     = 'ไม่สามารถโหลดข้อมูลได้ — ' + e.message;
   }
 }
-loadData();
 </script>
 </body>
 </html>
