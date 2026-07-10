@@ -17,13 +17,11 @@ header{background:var(--navy);padding:12px 20px;display:flex;align-items:center;
 .h-name{color:#fff;font-size:16px;font-weight:800;}
 .h-badge{background:var(--maroon);color:#fff;font-size:10px;font-weight:700;padding:3px 9px;border-radius:20px;margin-left:8px;}
 .h-sub{color:#90B8D8;font-size:11px;margin-top:1px;}
-.h-btns{display:flex;gap:6px;flex-wrap:wrap;}
+.h-btns{display:flex;gap:6px;}
 .hbtn{background:rgba(255,255,255,.1);border:1.5px solid rgba(255,255,255,.2);color:#fff;font-size:11px;padding:6px 13px;border-radius:7px;cursor:pointer;transition:all .15s;}
 .hbtn:hover{background:rgba(255,255,255,.18);}
 .hbtn.active{background:var(--orange);border-color:var(--orange);}
 .hbtn.red{background:#EF4444;border-color:#EF4444;}
-.hbtn.genbtn{background:var(--maroon);border-color:var(--maroon);font-weight:700;}
-.hbtn.genbtn:hover{background:#6A002F;}
 .builder{display:grid;grid-template-columns:290px 1fr;gap:14px;padding:14px;max-width:1440px;margin:0 auto;}
 .lpanel{display:flex;flex-direction:column;gap:10px;}
 .bcard{background:var(--white);border-radius:10px;padding:14px;box-shadow:0 2px 8px rgba(0,0,0,.06);}
@@ -33,14 +31,11 @@ header{background:var(--navy);padding:12px 20px;display:flex;align-items:center;
 .flbl{font-size:11px;color:var(--gray4);display:block;margin-bottom:3px;}
 .finput{width:100%;padding:7px 9px;border:1.5px solid var(--gray2);border-radius:7px;font-size:12px;color:var(--dark);background:var(--gray0);transition:border .15s;}
 .finput:focus{outline:none;border-color:var(--navy);background:#fff;}
-.pdpa-side{background:var(--pink-bg);border:1.5px solid var(--pink-border);border-radius:7px;padding:9px 11px;display:flex;gap:8px;align-items:flex-start;margin-top:6px;}
-.pdpa-side input[type="checkbox"]{margin-top:2px;width:14px;height:14px;accent-color:var(--maroon);flex-shrink:0;cursor:pointer;}
-.pdpa-side-text{font-size:10px;color:#5D1A3A;line-height:1.5;}
-.pdpa-side-text a{color:var(--maroon);font-weight:700;text-decoration:underline;}
 .srow{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;}
 .scard{background:var(--navy);border-radius:8px;padding:11px;text-align:center;color:#fff;}
 .snum{font-size:26px;font-weight:800;color:var(--orange);}
 .slbl{font-size:9px;color:#90B8D8;margin-top:2px;}
+/* Calendar */
 .rpanel{display:flex;flex-direction:column;gap:10px;}
 .hint-bar{background:#FFFBEB;border:1px solid #FCD34D;border-radius:8px;padding:8px 12px;font-size:11px;color:#92400E;}
 .cal-wrap{background:var(--white);border-radius:10px;padding:14px;box-shadow:0 2px 8px rgba(0,0,0,.06);overflow-x:auto;}
@@ -60,7 +55,7 @@ header{background:var(--navy);padding:12px 20px;display:flex;align-items:center;
 .cell-add{font-size:9px;color:var(--gray3);text-align:center;padding:4px 0;}
 .cell-add span{background:var(--navy);color:#fff;border-radius:3px;padding:1px 5px;font-size:8px;}
 
-/* COURSE PICKER MODAL */
+/* MODAL */
 .modal-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.55);z-index:1000;align-items:center;justify-content:center;}
 .modal-overlay.open{display:flex;}
 .modal{background:#fff;border-radius:14px;width:520px;max-width:95vw;max-height:80vh;display:flex;flex-direction:column;overflow:hidden;box-shadow:0 20px 60px rgba(0,0,0,.3);}
@@ -91,65 +86,7 @@ header{background:var(--navy);padding:12px 20px;display:flex;align-items:center;
 .mf-cancel{background:var(--white);border:1.5px solid var(--gray2);color:var(--dark);font-size:12px;padding:6px 14px;border-radius:7px;cursor:pointer;}
 .mf-confirm{background:var(--orange);border:none;color:#fff;font-size:12px;font-weight:700;padding:6px 18px;border-radius:7px;cursor:pointer;}
 
-/* GENERATOR MODAL */
-.gen-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.65);z-index:2000;overflow-y:auto;padding:16px 10px;}
-.gen-overlay.open{display:block;}
-.gen-modal{background:var(--white);border-radius:14px;width:840px;max-width:97vw;margin:0 auto;box-shadow:0 20px 60px rgba(0,0,0,.35);overflow:hidden;}
-.gen-head{background:var(--navy);padding:14px 18px;display:flex;align-items:center;justify-content:space-between;}
-.gen-head-title{color:#fff;font-size:14px;font-weight:800;}
-.gen-head-sub{color:#90B8D8;font-size:10px;margin-top:2px;}
-.gen-close{background:rgba(255,255,255,.15);border:none;color:#fff;width:28px;height:28px;border-radius:50%;cursor:pointer;font-size:16px;display:flex;align-items:center;justify-content:center;line-height:1;}
-.gen-body{padding:16px 18px;}
-.gen-steps{display:flex;gap:6px;margin-bottom:14px;}
-.gen-step{flex:1;padding:9px 12px;background:var(--gray2);border-radius:9px;font-size:11px;font-weight:600;color:var(--gray4);display:flex;align-items:center;gap:7px;transition:all .2s;}
-.gen-step.active{background:var(--maroon);color:#fff;box-shadow:0 2px 8px rgba(125,0,57,.25);}
-.gen-step.done{background:var(--navy);color:#fff;}
-.gen-step-num{width:20px;height:20px;border-radius:50%;background:rgba(255,255,255,.25);display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:800;flex-shrink:0;}
-.gen-card{background:var(--gray0);border-radius:10px;padding:14px 16px;margin-bottom:12px;border:1px solid var(--gray2);}
-.gen-card-title{font-size:11px;font-weight:700;color:var(--navy);text-transform:uppercase;letter-spacing:.8px;margin-bottom:12px;padding-bottom:8px;border-bottom:2px solid var(--maroon);display:flex;align-items:center;gap:6px;}
-.gen-fgrid{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
-.gen-fgrid .gfull{grid-column:1/-1;}
-.gen-fg{display:flex;flex-direction:column;gap:4px;}
-.gen-lbl{font-size:11px;font-weight:600;color:var(--gray4);}
-.gen-lbl .req{color:var(--maroon);}
-.gen-inp{width:100%;padding:7px 9px;border:1.5px solid var(--gray2);border-radius:7px;font-size:12px;color:var(--dark);background:#fff;transition:border .15s;}
-.gen-inp:focus{outline:none;border-color:var(--maroon);}
-textarea.gen-inp{resize:vertical;min-height:48px;}
-.gen-pdpa{background:var(--pink-bg);border:1.5px solid var(--pink-border);border-radius:8px;padding:12px 14px;display:flex;gap:10px;align-items:flex-start;margin-top:10px;}
-.gen-pdpa input[type="checkbox"]{margin-top:2px;width:15px;height:15px;accent-color:var(--maroon);flex-shrink:0;cursor:pointer;}
-.gen-pdpa-text{font-size:11px;color:#5D1A3A;line-height:1.5;}
-.gen-pdpa-text a{color:var(--maroon);font-weight:700;text-decoration:underline;}
-.gen-track-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:4px;}
-.gen-track-card{border:2px solid var(--gray2);border-radius:10px;padding:12px 8px;cursor:pointer;transition:all .2s;text-align:center;}
-.gen-track-card:hover{border-color:var(--maroon);transform:translateY(-1px);}
-.gen-track-card.selected{border-color:var(--maroon);background:var(--pink-light);}
-.gen-track-icon{font-size:22px;margin-bottom:4px;}
-.gen-track-name{font-weight:800;color:var(--navy);font-size:12px;}
-.gen-track-desc{font-size:10px;color:var(--gray4);margin-top:2px;min-height:26px;}
-.gen-badge{font-size:9px;padding:1px 6px;border-radius:20px;background:var(--navy);color:#fff;font-weight:700;display:inline-block;margin:1px;}
-.gen-badge.or{background:var(--maroon);}
-.gen-subj-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:7px;}
-.gen-subj-item{display:flex;align-items:center;gap:7px;padding:8px 9px;border:1.5px solid var(--gray2);border-radius:7px;cursor:pointer;transition:all .15s;}
-.gen-subj-item:hover,.gen-subj-item.checked{border-color:var(--maroon);}
-.gen-subj-item.checked{background:var(--pink-light);}
-.gen-subj-item input[type="checkbox"]{width:14px;height:14px;cursor:pointer;flex-shrink:0;accent-color:var(--maroon);}
-.gen-subj-label{font-size:11px;font-weight:700;}
-.gen-subj-code{font-size:9px;color:var(--gray4);margin-top:1px;}
-.gen-score-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;}
-.gen-actions{display:flex;gap:8px;justify-content:flex-end;margin-top:12px;}
-.gbtn{padding:9px 18px;border-radius:7px;font-size:12px;font-weight:700;cursor:pointer;border:none;font-family:inherit;transition:all .2s;}
-.gbtn-primary{background:var(--maroon);color:#fff;}
-.gbtn-primary:hover{background:#6A002F;}
-.gbtn-gen{background:var(--orange);color:#fff;padding:10px 26px;font-size:13px;}
-.gbtn-gen:hover{background:#D4541C;transform:translateY(-1px);}
-.gbtn-outline{background:var(--white);color:var(--navy);border:2px solid var(--navy);}
-.gbtn-outline:hover{background:var(--navy);color:#fff;}
-
-/* TOAST */
-.toast{display:none;position:fixed;bottom:24px;right:24px;background:var(--navy);color:#fff;padding:12px 20px;border-radius:10px;font-size:13px;font-weight:600;z-index:5000;box-shadow:0 4px 16px rgba(0,0,0,.3);align-items:center;gap:10px;}
-.toast.show{display:flex;}
-
-/* PRINT VIEW */
+/* ── PRINT VIEW ── */
 #pv{display:none;font-family:'Segoe UI',system-ui,sans-serif;background:#fff;}
 #pv .pvpage{width:297mm;min-height:210mm;background:var(--pink-bg);box-sizing:border-box;margin:0 auto;}
 #pv .pvbar{background:#334155;padding:9px 16px;display:flex;justify-content:space-between;align-items:center;}
@@ -201,6 +138,30 @@ textarea.gen-inp{resize:vertical;min-height:48px;}
 #pv .pvfooter{background:var(--maroon);color:var(--pink-border);font-size:8.5px;padding:7px 14px;display:flex;justify-content:space-between;align-items:center;}
 #pv .pvfooter-logo{font-size:11px;font-weight:800;color:var(--gold);}
 
+
+/* ── SAVE / EMAIL BUTTONS ── */
+.hbtn.save{background:#059669;border-color:#059669;}
+.hbtn.save:hover{background:#047857;}
+.hbtn.email-btn{background:#0891B2;border-color:#0891B2;}
+.hbtn.email-btn:hover{background:#0E7490;}
+
+/* ── LOADING OVERLAY ── */
+#loadingOverlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.6);z-index:9998;align-items:center;justify-content:center;}
+#loadingOverlay.open{display:flex;}
+.loading-box{background:#fff;border-radius:14px;padding:28px 36px;text-align:center;box-shadow:0 20px 60px rgba(0,0,0,.3);}
+.loading-spinner{width:40px;height:40px;border:4px solid #E2E8F0;border-top-color:#1B2A4A;border-radius:50%;animation:spin .8s linear infinite;margin:0 auto 12px;}
+@keyframes spin{to{transform:rotate(360deg)}}
+.loading-msg{font-size:13px;color:#64748B;}
+
+/* ── NOTIFICATION TOAST ── */
+#toast{position:fixed;bottom:24px;right:24px;background:#1E293B;color:#fff;padding:12px 20px;border-radius:10px;font-size:12px;z-index:99999;opacity:0;transform:translateY(10px);transition:all .3s;pointer-events:none;max-width:320px;}
+#toast.show{opacity:1;transform:translateY(0);}
+#toast.success{background:#059669;}
+#toast.error{background:#DC2626;}
+
+/* ── GURU SELECT ── */
+#guruFreeRow{display:none;margin-top:6px;}
+
 @media print{
   *{-webkit-print-color-adjust:exact!important;print-color-adjust:exact!important;}
   @page{size:A4 landscape;margin:0;}
@@ -210,247 +171,9 @@ textarea.gen-inp{resize:vertical;min-height:48px;}
   #pv .pvpage{width:297mm;min-height:210mm;margin:0;}
 }
 </style>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
 </head>
 <body>
-
-<!-- ══════════════════════════════════════════════════════════
-     GENERATOR MODAL — 3-STEP WIZARD (auto-populates planner)
-     ══════════════════════════════════════════════════════════ -->
-<div class="gen-overlay" id="genOverlay">
-  <div class="gen-modal">
-    <div class="gen-head">
-      <div>
-        <div class="gen-head-title">🎯 Auto-Generate Individual Planner</div>
-        <div class="gen-head-sub">กรอกข้อมูลน้อง 3 ขั้นตอน → ระบบสร้างแผนให้อัตโนมัติ</div>
-      </div>
-      <button class="gen-close" onclick="closeGenModal()">&#x2715;</button>
-    </div>
-    <div class="gen-body">
-      <!-- Step indicators -->
-      <div class="gen-steps">
-        <div class="gen-step active" id="gstep-ind-1"><div class="gen-step-num">1</div>ข้อมูลนักเรียน</div>
-        <div class="gen-step" id="gstep-ind-2"><div class="gen-step-num">2</div>เป้าหมาย &amp; สาย</div>
-        <div class="gen-step" id="gstep-ind-3"><div class="gen-step-num">3</div>วิชา &amp; คะแนน</div>
-      </div>
-
-      <!-- STEP 1 -->
-      <div id="gstep1">
-        <div class="gen-card">
-          <div class="gen-card-title">👤 ข้อมูลนักเรียน</div>
-          <div class="gen-fgrid">
-            <div class="gen-fg">
-              <label class="gen-lbl">ชื่อ-นามสกุลนักเรียน <span class="req">*</span></label>
-              <input class="gen-inp" type="text" id="gName" placeholder="เช่น น.ส. สมหญิง ใจดี"/>
-            </div>
-            <div class="gen-fg">
-              <label class="gen-lbl">ชื่อเล่น</label>
-              <input class="gen-inp" type="text" id="gNick" placeholder="ชื่อเล่น"/>
-            </div>
-            <div class="gen-fg">
-              <label class="gen-lbl">ระดับชั้นปัจจุบัน <span class="req">*</span></label>
-              <select class="gen-inp" id="gGrade">
-                <option value="">-- เลือกระดับชั้น --</option>
-                <option value="m4">กำลังเรียน ม.4 (สายยาว 3 ปี)</option>
-                <option value="m5">กำลังเรียน ม.5 (~2 ปี)</option>
-                <option value="m6">กำลังเรียน ม.6 (โค้งสุดท้าย)</option>
-              </select>
-            </div>
-            <div class="gen-fg">
-              <label class="gen-lbl">แผนการเรียน <span class="req">*</span></label>
-              <select class="gen-inp" id="gStream">
-                <option value="">-- เลือกแผน --</option>
-                <option value="sci-math">วิทย์-คณิต</option>
-                <option value="arts-math">ศิลป์-คณิต</option>
-                <option value="arts-lang">ศิลป์-ภาษา</option>
-                <option value="other">อื่นๆ</option>
-              </select>
-            </div>
-            <div class="gen-fg">
-              <label class="gen-lbl">โรงเรียน</label>
-              <input class="gen-inp" type="text" id="gSchool" placeholder="ชื่อโรงเรียน"/>
-            </div>
-            <div class="gen-fg">
-              <label class="gen-lbl">GPA ปัจจุบัน</label>
-              <input class="gen-inp" type="number" id="gGPA" placeholder="เช่น 3.45" step="0.01" min="0" max="4"/>
-            </div>
-            <div class="gen-fg">
-              <label class="gen-lbl">เบอร์โทร</label>
-              <input class="gen-inp" type="tel" id="gPhone" placeholder="08X-XXX-XXXX"/>
-            </div>
-            <div class="gen-fg">
-              <label class="gen-lbl">อีเมล</label>
-              <input class="gen-inp" type="email" id="gEmail" placeholder="example@email.com"/>
-            </div>
-            <div class="gen-fg">
-              <label class="gen-lbl">Guru / Sale ผู้ดูแล</label>
-              <input class="gen-inp" type="text" id="gSale" placeholder="ชื่อ Guru"/>
-            </div>
-            <div class="gen-fg">
-              <label class="gen-lbl">สาขา OnDemand</label>
-              <select class="gen-inp" id="gBranch">
-                <option value="">-- เลือกสาขา --</option>
-                <option>MBK</option><option>PKL</option><option>SNR</option>
-                <option>WST</option><option>NGW</option><option>RST</option>
-                <option>VVY</option><option>NPT</option><option>PKS</option>
-                <option>HYD</option><option>SNI</option><option>NRT</option>
-                <option>TRG</option><option>CPN</option><option>PKT</option>
-                <option>RBR</option><option>SPB</option><option>PBI</option>
-                <option>NSN</option><option>LRI</option><option>SRI</option>
-                <option>AYA</option><option>CMI</option><option>CRI</option>
-                <option>LPG</option><option>PLK</option><option>UBN</option>
-                <option>NMA</option><option>BRM</option><option>UDN</option>
-                <option>KKN</option><option>RET</option><option>CBI</option>
-                <option>RYG</option><option>COO</option><option>Online</option>
-              </select>
-            </div>
-            <div class="gen-fg">
-              <label class="gen-lbl">วันที่สมัคร</label>
-              <input class="gen-inp" type="date" id="gDate"/>
-            </div>
-            <div class="gen-fg gfull">
-              <label class="gen-lbl">มูลค่าแผน ONDY (บาท)</label>
-              <input class="gen-inp" type="number" id="gPlanValue" placeholder="เช่น 25000" step="1000"/>
-            </div>
-          </div>
-          <div class="gen-pdpa">
-            <input type="checkbox" id="gPdpa"/>
-            <div class="gen-pdpa-text">
-              ข้าพเจ้ายืนยันว่าได้รับความยินยอมจากนักเรียนและ/หรือผู้ปกครองในการเก็บรวบรวมและใช้ข้อมูลส่วนบุคคลตาม
-              <a href="https://www.ondemand.in.th/privacy-policy" target="_blank">นโยบายความเป็นส่วนตัว (PDPA)</a>
-              ของ OnDemand Education เพื่อวัตถุประสงค์ในการสร้างแผนการเรียนและติดต่อประสานงาน
-            </div>
-          </div>
-        </div>
-        <div class="gen-actions">
-          <button class="gbtn gbtn-primary" onclick="genGo(2)">ถัดไป → เป้าหมายการสอบ ›</button>
-        </div>
-      </div>
-
-      <!-- STEP 2 -->
-      <div id="gstep2" style="display:none">
-        <div class="gen-card">
-          <div class="gen-card-title">🎯 สายการเรียน / เป้าหมาย TCAS</div>
-          <div class="gen-track-grid">
-            <div class="gen-track-card" data-track="medical" onclick="genPickTrack(this)">
-              <div class="gen-track-icon">🏥</div>
-              <div class="gen-track-name">สายแพทย์</div>
-              <div class="gen-track-desc">แพทย์ ทันตแพทย์ เภสัช สัตวแพทย์</div>
-              <div style="margin-top:6px">
-                <span class="gen-badge">A-Level 5 วิชา</span>
-                <span class="gen-badge or">TGAT + TPAT1</span>
-              </div>
-            </div>
-            <div class="gen-track-card" data-track="engineering" onclick="genPickTrack(this)">
-              <div class="gen-track-icon">⚙️</div>
-              <div class="gen-track-name">สายวิศวะ / IT</div>
-              <div class="gen-track-desc">วิศวกรรมศาสตร์ เทคโนโลยี วิทยาการ</div>
-              <div style="margin-top:6px">
-                <span class="gen-badge">A-Level 4 วิชา</span>
-                <span class="gen-badge or">TGAT + TPAT3</span>
-              </div>
-            </div>
-            <div class="gen-track-card" data-track="business" onclick="genPickTrack(this)">
-              <div class="gen-track-icon">📊</div>
-              <div class="gen-track-name">สายบริหาร</div>
-              <div class="gen-track-desc">บริหาร บัญชี เศรษฐศาสตร์ การเงิน</div>
-              <div style="margin-top:6px">
-                <span class="gen-badge">A-Level 4 วิชา</span>
-                <span class="gen-badge or">TGAT</span>
-              </div>
-            </div>
-            <div class="gen-track-card" data-track="science" onclick="genPickTrack(this)">
-              <div class="gen-track-icon">🔬</div>
-              <div class="gen-track-name">วิทย์ทั่วไป</div>
-              <div class="gen-track-desc">วิทย์ ทรัพยากร สิ่งแวดล้อม เกษตร</div>
-              <div style="margin-top:6px">
-                <span class="gen-badge">A-Level 5 วิชา</span>
-                <span class="gen-badge or">TGAT + TPAT3</span>
-              </div>
-            </div>
-            <div class="gen-track-card" data-track="arts" onclick="genPickTrack(this)">
-              <div class="gen-track-icon">📚</div>
-              <div class="gen-track-name">สายศิลป์ / ภาษา</div>
-              <div class="gen-track-desc">อักษร มนุษย์ รัฐศาสตร์ นิติ สังคม</div>
-              <div style="margin-top:6px">
-                <span class="gen-badge">A-Level 4 วิชา</span>
-                <span class="gen-badge or">TGAT</span>
-              </div>
-            </div>
-            <div class="gen-track-card" data-track="custom" onclick="genPickTrack(this)">
-              <div class="gen-track-icon">✏️</div>
-              <div class="gen-track-name">กำหนดเอง</div>
-              <div class="gen-track-desc">เลือกวิชาเองในขั้นตอนถัดไป</div>
-              <div style="margin-top:6px">
-                <span class="gen-badge">Custom</span>
-              </div>
-            </div>
-          </div>
-        </div>
-        <div class="gen-card">
-          <div class="gen-card-title">🎓 คณะ / มหาวิทยาลัยเป้าหมาย</div>
-          <div class="gen-fgrid">
-            <div class="gen-fg">
-              <label class="gen-lbl">คณะเป้าหมาย <span class="req">*</span></label>
-              <input class="gen-inp" type="text" id="gFaculty" placeholder="เช่น คณะแพทยศาสตร์ จุฬาลงกรณ์มหาวิทยาลัย"/>
-            </div>
-            <div class="gen-fg">
-              <label class="gen-lbl">รอบ TCAS ที่เน้น</label>
-              <select class="gen-inp" id="gTcasR">
-                <option value="3">รอบ 3 Admission (A-Level)</option>
-                <option value="2">รอบ 2 Quota</option>
-                <option value="1">รอบ 1 Portfolio</option>
-                <option value="all">ทุกรอบ</option>
-              </select>
-            </div>
-            <div class="gen-fg">
-              <label class="gen-lbl">ชั่วโมงเรียนต่อสัปดาห์</label>
-              <select class="gen-inp" id="gWkHrs">
-                <option value="5">น้อยกว่า 5 ชม. (เสริมเบาๆ)</option>
-                <option value="10" selected>5-10 ชม. (ปกติ)</option>
-                <option value="15">10-15 ชม. (เข้มข้น)</option>
-                <option value="20">มากกว่า 15 ชม. (Full mode)</option>
-              </select>
-            </div>
-            <div class="gen-fg">
-              <label class="gen-lbl">จุดอ่อนหลัก</label>
-              <select class="gen-inp" id="gWeak">
-                <option value="content">เนื้อหา (ไม่เข้าใจ)</option>
-                <option value="practice">ทำโจทย์ (ผิดบ่อย / ช้า)</option>
-                <option value="exam">เทคนิคสอบ (บริหารเวลา)</option>
-                <option value="all">ทุกด้าน</option>
-              </select>
-            </div>
-            <div class="gen-fg gfull">
-              <label class="gen-lbl">หมายเหตุ / ความต้องการพิเศษ</label>
-              <textarea class="gen-inp" id="gNotes" rows="2" placeholder="เช่น น้องเน้นฟิสิกส์, มีสอบ Mock ที่โรงเรียนทุก 2 เดือน..."></textarea>
-            </div>
-          </div>
-        </div>
-        <div class="gen-actions">
-          <button class="gbtn gbtn-outline" onclick="genGo(1)">‹ ย้อนกลับ</button>
-          <button class="gbtn gbtn-primary" onclick="genGo(3)">ถัดไป → เลือกวิชา ›</button>
-        </div>
-      </div>
-
-      <!-- STEP 3 -->
-      <div id="gstep3" style="display:none">
-        <div class="gen-card">
-          <div class="gen-card-title">📚 วิชาในแผน ONDY (เลือก/ยกเลิกได้)</div>
-          <div class="gen-subj-grid" id="gSubjGrid"></div>
-        </div>
-        <div class="gen-card">
-          <div class="gen-card-title">🎯 เป้าหมายคะแนน A-Level (ไม่บังคับ)</div>
-          <div class="gen-score-grid" id="gScoreGrid"></div>
-        </div>
-        <div class="gen-actions">
-          <button class="gbtn gbtn-outline" onclick="genGo(2)">‹ ย้อนกลับ</button>
-          <button class="gbtn gbtn-gen" onclick="genApplyPlan()">✨ สร้างแผนการเรียน ONDY !</button>
-        </div>
-      </div>
-
-    </div><!-- /gen-body -->
-  </div><!-- /gen-modal -->
-</div><!-- /gen-overlay -->
 
 <!-- COURSE PICKER MODAL -->
 <div class="modal-overlay" id="modalOverlay">
@@ -550,27 +273,48 @@ textarea.gen-inp{resize:vertical;min-height:48px;}
             <rect x="1" y="27" width="12" height="12" rx="1.5" fill="currentColor"/>
             <rect x="3" y="29" width="8" height="8" rx="1" fill="white"/>
             <rect x="5" y="31" width="4" height="4" rx=".5" fill="currentColor"/>
-            <rect x="15" y="1" width="2" height="2" fill="currentColor"/><rect x="19" y="1" width="4" height="2" fill="currentColor"/>
-            <rect x="25" y="1" width="2" height="2" fill="currentColor"/><rect x="15" y="5" width="4" height="2" fill="currentColor"/>
-            <rect x="21" y="5" width="2" height="4" fill="currentColor"/><rect x="15" y="9" width="2" height="4" fill="currentColor"/>
-            <rect x="19" y="11" width="4" height="2" fill="currentColor"/><rect x="1" y="15" width="4" height="2" fill="currentColor"/>
-            <rect x="7" y="15" width="2" height="4" fill="currentColor"/><rect x="11" y="15" width="4" height="2" fill="currentColor"/>
-            <rect x="15" y="15" width="2" height="2" fill="currentColor"/><rect x="19" y="15" width="4" height="2" fill="currentColor"/>
-            <rect x="25" y="15" width="2" height="4" fill="currentColor"/><rect x="29" y="15" width="4" height="2" fill="currentColor"/>
-            <rect x="35" y="15" width="4" height="2" fill="currentColor"/><rect x="1" y="19" width="2" height="4" fill="currentColor"/>
-            <rect x="5" y="19" width="4" height="2" fill="currentColor"/><rect x="11" y="19" width="2" height="2" fill="currentColor"/>
-            <rect x="15" y="19" width="6" height="2" fill="currentColor"/><rect x="23" y="19" width="2" height="2" fill="currentColor"/>
-            <rect x="27" y="19" width="4" height="2" fill="currentColor"/><rect x="33" y="19" width="6" height="2" fill="currentColor"/>
-            <rect x="3" y="23" width="2" height="2" fill="currentColor"/><rect x="7" y="23" width="4" height="2" fill="currentColor"/>
-            <rect x="13" y="23" width="2" height="4" fill="currentColor"/><rect x="17" y="23" width="4" height="2" fill="currentColor"/>
-            <rect x="23" y="23" width="2" height="2" fill="currentColor"/><rect x="27" y="23" width="6" height="2" fill="currentColor"/>
-            <rect x="35" y="23" width="4" height="4" fill="currentColor"/><rect x="15" y="27" width="2" height="2" fill="currentColor"/>
-            <rect x="19" y="27" width="4" height="2" fill="currentColor"/><rect x="25" y="27" width="2" height="2" fill="currentColor"/>
-            <rect x="29" y="27" width="4" height="2" fill="currentColor"/><rect x="15" y="31" width="4" height="2" fill="currentColor"/>
-            <rect x="21" y="31" width="2" height="4" fill="currentColor"/><rect x="25" y="31" width="4" height="2" fill="currentColor"/>
-            <rect x="31" y="31" width="2" height="2" fill="currentColor"/><rect x="35" y="31" width="4" height="2" fill="currentColor"/>
-            <rect x="15" y="35" width="2" height="4" fill="currentColor"/><rect x="19" y="37" width="6" height="2" fill="currentColor"/>
-            <rect x="27" y="35" width="2" height="4" fill="currentColor"/><rect x="31" y="35" width="4" height="2" fill="currentColor"/>
+            <rect x="15" y="1" width="2" height="2" fill="currentColor"/>
+            <rect x="19" y="1" width="4" height="2" fill="currentColor"/>
+            <rect x="25" y="1" width="2" height="2" fill="currentColor"/>
+            <rect x="15" y="5" width="4" height="2" fill="currentColor"/>
+            <rect x="21" y="5" width="2" height="4" fill="currentColor"/>
+            <rect x="15" y="9" width="2" height="4" fill="currentColor"/>
+            <rect x="19" y="11" width="4" height="2" fill="currentColor"/>
+            <rect x="1" y="15" width="4" height="2" fill="currentColor"/>
+            <rect x="7" y="15" width="2" height="4" fill="currentColor"/>
+            <rect x="11" y="15" width="4" height="2" fill="currentColor"/>
+            <rect x="15" y="15" width="2" height="2" fill="currentColor"/>
+            <rect x="19" y="15" width="4" height="2" fill="currentColor"/>
+            <rect x="25" y="15" width="2" height="4" fill="currentColor"/>
+            <rect x="29" y="15" width="4" height="2" fill="currentColor"/>
+            <rect x="35" y="15" width="4" height="2" fill="currentColor"/>
+            <rect x="1" y="19" width="2" height="4" fill="currentColor"/>
+            <rect x="5" y="19" width="4" height="2" fill="currentColor"/>
+            <rect x="11" y="19" width="2" height="2" fill="currentColor"/>
+            <rect x="15" y="19" width="6" height="2" fill="currentColor"/>
+            <rect x="23" y="19" width="2" height="2" fill="currentColor"/>
+            <rect x="27" y="19" width="4" height="2" fill="currentColor"/>
+            <rect x="33" y="19" width="6" height="2" fill="currentColor"/>
+            <rect x="3" y="23" width="2" height="2" fill="currentColor"/>
+            <rect x="7" y="23" width="4" height="2" fill="currentColor"/>
+            <rect x="13" y="23" width="2" height="4" fill="currentColor"/>
+            <rect x="17" y="23" width="4" height="2" fill="currentColor"/>
+            <rect x="23" y="23" width="2" height="2" fill="currentColor"/>
+            <rect x="27" y="23" width="6" height="2" fill="currentColor"/>
+            <rect x="35" y="23" width="4" height="4" fill="currentColor"/>
+            <rect x="15" y="27" width="2" height="2" fill="currentColor"/>
+            <rect x="19" y="27" width="4" height="2" fill="currentColor"/>
+            <rect x="25" y="27" width="2" height="2" fill="currentColor"/>
+            <rect x="29" y="27" width="4" height="2" fill="currentColor"/>
+            <rect x="15" y="31" width="4" height="2" fill="currentColor"/>
+            <rect x="21" y="31" width="2" height="4" fill="currentColor"/>
+            <rect x="25" y="31" width="4" height="2" fill="currentColor"/>
+            <rect x="31" y="31" width="2" height="2" fill="currentColor"/>
+            <rect x="35" y="31" width="4" height="2" fill="currentColor"/>
+            <rect x="15" y="35" width="2" height="4" fill="currentColor"/>
+            <rect x="19" y="37" width="6" height="2" fill="currentColor"/>
+            <rect x="27" y="35" width="2" height="4" fill="currentColor"/>
+            <rect x="31" y="35" width="4" height="2" fill="currentColor"/>
           </svg>
         </div>
       </div>
@@ -588,10 +332,11 @@ textarea.gen-inp{resize:vertical;min-height:48px;}
     <div class="h-sub">วางแผนคอร์สรายบุคคล — OnDemand Academy</div>
   </div>
   <div class="h-btns">
-    <button class="hbtn genbtn" onclick="openGenModal()">🎯 Auto-Generate Plan</button>
     <button class="hbtn" id="guruBtn" onclick="toggleGuru()">&#128274; Guru View</button>
     <button class="hbtn" id="prevBtn" onclick="togglePreview()">&#128065; Preview</button>
     <button class="hbtn" onclick="printPlan()">&#128424; Print / PDF</button>
+    <button class="hbtn save" onclick="savePlanToSheet()">&#128190; บันทึกแผน</button>
+    <button class="hbtn email-btn" onclick="sendEmailPDF()">&#128140; ส่ง Email+PDF</button>
   </div>
 </header>
 
@@ -601,57 +346,83 @@ textarea.gen-inp{resize:vertical;min-height:48px;}
     <div class="bcard">
       <div class="bcard-title">&#128100; ข้อมูลนักเรียน</div>
       <div class="fgrid">
-        <div><label class="flbl">ชื่อจริง</label><input class="finput" id="stName" type="text" placeholder="ชื่อ นามสกุล" oninput="updateAll()"></div>
+        <div><label class="flbl">ชื่อจริง</label><input class="finput" id="stName" type="text" placeholder="ชื่อ" oninput="updateAll()"></div>
+        <div><label class="flbl">นามสกุล</label><input class="finput" id="stLastName" type="text" placeholder="นามสกุล" oninput="updateAll()"></div>
         <div><label class="flbl">ชื่อเล่น</label><input class="finput" id="stNick" type="text" placeholder="ชื่อเล่น" oninput="updateAll()"></div>
+        <div><label class="flbl">วันเกิด</label><input class="finput" id="stBirth" type="date" oninput="updateAll()"></div>
         <div><label class="flbl">ชั้นปัจจุบัน</label>
           <select class="finput" id="stLevel" onchange="renderCal();applyPersonaPrefill();updateAll()">
             <option>ม.4</option><option>ม.5</option><option>ม.6</option>
           </select></div>
         <div><label class="flbl">GPA</label><input class="finput" id="stGpa" type="number" step="0.01" min="0" max="4" placeholder="0.00" oninput="updateAll()"></div>
         <div class="full"><label class="flbl">โรงเรียน</label><input class="finput" id="stSch" type="text" placeholder="ชื่อโรงเรียน" oninput="updateAll()"></div>
-        <div><label class="flbl">อีเมล</label><input class="finput" id="stEmail" type="email" placeholder="example@email.com" oninput="updateAll()"></div>
-        <div><label class="flbl">เบอร์โทร</label><input class="finput" id="stPhone" type="tel" placeholder="08X-XXX-XXXX" oninput="updateAll()"></div>
         <div><label class="flbl">รหัสนักเรียน</label><input class="finput" id="stCode" type="text" placeholder="รหัส" oninput="updateAll()"></div>
-        <div><label class="flbl">Guru ผู้วางแผน</label><input class="finput" id="stGuru" type="text" placeholder="ชื่อ Guru" oninput="updateAll()"></div>
+        <div><label class="flbl">เบอร์โทร <span style="color:#EF4444">*</span></label><input class="finput" id="stPhone" type="tel" placeholder="0812345678" oninput="updateAll()"></div>
+        <div class="full"><label class="flbl">Email นักเรียน <span style="color:#EF4444">*</span></label><input class="finput" id="stEmail" type="email" placeholder="student@email.com" oninput="updateAll()"></div>
+        <div><label class="flbl">Guru ผู้วางแผน <span style="color:#EF4444">*</span></label>
+          <select class="finput" id="stGuru" onchange="onGuruChange();updateAll()">
+            <option value="">— กำลังโหลด... —</option>
+            <option value="__freetext__">✏️ พิมพ์เอง (Freetext)</option>
+          </select>
+          <div id="guruFreeRow"><input class="finput" id="stGuruFree" type="text" placeholder="ชื่อ Guru (พิมพ์เอง)" oninput="updateAll()"></div>
+        </div>
         <div class="full"><label class="flbl">สาขา OnDemand</label>
           <select class="finput" id="stBranch" onchange="updateAll()">
             <optgroup label="── AM: AOR │ Hub: Zee ──">
-              <option>MBK</option><option>PKL</option>
+              <option>MBK</option>
+              <option>PKL</option>
             </optgroup>
             <optgroup label="── AM: AOR │ Hub: Simp ──">
-              <option>SNR</option><option>WST</option><option>NGW</option><option>RST</option>
+              <option>SNR</option>
+              <option>WST</option>
+              <option>NGW</option>
+              <option>RST</option>
             </optgroup>
             <optgroup label="── AM: AOR │ Hub: Gift ──">
-              <option>VVY</option><option>NPT</option><option>PKS</option>
+              <option>VVY</option>
+              <option>NPT</option>
+              <option>PKS</option>
             </optgroup>
             <optgroup label="── AM: TAE │ Hub: TAE ──">
-              <option>HYD</option><option>SNI</option><option>NRT</option><option>TRG</option>
-              <option>CPN</option><option>PKT</option><option>RBR</option><option>SPB</option><option>PBI</option>
+              <option>HYD</option>
+              <option>SNI</option>
+              <option>NRT</option>
+              <option>TRG</option>
+              <option>CPN</option>
+              <option>PKT</option>
+              <option>RBR</option>
+              <option>SPB</option>
+              <option>PBI</option>
             </optgroup>
             <optgroup label="── AM: BOTUN │ Hub: BOTUN ──">
-              <option>NSN</option><option>LRI</option><option>SRI</option><option>AYA</option>
-              <option>CMI</option><option>CRI</option><option>LPG</option><option>PLK</option>
+              <option>NSN</option>
+              <option>LRI</option>
+              <option>SRI</option>
+              <option>AYA</option>
+              <option>CMI</option>
+              <option>CRI</option>
+              <option>LPG</option>
+              <option>PLK</option>
             </optgroup>
             <optgroup label="── AM: TALAY │ Hub: NIM ──">
-              <option>UBN</option><option>NMA</option><option>BRM</option>
+              <option>UBN</option>
+              <option>NMA</option>
+              <option>BRM</option>
             </optgroup>
             <optgroup label="── AM: TALAY │ Hub: TALAY ──">
-              <option>UDN</option><option>KKN</option><option>RET</option>
+              <option>UDN</option>
+              <option>KKN</option>
+              <option>RET</option>
             </optgroup>
             <optgroup label="── AM: TALAY │ Hub: Most ──">
-              <option>CBI</option><option>RYG</option><option>COO</option>
+              <option>CBI</option>
+              <option>RYG</option>
+              <option>COO</option>
             </optgroup>
             <optgroup label="── ออนไลน์ ──">
               <option>Online</option>
             </optgroup>
           </select></div>
-      </div>
-      <div class="pdpa-side">
-        <input type="checkbox" id="stPdpa"/>
-        <div class="pdpa-side-text">
-          ยืนยันได้รับความยินยอม PDPA จากนักเรียน/ผู้ปกครองแล้ว —
-          <a href="https://www.ondemand.in.th/privacy-policy" target="_blank">นโยบายความเป็นส่วนตัว</a>
-        </div>
       </div>
     </div>
     <div class="bcard">
@@ -674,6 +445,17 @@ textarea.gen-inp{resize:vertical;min-height:48px;}
           </select></div>
         <div class="full"><label class="flbl">มหาวิทยาลัยเป้าหมาย</label><input class="finput" id="stUni" type="text" placeholder="เช่น จุฬา" oninput="updateAll()"></div>
         <div class="full"><label class="flbl">คณะ / สาขาเป้าหมาย</label><input class="finput" id="stFac" type="text" placeholder="เช่น วิศวกรรมคอมพิวเตอร์" oninput="updateAll()"></div>
+        <div class="full"><label class="flbl">แหล่งที่มา / Source</label>
+          <select class="finput" id="stSource" onchange="updateAll()">
+            <option value="">— ไม่ระบุ —</option>
+            <option>Walk-in สาขา</option>
+            <option>Line OA / Social Media</option>
+            <option>TikTok</option>
+            <option>งาน / Event</option>
+            <option>Referral / MGM</option>
+            <option>ONDY Online</option>
+            <option>อื่นๆ</option>
+          </select></div>
       </div>
     </div>
     <div class="bcard">
@@ -689,7 +471,7 @@ textarea.gen-inp{resize:vertical;min-height:48px;}
     </div>
   </div>
   <div class="rpanel">
-    <div class="hint-bar">&#128161; <strong>วิธีใช้:</strong> คลิกช่องเดือนในปฏิทินเพื่อเปิดหน้าต่างเลือกคอร์ส | กด <strong>🎯 Auto-Generate Plan</strong> เพื่อสร้างแผนอัตโนมัติ</div>
+    <div class="hint-bar">&#128161; <strong>วิธีใช้:</strong> คลิกช่องเดือนในปฏิทินเพื่อเปิดหน้าต่างเลือกคอร์ส | คลิก ✕ บนชิปเพื่อลบ</div>
     <div class="cal-wrap">
       <div class="bcard-title" style="margin-bottom:10px;">&#128197; ปฏิทินแผนการเรียน 3 ปี <span style="font-size:10px;font-weight:400;color:var(--gray3);text-transform:none;letter-spacing:0;">(คลิกช่องเดือนเพื่อเพิ่มคอร์ส)</span></div>
       <div style="overflow-x:auto;">
@@ -703,392 +485,690 @@ textarea.gen-inp{resize:vertical;min-height:48px;}
   </div>
 </div>
 
-<!-- SUCCESS TOAST -->
-<div class="toast" id="toast">
-  <span>✅</span>
-  <span id="toastMsg">สร้างแผนเรียบร้อย!</span>
-</div>
-
 <script>
-// ═══════════════════════════════════════════════════
-//  MEMBER PLANNER — CORE DATA & LOGIC
-// ═══════════════════════════════════════════════════
+
+// ═══════════════════════════════════════════════════════════════
+// APPS SCRIPT BACKEND CONFIG — ใส่ URL ที่นี่หลัง Deploy
+// ═══════════════════════════════════════════════════════════════
+var APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxPLACEHOLDER/exec';
+
+// ─── LOAD GURU LIST FROM APPS SCRIPT ───────────────────────────
+function loadGurus(){
+  if(!APPS_SCRIPT_URL || APPS_SCRIPT_URL.indexOf('PLACEHOLDER') >= 0) {
+    // Fallback: show freetext only
+    var sel = document.getElementById('stGuru');
+    sel.innerHTML = '<option value="">— ไม่ได้เชื่อม Apps Script —</option><option value="__freetext__">✏️ พิมพ์เอง (Freetext)</option>';
+    document.getElementById('guruFreeRow').style.display = 'block';
+    return;
+  }
+  fetch(APPS_SCRIPT_URL + '?action=getGurus')
+    .then(function(r){ return r.json(); })
+    .then(function(data){
+      var sel = document.getElementById('stGuru');
+      sel.innerHTML = '<option value="">— เลือก Guru —</option>';
+      (data.gurus || []).forEach(function(g){
+        var opt = document.createElement('option');
+        opt.value = g; opt.textContent = g;
+        sel.appendChild(opt);
+      });
+      var ft = document.createElement('option');
+      ft.value = '__freetext__'; ft.textContent = '✏️ พิมพ์เอง (Freetext)';
+      sel.appendChild(ft);
+    })
+    .catch(function(){
+      var sel = document.getElementById('stGuru');
+      sel.innerHTML = '<option value="">— โหลดไม่ได้ —</option><option value="__freetext__">✏️ พิมพ์เอง (Freetext)</option>';
+    });
+}
+
+function onGuruChange(){
+  var sel = document.getElementById('stGuru');
+  var fr = document.getElementById('guruFreeRow');
+  fr.style.display = sel.value === '__freetext__' ? 'block' : 'none';
+}
+
+function getGuruValue(){
+  var sel = document.getElementById('stGuru');
+  if(sel.value === '__freetext__') return document.getElementById('stGuruFree').value.trim();
+  return sel.value;
+}
+
+// ─── TOAST ─────────────────────────────────────────────────────
+function showToast(msg, type, dur){
+  var t = document.getElementById('toast');
+  t.textContent = msg;
+  t.className = 'show ' + (type||'');
+  clearTimeout(t._timer);
+  t._timer = setTimeout(function(){ t.className = ''; }, dur || 4000);
+}
+
+function setLoading(show, msg){
+  var ol = document.getElementById('loadingOverlay');
+  ol.classList.toggle('open', show);
+  if(msg) document.getElementById('loadingMsg').textContent = msg;
+}
+
+// ─── BUILD PAYLOAD ──────────────────────────────────────────────
+function buildPayload(){
+  var placed = {}; var startRow = getStartRow();
+  for(var li=startRow;li<3;li++) for(var mi=0;mi<12;mi++) cal[li][mi].forEach(function(id){ placed[id]=1; });
+  var pids = Object.keys(placed);
+  var totalHrs=0, totalPrice=0;
+  pids.forEach(function(id){ var c=COURSES.find(function(x){return x.id===id;}); if(c){totalHrs+=c.hours;totalPrice+=c.price;} });
+
+  // Build months array (Jan-Dec) for ALL 3 rows (will flatten to "ปีX: ...")
+  var months = [];
+  for(var mi=0;mi<12;mi++){
+    var lines = [], val = 0;
+    for(var li2=0;li2<3;li2++){
+      if(cal[li2][mi].length){
+        var yr = LEVELS[li2];
+        cal[li2][mi].forEach(function(cid){
+          var c = COURSES.find(function(x){return x.id===cid;});
+          if(c){ lines.push(yr+': '+c.name); val += c.price; }
+        });
+      }
+    }
+    months.push({ courses: lines.join('
+'), value: val });
+  }
+
+  var planDays = 0;
+  var yrs = getYears();
+  var endDate = new Date(yrs[2]-543, 11, 31);
+  var today = new Date();
+  if(endDate > today) planDays = Math.ceil((endDate - today)/(1000*60*60*24));
+
+  return {
+    branch:      (document.getElementById('stBranch')||{}).value || '',
+    guru:        getGuruValue(),
+    status:      'นักเรียน',
+    firstName:   (document.getElementById('stName')||{}).value || '',
+    lastName:    (document.getElementById('stLastName')||{}).value || '',
+    school:      (document.getElementById('stSch')||{}).value || '',
+    grade:       (document.getElementById('stLevel')||{}).value || '',
+    email:       (document.getElementById('stEmail')||{}).value || '',
+    phone:       (document.getElementById('stPhone')||{}).value || '',
+    odmId:       (document.getElementById('stCode')||{}).value || '',
+    birthDate:   (document.getElementById('stBirth')||{}).value || '',
+    faculty:     (document.getElementById('stFac')||{}).value || '',
+    university:  (document.getElementById('stUni')||{}).value || '',
+    planMonths:  months.map(function(m,i){ return m.courses ? MONTHS[i]+': '+m.courses : null; }).filter(Boolean).join(' | '),
+    months:      months,
+    totalValue:  totalPrice,
+    totalHours:  totalHrs,
+    hoursPerDay: totalHrs > 0 ? Math.round(totalHrs / Math.max(planDays, 1) * 10) / 10 : 0,
+    planDays:    planDays,
+    source:      (document.getElementById('stSource')||{}).value || '',
+    note:        '',
+  };
+}
+
+// ─── SAVE TO SHEET ──────────────────────────────────────────────
+function savePlanToSheet(){
+  var payload = buildPayload();
+  if(!payload.firstName){ showToast('กรุณากรอกชื่อนักเรียน','error'); return; }
+  if(!payload.phone){ showToast('กรุณากรอกเบอร์โทรศัพท์','error'); return; }
+  if(!payload.guru){ showToast('กรุณาเลือก Guru ผู้วางแผน','error'); return; }
+  var hasCourse = payload.months.some(function(m){ return m.courses.trim(); });
+  if(!hasCourse){ showToast('ต้องมีอย่างน้อย 1 คอร์สในแผน','error'); return; }
+
+  if(APPS_SCRIPT_URL.indexOf('PLACEHOLDER') >= 0){
+    showToast('⚠️ ยังไม่ได้ตั้งค่า APPS_SCRIPT_URL — กรุณาใส่ URL Apps Script','error',6000);
+    return;
+  }
+
+  setLoading(true, 'กำลังบันทึกแผนลง Google Sheets...');
+  fetch(APPS_SCRIPT_URL, {
+    method: 'POST',
+    body: JSON.stringify(Object.assign({ action: 'save' }, payload))
+  })
+  .then(function(r){ return r.json(); })
+  .then(function(data){
+    setLoading(false);
+    if(data.ok){
+      showToast('✅ บันทึกสำเร็จ! ID: ' + data.onDyId, 'success', 5000);
+    } else {
+      showToast('❌ ' + (data.error||'เกิดข้อผิดพลาด'), 'error');
+    }
+  })
+  .catch(function(err){
+    setLoading(false);
+    showToast('❌ ไม่สามารถเชื่อมต่อ: ' + err.message, 'error');
+  });
+}
+
+// ─── SEND EMAIL + PDF ───────────────────────────────────────────
+function sendEmailPDF(){
+  var emailEl = document.getElementById('stEmail');
+  if(!emailEl || !emailEl.value){
+    showToast('กรุณากรอก Email นักเรียนก่อนส่ง','error'); return;
+  }
+  if(APPS_SCRIPT_URL.indexOf('PLACEHOLDER') >= 0){
+    showToast('⚠️ ยังไม่ได้ตั้งค่า APPS_SCRIPT_URL','error',6000); return;
+  }
+
+  setLoading(true, 'กำลังสร้าง PDF แผนการเรียน...');
+  populatePrintView();
+
+  var pvEl = document.getElementById('pv');
+  var pvWas = pvEl.style.cssText;
+  pvEl.style.cssText = 'display:block;position:absolute;left:-9999px;top:0;';
+
+  var opt = {
+    margin: 0,
+    filename: 'ONDY_Plan_' + (document.getElementById('stName').value||'student') + '.pdf',
+    image: { type:'jpeg', quality:0.9 },
+    html2canvas: { scale:2, useCORS:true, logging:false },
+    jsPDF: { unit:'mm', format:'a4', orientation:'landscape' }
+  };
+
+  html2pdf().set(opt).from(pvEl.querySelector('.pvpage')).outputPdf('datauristring').then(function(dataUri){
+    pvEl.style.cssText = pvWas;
+    var base64 = dataUri.split(',')[1];
+    var studentName = document.getElementById('stName').value || 'นักเรียน';
+    var guru = getGuruValue();
+    var branch = document.getElementById('stBranch').value;
+
+    setLoading(true, 'กำลังส่ง Email พร้อม PDF...');
+    return fetch(APPS_SCRIPT_URL, {
+      method: 'POST',
+      body: JSON.stringify({
+        action: 'sendEmail',
+        to: emailEl.value,
+        bcc: 'nutdanai.som@ondemand.in.th',
+        studentName: studentName,
+        guru: guru,
+        branch: branch,
+        pdfBase64: base64,
+        pdfName: 'ONDY_Plan_' + studentName + '.pdf',
+      })
+    });
+  })
+  .then(function(r){ return r.json(); })
+  .then(function(data){
+    setLoading(false);
+    pvEl.style.cssText = pvWas;
+    if(data.ok){
+      showToast('✅ ส่ง Email พร้อม PDF เรียบร้อยแล้ว!', 'success', 5000);
+    } else {
+      showToast('❌ ' + (data.error||'เกิดข้อผิดพลาด'), 'error');
+    }
+  })
+  .catch(function(err){
+    setLoading(false);
+    pvEl.style.cssText = pvWas;
+    showToast('❌ ' + err.message, 'error');
+  });
+}
+
 var MONTHS = ['ม.ค.','ก.พ.','มี.ค.','เม.ย.','พ.ค.','มิ.ย.','ก.ค.','ส.ค.','ก.ย.','ต.ค.','พ.ย.','ธ.ค.'];
 var LEVELS = ['ม.4','ม.5','ม.6'];
 var COURSES = [
-  {id:'b99-math',cat:'b99',name:'ปรับพื้นฐาน คณิตศาสตร์ ม.ปลาย',hours:10,price:99},
-  {id:'b99-phy',cat:'b99',name:'ปรับพื้นฐาน ฟิสิกส์ ม.4',hours:10,price:99},
-  {id:'b99-chem',cat:'b99',name:'ปรับพื้นฐาน เคมี',hours:10,price:99},
-  {id:'b99-bio',cat:'b99',name:'ปรับพื้นฐาน ชีววิทยา',hours:10,price:99},
-  {id:'b99-eng',cat:'b99',name:'ปรับพื้นฐาน ภาษาอังกฤษ ม.ปลาย',hours:10,price:99},
-  {id:'b99-tp1',cat:'b99',name:'ปรับพื้นฐาน TPAT1 ความถนัดแพทย์',hours:8,price:99},
-  {id:'b99-tp3',cat:'b99',name:'ปรับพื้นฐาน TPAT3 วิทย์-เทคโนโลยี',hours:8,price:99},
-  {id:'b99-3a',cat:'b99',name:'Special Pack 99B คณิต+ชีวะ+เคมี',hours:30,price:297},
-  {id:'b99-3b',cat:'b99',name:'Special Pack 99B ฟิสิกส์+ชีวะ+เคมี',hours:30,price:297},
-  {id:'b99-3c',cat:'b99',name:'Special Pack 99B ฟิสิกส์+คณิต+ชีวะ',hours:30,price:297},
+  // ── 99B ปรับพื้นฐาน ──────────────────────────────────
+  {id:'b99-math',cat:'b99',name:'ปรับพื้นฐาน คณิตศาสตร์ ม.ปลาย',  hours:10,price:99},
+  {id:'b99-phy', cat:'b99',name:'ปรับพื้นฐาน ฟิสิกส์ ม.4',         hours:10,price:99},
+  {id:'b99-chem',cat:'b99',name:'ปรับพื้นฐาน เคมี',                 hours:10,price:99},
+  {id:'b99-bio', cat:'b99',name:'ปรับพื้นฐาน ชีววิทยา',             hours:10,price:99},
+  {id:'b99-eng', cat:'b99',name:'ปรับพื้นฐาน ภาษาอังกฤษ ม.ปลาย',  hours:10,price:99},
+  {id:'b99-tp1', cat:'b99',name:'ปรับพื้นฐาน TPAT1 ความถนัดแพทย์', hours:8, price:99},
+  {id:'b99-tp3', cat:'b99',name:'ปรับพื้นฐาน TPAT3 วิทย์-เทคโนโลยี',hours:8,price:99},
+  {id:'b99-3a',  cat:'b99',name:'Special Pack 99B คณิต+ชีวะ+เคมี',  hours:30,price:297},
+  {id:'b99-3b',  cat:'b99',name:'Special Pack 99B ฟิสิกส์+ชีวะ+เคมี',hours:30,price:297},
+  {id:'b99-3c',  cat:'b99',name:'Special Pack 99B ฟิสิกส์+คณิต+ชีวะ',hours:30,price:297},
   {id:'b99-pmath',cat:'b99',name:'Special Pack ปรับพื้นฐาน คณิต TCAS',hours:10,price:99},
-  {id:'b99-pphy',cat:'b99',name:'Special Pack ปรับพื้นฐาน ฟิสิกส์ TCAS',hours:10,price:99},
-  {id:'b99-pbio',cat:'b99',name:'Special Pack ปรับพื้นฐาน ชีวะ TCAS',hours:10,price:99},
-  {id:'b99-peng',cat:'b99',name:'Special Pack ปรับพื้นฐาน อังกฤษ TCAS',hours:10,price:99},
-  {id:'b99-med',cat:'b99',name:'Special Pack ปรับพื้นฐาน หมอ 6 วิชา',hours:60,price:594},
-  {id:'b99-eng2',cat:'b99',name:'Special Pack ปรับพื้นฐาน วิศวะ 5 วิชา',hours:50,price:495},
-  {id:'pk-math',cat:'pack-tcas',name:'Pack TCAS คณิตศาสตร์',hours:40,price:9500,hot:1},
-  {id:'pk-phy',cat:'pack-tcas',name:'Pack TCAS ฟิสิกส์',hours:40,price:9500,hot:1},
-  {id:'pk-chem',cat:'pack-tcas',name:'Pack TCAS เคมี',hours:38,price:9500},
-  {id:'pk-bio',cat:'pack-tcas',name:'Pack TCAS ชีววิทยา',hours:36,price:9500},
-  {id:'pk-eng',cat:'pack-tcas',name:'Pack TCAS ภาษาอังกฤษ',hours:32,price:8500},
+  {id:'b99-pphy', cat:'b99',name:'Special Pack ปรับพื้นฐาน ฟิสิกส์ TCAS',hours:10,price:99},
+  {id:'b99-pbio', cat:'b99',name:'Special Pack ปรับพื้นฐาน ชีวะ TCAS',hours:10,price:99},
+  {id:'b99-peng', cat:'b99',name:'Special Pack ปรับพื้นฐาน อังกฤษ TCAS',hours:10,price:99},
+  {id:'b99-med',  cat:'b99',name:'Special Pack ปรับพื้นฐาน หมอ 6 วิชา',hours:60,price:594},
+  {id:'b99-eng2', cat:'b99',name:'Special Pack ปรับพื้นฐาน วิศวะ 5 วิชา',hours:50,price:495},
+  // ── Pack TCAS ─────────────────────────────────────────
+  {id:'pk-math',cat:'pack-tcas',name:'Pack TCAS คณิตศาสตร์',         hours:40,price:9500,hot:1},
+  {id:'pk-phy', cat:'pack-tcas',name:'Pack TCAS ฟิสิกส์',             hours:40,price:9500,hot:1},
+  {id:'pk-chem',cat:'pack-tcas',name:'Pack TCAS เคมี',                hours:38,price:9500},
+  {id:'pk-bio', cat:'pack-tcas',name:'Pack TCAS ชีววิทยา',            hours:36,price:9500},
+  {id:'pk-eng', cat:'pack-tcas',name:'Pack TCAS ภาษาอังกฤษ',          hours:32,price:8500},
+  // ── Pack TCAS + Upskill ───────────────────────────────
   {id:'up-math',cat:'pack-upskill',name:'Pack TCAS + Upskill คณิตศาสตร์',hours:55,price:11900,hot:1},
-  {id:'up-phy',cat:'pack-upskill',name:'Pack TCAS + Upskill ฟิสิกส์',hours:55,price:11900},
-  {id:'up-chem',cat:'pack-upskill',name:'Pack TCAS + Upskill เคมี',hours:52,price:11900},
-  {id:'up-bio',cat:'pack-upskill',name:'Pack TCAS + Upskill ชีววิทยา',hours:50,price:11900},
-  {id:'up-eng',cat:'pack-upskill',name:'Pack TCAS + Upskill ภาษาอังกฤษ',hours:45,price:11000},
-  {id:'up-4',cat:'pack-upskill',name:'Pack Upskill TCAS 4 วิชา (ฟิสิกส์,เคมี,ชีวะ,คณิต)',hours:200,price:11900,hot:1},
+  {id:'up-phy', cat:'pack-upskill',name:'Pack TCAS + Upskill ฟิสิกส์',   hours:55,price:11900},
+  {id:'up-chem',cat:'pack-upskill',name:'Pack TCAS + Upskill เคมี',       hours:52,price:11900},
+  {id:'up-bio', cat:'pack-upskill',name:'Pack TCAS + Upskill ชีววิทยา',  hours:50,price:11900},
+  {id:'up-eng', cat:'pack-upskill',name:'Pack TCAS + Upskill ภาษาอังกฤษ',hours:45,price:11000},
+  {id:'up-4',   cat:'pack-upskill',name:'Pack Upskill TCAS 4 วิชา (ฟิสิกส์,เคมี,ชีวะ,คณิต)',hours:200,price:11900,hot:1},
+  // ── A-Level Upskill ───────────────────────────────────
   {id:'al-math',cat:'alevel',name:'Upskill คณิตศาสตร์ประยุกต์ A-Level',hours:50,price:4000,hot:1},
-  {id:'al-phy',cat:'alevel',name:'Upskill ฟิสิกส์ A-Level',hours:50,price:4000,hot:1},
-  {id:'al-chem',cat:'alevel',name:'Upskill เคมี A-Level',hours:48,price:4000},
-  {id:'al-bio',cat:'alevel',name:'Upskill ชีววิทยา A-Level',hours:50,price:4000},
-  {id:'al-eng',cat:'alevel',name:'A-Level ภาษาอังกฤษ',hours:40,price:4000},
-  {id:'tgat1',cat:'tgat',name:'TGAT 1 การสื่อสารภาษาอังกฤษ',hours:25,price:4900,hot:1},
-  {id:'tgat23',cat:'tgat',name:'TGAT 2 & 3 การคิดเชิงเหตุผล+สมรรถนะ',hours:30,price:1890},
-  {id:'tgat2',cat:'tgat',name:'TGAT 2 การคิดอย่างมีเหตุผล',hours:20,price:3900},
-  {id:'tgat3',cat:'tgat',name:'TGAT 3 สมรรถนะการทำงาน',hours:18,price:3500},
-  {id:'tpat1',cat:'tpat',name:'TPAT 1 ความถนัดแพทย์',hours:30,price:5500,hot:1},
-  {id:'tpat2',cat:'tpat',name:'TPAT 2 ความถนัดศิลปะ',hours:24,price:4200},
-  {id:'tpat3',cat:'tpat',name:'TPAT 3 ความถนัดวิทยาศาสตร์-เทคโนโลยี',hours:28,price:5200},
-  {id:'tpat4',cat:'tpat',name:'TPAT 4 ความถนัดสถาปัตยกรรม',hours:26,price:4600},
-  {id:'tpat5',cat:'tpat',name:'TPAT 5 ความถนัดครุศาสตร์-ศึกษาศาสตร์',hours:22,price:3900},
-  {id:'bnd-med',cat:'bundle',name:'Pack เข้าแพทย์ 6 วิชา',hours:60,price:594,hot:1},
-  {id:'bnd-eng',cat:'bundle',name:'Pack วิศวะ 5 วิชา',hours:50,price:495},
-  {id:'sr-phy1',cat:'sr',name:'ฟิสิกส์: บทนำและการวัด',hours:6,price:1100},
-  {id:'sr-phy2',cat:'sr',name:'ฟิสิกส์: การเคลื่อนที่แนวตรง',hours:10,price:1800},
-  {id:'sr-phy3',cat:'sr',name:'ฟิสิกส์: กฎของนิวตัน',hours:8,price:1500},
-  {id:'sr-phy4',cat:'sr',name:'ฟิสิกส์: สมดุลกล',hours:8,price:1500},
-  {id:'sr-phy5',cat:'sr',name:'ฟิสิกส์: การเคลื่อนที่แบบหมุน',hours:8,price:1400},
-  {id:'sr-phyp1',cat:'sr',name:'ฟิสิกส์ Pack: กลศาสตร์ 1 (4 บท)',hours:30,price:4500},
-  {id:'sr-phy6',cat:'sr',name:'ฟิสิกส์: การเคลื่อนที่แบบฮาร์มอนิก',hours:7,price:1300},
-  {id:'sr-phy7',cat:'sr',name:'ฟิสิกส์: คลื่น',hours:10,price:1900},
-  {id:'sr-phy8',cat:'sr',name:'ฟิสิกส์: แสงเชิงรังสีและเชิงคลื่น',hours:12,price:2500},
-  {id:'sr-phyp2',cat:'sr',name:'ฟิสิกส์ Pack: คลื่น+ฮาร์มอนิก+แสง',hours:30,price:5500},
-  {id:'sr-chem1',cat:'sr',name:'เคมี: สมดุลเคมี',hours:10,price:1900},
-  {id:'sr-bio1',cat:'sr',name:'ชีววิทยา: ธรรมชาติของสิ่งมีชีวิต',hours:5,price:600},
-  {id:'sr-engp',cat:'sr',name:'อังกฤษ Pack: เสริมทักษะการอ่าน ม.ปลาย',hours:40,price:7600},
-  {id:'jr-phy1',cat:'jr',name:'ฟิสิกส์ ม.ต้น: กลศาสตร์ 1',hours:12,price:2200},
-  {id:'jr-phy2',cat:'jr',name:'ฟิสิกส์ ม.ต้น: กลศาสตร์ 2',hours:9,price:1600},
-  {id:'jr-phy3',cat:'jr',name:'ฟิสิกส์ ม.ต้น: คลื่น',hours:9,price:1700},
+  {id:'al-phy', cat:'alevel',name:'Upskill ฟิสิกส์ A-Level',           hours:50,price:4000,hot:1},
+  {id:'al-chem',cat:'alevel',name:'Upskill เคมี A-Level',               hours:48,price:4000},
+  {id:'al-bio', cat:'alevel',name:'Upskill ชีววิทยา A-Level',           hours:50,price:4000},
+  {id:'al-eng', cat:'alevel',name:'A-Level ภาษาอังกฤษ',                 hours:40,price:4000},
+  // ── TGAT ──────────────────────────────────────────────
+  {id:'tgat1',cat:'tgat',name:'TGAT 1 การสื่อสารภาษาอังกฤษ',            hours:25,price:4900,hot:1},
+  {id:'tgat23',cat:'tgat',name:'TGAT 2 & 3 การคิดเชิงเหตุผล+สมรรถนะ',   hours:30,price:1890},
+  {id:'tgat2',cat:'tgat',name:'TGAT 2 การคิดอย่างมีเหตุผล',              hours:20,price:3900},
+  {id:'tgat3',cat:'tgat',name:'TGAT 3 สมรรถนะการทำงาน',                  hours:18,price:3500},
+  // ── TPAT ──────────────────────────────────────────────
+  {id:'tpat1',cat:'tpat',name:'TPAT 1 ความถนัดแพทย์',                    hours:30,price:5500,hot:1},
+  {id:'tpat2',cat:'tpat',name:'TPAT 2 ความถนัดศิลปะ',                    hours:24,price:4200},
+  {id:'tpat3',cat:'tpat',name:'TPAT 3 ความถนัดวิทยาศาสตร์-เทคโนโลยี',   hours:28,price:5200},
+  {id:'tpat4',cat:'tpat',name:'TPAT 4 ความถนัดสถาปัตยกรรม',              hours:26,price:4600},
+  {id:'tpat5',cat:'tpat',name:'TPAT 5 ความถนัดครุศาสตร์-ศึกษาศาสตร์',   hours:22,price:3900},
+  // ── Bundle ────────────────────────────────────────────
+  {id:'bnd-med',cat:'bundle',name:'Pack เข้าแพทย์ 6 วิชา',              hours:60,price:594,hot:1},
+  {id:'bnd-eng',cat:'bundle',name:'Pack วิศวะ 5 วิชา',                   hours:50,price:495},
+  // ── ม.ปลาย เนื้อหา ──────────────────────────────────
+  {id:'sr-phy1',cat:'sr',name:'ฟิสิกส์: บทนำและการวัด',                  hours:6, price:1100},
+  {id:'sr-phy2',cat:'sr',name:'ฟิสิกส์: การเคลื่อนที่แนวตรง',             hours:10,price:1800},
+  {id:'sr-phy3',cat:'sr',name:'ฟิสิกส์: กฎของนิวตัน',                     hours:8, price:1500},
+  {id:'sr-phy4',cat:'sr',name:'ฟิสิกส์: สมดุลกล',                         hours:8, price:1500},
+  {id:'sr-phy5',cat:'sr',name:'ฟิสิกส์: การเคลื่อนที่แบบหมุน',            hours:8, price:1400},
+  {id:'sr-phyp1',cat:'sr',name:'ฟิสิกส์ Pack: กลศาสตร์ 1 (4 บท)',        hours:30,price:4500},
+  {id:'sr-phy6',cat:'sr',name:'ฟิสิกส์: การเคลื่อนที่แบบฮาร์มอนิก',      hours:7, price:1300},
+  {id:'sr-phy7',cat:'sr',name:'ฟิสิกส์: คลื่น',                           hours:10,price:1900},
+  {id:'sr-phy8',cat:'sr',name:'ฟิสิกส์: แสงเชิงรังสีและเชิงคลื่น',        hours:12,price:2500},
+  {id:'sr-phyp2',cat:'sr',name:'ฟิสิกส์ Pack: คลื่น+ฮาร์มอนิก+แสง',     hours:30,price:5500},
+  {id:'sr-chem1',cat:'sr',name:'เคมี: สมดุลเคมี',                          hours:10,price:1900},
+  {id:'sr-bio1', cat:'sr',name:'ชีววิทยา: ธรรมชาติของสิ่งมีชีวิต',        hours:5, price:600},
+  {id:'sr-engp', cat:'sr',name:'อังกฤษ Pack: เสริมทักษะการอ่าน ม.ปลาย',  hours:40,price:7600},
+  // ── ม.ต้น เนื้อหา ───────────────────────────────────
+  {id:'jr-phy1',cat:'jr',name:'ฟิสิกส์ ม.ต้น: กลศาสตร์ 1',              hours:12,price:2200},
+  {id:'jr-phy2',cat:'jr',name:'ฟิสิกส์ ม.ต้น: กลศาสตร์ 2',              hours:9, price:1600},
+  {id:'jr-phy3',cat:'jr',name:'ฟิสิกส์ ม.ต้น: คลื่น',                    hours:9, price:1700},
   {id:'jr-phy4',cat:'jr',name:'ฟิสิกส์ ม.ต้น: สมบัติสารและอุตุนิยมวิทยา',hours:9,price:1700},
-  {id:'jr-phy5',cat:'jr',name:'ฟิสิกส์ ม.ต้น: ไฟฟ้าและอิเล็กทรอนิกส์',hours:9,price:1600},
+  {id:'jr-phy5',cat:'jr',name:'ฟิสิกส์ ม.ต้น: ไฟฟ้าและอิเล็กทรอนิกส์',   hours:9, price:1600},
   {id:'jr-phyp',cat:'jr',name:'ฟิสิกส์ ม.ต้น Pack: กลศาสตร์ 1+2+สมบัติสาร',hours:30,price:4200},
-  {id:'jr-chem1',cat:'jr',name:'เคมี ม.ต้น: พื้นฐานเคมี สารรอบตัว',hours:7,price:1300},
-  {id:'jr-math1',cat:'jr',name:'คณิต ม.ต้น: จำนวนและตัวเลข',hours:12,price:2400},
-  {id:'jr-math2',cat:'jr',name:'คณิต ม.ต้น: พาราโบลา',hours:10,price:1900},
-  {id:'jr-math3',cat:'jr',name:'คณิต ม.ต้น: ทฤษฎีบทเส้นขนานและวงกลม',hours:12,price:2200},
-  {id:'jr-eng1',cat:'jr',name:'อังกฤษ ม.ต้น: ปรับพื้นฐาน',hours:15,price:2899},
-  {id:'jr-eng2',cat:'jr',name:'อังกฤษ ม.ต้น: Grammar 1',hours:15,price:2899},
-  {id:'jr-eng3',cat:'jr',name:'อังกฤษ ม.ต้น: Grammar 2',hours:15,price:2899},
-  {id:'jr-engp',cat:'jr',name:'อังกฤษ ม.ต้น Pack: Grammar 1+2',hours:30,price:4999},
-  {id:'ielts',cat:'ielts',name:'IELTS Prep Course',hours:45,price:7500,hot:1},
-  {id:'sat',cat:'ielts',name:'SAT Math + English',hours:50,price:8500},
+  {id:'jr-chem1',cat:'jr',name:'เคมี ม.ต้น: พื้นฐานเคมี สารรอบตัว',      hours:7, price:1300},
+  {id:'jr-math1',cat:'jr',name:'คณิต ม.ต้น: จำนวนและตัวเลข',              hours:12,price:2400},
+  {id:'jr-math2',cat:'jr',name:'คณิต ม.ต้น: พาราโบลา',                    hours:10,price:1900},
+  {id:'jr-math3',cat:'jr',name:'คณิต ม.ต้น: ทฤษฎีบทเส้นขนานและวงกลม',   hours:12,price:2200},
+  {id:'jr-eng1', cat:'jr',name:'อังกฤษ ม.ต้น: ปรับพื้นฐาน',               hours:15,price:2899},
+  {id:'jr-eng2', cat:'jr',name:'อังกฤษ ม.ต้น: Grammar 1',                  hours:15,price:2899},
+  {id:'jr-eng3', cat:'jr',name:'อังกฤษ ม.ต้น: Grammar 2',                  hours:15,price:2899},
+  {id:'jr-engp', cat:'jr',name:'อังกฤษ ม.ต้น Pack: Grammar 1+2',           hours:30,price:4999},
+  // ── IELTS / International ─────────────────────────────
+  {id:'ielts',cat:'ielts',name:'IELTS Prep Course',                        hours:45,price:7500,hot:1},
+  {id:'sat',  cat:'ielts',name:'SAT Math + English',                        hours:50,price:8500},
 ];
 
 function getColor(c){
-  var id=c.id,nm=c.name,cat=c.cat;
-  if(cat==='sr')return'#546E7A';
-  if(cat==='jr')return'#00695C';
-  if(cat==='alevel')return'#1B5E20';
-  if(cat==='ielts')return'#4527A0';
-  if(id.indexOf('math')>=0||nm.indexOf('คณิต')>=0)return'#C62828';
-  if(id.indexOf('phy')>=0||nm.indexOf('ฟิสิกส์')>=0)return'#1565C0';
-  if(id.indexOf('chem')>=0||nm.indexOf('เคมี')>=0)return'#E65100';
-  if(id.indexOf('bio')>=0||nm.indexOf('ชีว')>=0)return'#2E7D32';
-  if(id.indexOf('eng')>=0||id.indexOf('ielts')>=0||id.indexOf('sat')>=0)return'#6A1B9A';
-  if(id.indexOf('tgat')>=0)return'#00838F';
-  if(id.indexOf('tpat1')>=0||id.indexOf('tp1')>=0||id.indexOf('med')>=0)return'#880E4F';
-  if(id.indexOf('tpat2')>=0)return'#AD1457';
-  if(id.indexOf('tpat3')>=0||id.indexOf('tp3')>=0)return'#37474F';
-  if(id.indexOf('tpat4')>=0)return'#4E342E';
-  if(id.indexOf('tpat5')>=0)return'#1B5E20';
-  if(id.indexOf('bnd')>=0)return'#4A148C';
-  return'#455A64';
+  var id=c.id, nm=c.name, cat=c.cat;
+  // Category-level color first
+  if(cat==='sr') return '#546E7A';      // ม.ปลาย = blue-grey
+  if(cat==='jr') return '#00695C';      // ม.ต้น = teal
+  if(cat==='alevel') return '#1B5E20';  // A-Level = dark green
+  if(cat==='ielts') return '#4527A0';   // IELTS/SAT = deep purple
+  // Subject colors
+  if(id.indexOf('math')>=0||nm.indexOf('คณิต')>=0) return '#C62828';
+  if(id.indexOf('phy')>=0||nm.indexOf('ฟิสิกส์')>=0) return '#1565C0';
+  if(id.indexOf('chem')>=0||nm.indexOf('เคมี')>=0) return '#E65100';
+  if(id.indexOf('bio')>=0||nm.indexOf('ชีว')>=0) return '#2E7D32';
+  if(id.indexOf('eng')>=0||id.indexOf('ielts')>=0||id.indexOf('sat')>=0) return '#6A1B9A';
+  if(id.indexOf('tgat')>=0) return '#00838F';
+  if(id.indexOf('tpat1')>=0||id.indexOf('tp1')>=0||id.indexOf('med')>=0) return '#880E4F';
+  if(id.indexOf('tpat2')>=0) return '#AD1457';
+  if(id.indexOf('tpat3')>=0||id.indexOf('tp3')>=0) return '#37474F';
+  if(id.indexOf('tpat4')>=0) return '#4E342E';
+  if(id.indexOf('tpat5')>=0) return '#1B5E20';
+  if(id.indexOf('bnd')>=0||id.indexOf('med')>=0) return '#4A148C';
+  return '#455A64';
 }
 
-// PERSONA PLANS
+// ── PERSONA PREFILL DATA (per level) ─────────────────────────────
+// Structure: PERSONA_PLANS_BY_LEVEL[persona][level][rowIndex][monthIndex]
+// rowIndex: 0=ม.4 row, 1=ม.5 row, 2=ม.6 row
+// monthIndex: 2=มี.ค.(ซัมเมอร์), 4=พ.ค.(เทอม1), 9=ต.ค.(เทอม2)
 var PERSONA_PLANS_BY_LEVEL = {
-  'แพทย์':{
-    'ม.4':{0:{4:['b99-med'],9:['pk-math','pk-phy'],2:['pk-chem']},1:{4:['pk-bio','pk-eng'],9:['tgat1','tgat23'],2:['tpat1']},2:{4:['al-bio','al-chem','al-phy'],9:['al-math','al-eng'],2:[]}},
-    'ม.5':{1:{4:['b99-med','pk-math','pk-phy'],9:['pk-chem','pk-bio','pk-eng'],2:['tgat1','tgat23']},2:{4:['al-bio','al-chem','al-phy'],9:['al-math','al-eng'],2:['tpat1']}},
-    'ม.6':{2:{4:['pk-bio','pk-chem','tgat1','tgat23'],9:['pk-math','pk-phy','al-bio','al-chem'],2:['al-phy','al-math','al-eng','tpat1']}}
+  'แพทย์': {
+    'ม.4': { // 3 ปี — ค่อยๆ สะสม
+      0: { 4:['b99-med'],                       9:['pk-math','pk-phy'],          2:['pk-chem']            },
+      1: { 4:['pk-bio','pk-eng'],               9:['tgat1','tgat23'],             2:['tpat1']              },
+      2: { 4:['al-bio','al-chem','al-phy'],      9:['al-math','al-eng'],           2:[]                     }
+    },
+    'ม.5': { // 2 ปี — เร่ง Pack ตั้งแต่ต้น
+      1: { 4:['b99-med','pk-math','pk-phy'],     9:['pk-chem','pk-bio','pk-eng'],  2:['tgat1','tgat23']     },
+      2: { 4:['al-bio','al-chem','al-phy'],      9:['al-math','al-eng'],           2:['tpat1']              }
+    },
+    'ม.6': { // 1 ปี — เร่งด่วนทุกวิชา
+      2: { 4:['pk-bio','pk-chem','tgat1','tgat23'], 9:['pk-math','pk-phy','al-bio','al-chem'], 2:['al-phy','al-math','al-eng','tpat1'] }
+    }
   },
-  'วิศวะ':{
-    'ม.4':{0:{4:['b99-eng2'],9:['pk-math','pk-phy'],2:['pk-chem']},1:{4:['pk-eng','tgat1'],9:['tgat23','tpat3'],2:['al-math']},2:{4:['al-phy','al-chem'],9:['al-math','al-eng'],2:[]}},
-    'ม.5':{1:{4:['pk-math','pk-phy','pk-eng'],9:['pk-chem','tgat1','tgat23'],2:['al-math','tpat3']},2:{4:['al-phy','al-chem'],9:['al-math','al-eng'],2:[]}},
-    'ม.6':{2:{4:['pk-math','pk-phy','tgat1','tgat23'],9:['pk-chem','pk-eng','al-math','al-phy'],2:['al-chem','al-eng','tpat3']}}
+  'วิศวะ': {
+    'ม.4': { // 3 ปี
+      0: { 4:['b99-eng2'],                      9:['pk-math','pk-phy'],           2:['pk-chem']            },
+      1: { 4:['pk-eng','tgat1'],                9:['tgat23','tpat3'],              2:['al-math']            },
+      2: { 4:['al-phy','al-chem'],              9:['al-math','al-eng'],            2:[]                     }
+    },
+    'ม.5': { // 2 ปี
+      1: { 4:['pk-math','pk-phy','pk-eng'],      9:['pk-chem','tgat1','tgat23'],   2:['al-math','tpat3']    },
+      2: { 4:['al-phy','al-chem'],               9:['al-math','al-eng'],            2:[]                    }
+    },
+    'ม.6': { // 1 ปี
+      2: { 4:['pk-math','pk-phy','tgat1','tgat23'], 9:['pk-chem','pk-eng','al-math','al-phy'], 2:['al-chem','al-eng','tpat3'] }
+    }
   },
-  'Business':{
-    'ม.4':{0:{4:['b99-math','b99-eng'],9:['pk-math','pk-eng'],2:[]},1:{4:['tgat1'],9:['tgat23'],2:['al-math']},2:{4:['al-eng'],9:['al-math'],2:[]}},
-    'ม.5':{1:{4:['pk-math','pk-eng','tgat1'],9:['tgat23'],2:['al-math']},2:{4:['al-eng'],9:['al-math'],2:[]}},
-    'ม.6':{2:{4:['pk-math','pk-eng','tgat1','tgat23'],9:['al-math','al-eng'],2:[]}}
+  'Business': {
+    'ม.4': { // 3 ปี
+      0: { 4:['b99-math','b99-eng'],             9:['pk-math','pk-eng'],           2:[]                     },
+      1: { 4:['tgat1'],                          9:['tgat23'],                     2:['al-math']            },
+      2: { 4:['al-eng'],                         9:['al-math'],                    2:[]                     }
+    },
+    'ม.5': { // 2 ปี
+      1: { 4:['pk-math','pk-eng','tgat1'],        9:['tgat23'],                    2:['al-math']            },
+      2: { 4:['al-eng'],                          9:['al-math'],                   2:[]                     }
+    },
+    'ม.6': { // 1 ปี
+      2: { 4:['pk-math','pk-eng','tgat1','tgat23'], 9:['al-math','al-eng'],        2:[]                     }
+    }
   },
-  'นิติศาสตร์':{
-    'ม.4':{0:{4:['b99-eng','b99-math'],9:['pk-eng'],2:['pk-math']},1:{4:['pk-math','tgat1'],9:['tgat23'],2:['al-eng']},2:{4:['al-eng'],9:['al-math'],2:[]}},
-    'ม.5':{1:{4:['pk-eng','pk-math','tgat1'],9:['tgat23'],2:['al-eng']},2:{4:['al-eng'],9:['al-math'],2:[]}},
-    'ม.6':{2:{4:['pk-eng','pk-math','tgat1','tgat23'],9:['al-eng','al-math'],2:[]}}
+  'นิติศาสตร์': {
+    'ม.4': { // 3 ปี
+      0: { 4:['b99-eng','b99-math'],             9:['pk-eng'],                    2:['pk-math']             },
+      1: { 4:['pk-math','tgat1'],                9:['tgat23'],                    2:['al-eng']              },
+      2: { 4:['al-eng'],                         9:['al-math'],                   2:[]                      }
+    },
+    'ม.5': { // 2 ปี
+      1: { 4:['pk-eng','pk-math','tgat1'],        9:['tgat23'],                   2:['al-eng']              },
+      2: { 4:['al-eng'],                          9:['al-math'],                  2:[]                      }
+    },
+    'ม.6': { // 1 ปี
+      2: { 4:['pk-eng','pk-math','tgat1','tgat23'], 9:['al-eng','al-math'],       2:[]                      }
+    }
   }
 };
 
 function applyPersonaPrefill(){
-  var persona = document.getElementById('stPersona').value;
-  if(!persona)return;
+  var persona = document.getElementById('stPersona') ? document.getElementById('stPersona').value : '';
+  if(!persona) return;
   var lv = document.getElementById('stLevel').value;
-  var startRow = lv==='ม.6'?2:(lv==='ม.5'?1:0);
+  var startRow = lv === 'ม.6' ? 2 : (lv === 'ม.5' ? 1 : 0);
   var personaPlans = PERSONA_PLANS_BY_LEVEL[persona];
-  if(!personaPlans)return;
+  if(!personaPlans) return;
   var plan = personaPlans[lv];
-  if(!plan)return;
-  for(var li=startRow;li<3;li++) for(var mi=0;mi<12;mi++) cal[li][mi]=[];
-  for(var row=startRow;row<3;row++){
-    var rowPlan=plan[row];
-    if(!rowPlan)continue;
-    [2,4,9].forEach(function(month){
-      if(rowPlan[month]&&rowPlan[month].length) cal[row][month]=rowPlan[month].slice();
+  if(!plan) return;
+  // Clear current and future rows
+  for(var li = startRow; li < 3; li++){
+    for(var mi = 0; mi < 12; mi++) cal[li][mi] = [];
+  }
+  // Fill rows from level-specific plan
+  for(var row = startRow; row < 3; row++){
+    var rowPlan = plan[row];
+    if(!rowPlan) continue;
+    [2, 4, 9].forEach(function(month){
+      if(rowPlan[month] && rowPlan[month].length){
+        cal[row][month] = rowPlan[month].slice();
+      }
     });
   }
-  renderCal();calcStats();
+  renderCal(); calcStats();
 }
 
 var cal = [
-  Array.from({length:12},function(){return[];}),
-  Array.from({length:12},function(){return[];}),
-  Array.from({length:12},function(){return[];})
+  Array.from({length:12},function(){return [];}),
+  Array.from({length:12},function(){return [];}),
+  Array.from({length:12},function(){return [];})
 ];
-var guruMode=false,prevOpen=false;
-var modalLi=-1,modalMi=-1,modalCat='all',modalTemp=[];
+var guruMode = false;
+var prevOpen = false;
+
+// Modal state
+var modalLi = -1;
+var modalMi = -1;
+var modalCat = 'all';
+var modalTemp = []; // temp selected IDs
 
 function getYears(){
-  var lv=document.getElementById('stLevel').value;
-  var n=parseInt(lv.replace('ม.',''));
-  var base=new Date().getFullYear()+543-(n-4);
-  return[base,base+1,base+2];
+  var lv = document.getElementById('stLevel').value;
+  var n = parseInt(lv.replace('ม.',''));
+  var base = new Date().getFullYear() + 543 - (n - 4);
+  return [base, base+1, base+2];
 }
 function getStartRow(){
-  var lv=document.getElementById('stLevel').value;
-  return lv==='ม.6'?2:(lv==='ม.5'?1:0);
+  var lv = document.getElementById('stLevel').value;
+  return lv === 'ม.6' ? 2 : (lv === 'ม.5' ? 1 : 0);
 }
-function init(){renderCal();calcStats();}
+
+function init(){ renderCal(); calcStats(); loadGurus(); }
 
 function toggleGuru(){
-  guruMode=!guruMode;
-  var btn=document.getElementById('guruBtn');
-  btn.textContent=guruMode?'🔓 Guru (ON)':'🔒 Guru View';
-  btn.classList.toggle('active',guruMode);
+  guruMode = !guruMode;
+  var btn = document.getElementById('guruBtn');
+  btn.textContent = guruMode ? '🔓 Guru (ON)' : '🔒 Guru View';
+  btn.classList.toggle('active', guruMode);
   updateAll();
 }
 
-function openModal(li,mi){
-  modalLi=li;modalMi=mi;
-  modalTemp=cal[li][mi].slice();
-  document.getElementById('modalTitle').textContent='เลือกคอร์ส — '+LEVELS[li]+' เดือน '+MONTHS[mi];
-  document.getElementById('modalSub').textContent='คลิกเพื่อเลือก/ยกเลิก | กดยืนยันเพื่อบันทึก';
-  modalCat='all';
-  document.querySelectorAll('.mtab').forEach(function(t){t.classList.remove('active');});
+// ─── MODAL ───────────────────────────────────────────
+function openModal(li, mi){
+  modalLi = li; modalMi = mi;
+  modalTemp = cal[li][mi].slice(); // copy current selections
+  var lv = LEVELS[li];
+  var mn = MONTHS[mi];
+  document.getElementById('modalTitle').textContent = 'เลือกคอร์ส — ' + lv + ' เดือน ' + mn;
+  document.getElementById('modalSub').textContent = 'คลิกเพื่อเลือก/ยกเลิก | กดยืนยันเพื่อบันทึก';
+  modalCat = 'all';
+  document.querySelectorAll('.mtab').forEach(function(t){ t.classList.remove('active'); });
   document.querySelector('.mtab').classList.add('active');
   renderModalList();
   document.getElementById('modalOverlay').classList.add('open');
 }
-function closeModal(){document.getElementById('modalOverlay').classList.remove('open');}
-function confirmModal(){cal[modalLi][modalMi]=modalTemp.slice();renderCal();calcStats();closeModal();}
-function mFilterCat(cat,el){
-  modalCat=cat;
-  document.querySelectorAll('.mtab').forEach(function(t){t.classList.remove('active');});
+
+function closeModal(){
+  document.getElementById('modalOverlay').classList.remove('open');
+}
+
+function confirmModal(){
+  cal[modalLi][modalMi] = modalTemp.slice();
+  renderCal(); calcStats();
+  closeModal();
+}
+
+function mFilterCat(cat, el){
+  modalCat = cat;
+  document.querySelectorAll('.mtab').forEach(function(t){ t.classList.remove('active'); });
   el.classList.add('active');
   renderModalList();
 }
+
 function renderModalList(){
-  var list=modalCat==='all'?COURSES:COURSES.filter(function(c){return c.cat===modalCat;});
-  var el=document.getElementById('mclist');
-  el.innerHTML='';
+  var list = modalCat === 'all' ? COURSES : COURSES.filter(function(c){ return c.cat === modalCat; });
+  var el = document.getElementById('mclist');
+  el.innerHTML = '';
   list.forEach(function(c){
-    var isSel=modalTemp.indexOf(c.id)>=0;
-    var clr=getColor(c);
-    var div=document.createElement('div');
-    div.className='mcitem'+(isSel?' sel':'');
-    div.dataset.id=c.id;
-    var pBlur=guruMode?'':' blur';
-    div.innerHTML='<div class="mcdot" style="background:'+clr+'"></div>'+
-      '<span class="mcname">'+c.name+(c.hot?' 🔥':'')+'</span>'+
-      '<span class="mchrs">'+c.hours+'ชม.</span>'+
-      '<span class="mcprice'+pBlur+'">฿'+c.price.toLocaleString()+'</span>'+
-      '<div class="mcchk'+(isSel?' on':'')+'">'+( isSel?'✓':''  )+'</div>';
-    div.addEventListener('click',function(){
-      var id=this.dataset.id;
-      var idx=modalTemp.indexOf(id);
-      if(idx>=0)modalTemp.splice(idx,1);
+    var isSel = modalTemp.indexOf(c.id) >= 0;
+    var clr = getColor(c);
+    var div = document.createElement('div');
+    div.className = 'mcitem' + (isSel ? ' sel' : '');
+    div.dataset.id = c.id;
+    var pBlur = guruMode ? '' : ' blur';
+    div.innerHTML = '<div class="mcdot" style="background:' + clr + '"></div>' +
+      '<span class="mcname">' + c.name + (c.hot ? ' 🔥' : '') + '</span>' +
+      '<span class="mchrs">' + c.hours + 'ชม.</span>' +
+      '<span class="mcprice' + pBlur + '">฿' + c.price.toLocaleString() + '</span>' +
+      '<div class="mcchk' + (isSel ? ' on' : '') + '">' + (isSel ? '✓' : '') + '</div>';
+    div.addEventListener('click', function(){
+      var id = this.dataset.id;
+      var idx = modalTemp.indexOf(id);
+      if(idx >= 0) modalTemp.splice(idx, 1);
       else modalTemp.push(id);
       renderModalList();
     });
     el.appendChild(div);
   });
-  document.getElementById('mSelCount').textContent=modalTemp.length;
+  document.getElementById('mSelCount').textContent = modalTemp.length;
 }
-document.getElementById('modalOverlay').addEventListener('click',function(e){if(e.target===this)closeModal();});
 
-function removeFromCell(li,mi,id,e){
+// Close modal on overlay click
+document.getElementById('modalOverlay').addEventListener('click', function(e){
+  if(e.target === this) closeModal();
+});
+
+// ─── CALENDAR ────────────────────────────────────────
+function removeFromCell(li, mi, id, e){
   e.stopPropagation();
-  var arr=cal[li][mi];
-  var idx=arr.indexOf(id);
-  if(idx>=0)arr.splice(idx,1);
-  renderCal();calcStats();
+  var arr = cal[li][mi];
+  var idx = arr.indexOf(id);
+  if(idx >= 0) arr.splice(idx, 1);
+  renderCal(); calcStats();
 }
 
 function renderCal(){
-  var years=getYears();
-  var startRow=getStartRow();
-  document.getElementById('calHead').innerHTML=
-    '<tr><th style="width:68px;">ชั้น/ปี</th>'+
-    MONTHS.map(function(m){return'<th style="min-width:72px;">'+m+'</th>';}).join('')+'</tr>';
-  var body=document.getElementById('calBody');
-  body.innerHTML='';
-  for(var li=startRow;li<3;li++){
-    var tr=document.createElement('tr');
-    var yrtd=document.createElement('td');
-    yrtd.className='yrtd';
-    yrtd.innerHTML='<div class="yr-main">'+LEVELS[li]+'</div><div class="yr-be">ปี '+years[li]+'</div>';
+  var years = getYears();
+  var startRow = getStartRow();
+  document.getElementById('calHead').innerHTML =
+    '<tr><th style="width:68px;">ชั้น/ปี</th>' +
+    MONTHS.map(function(m){ return '<th style="min-width:72px;">' + m + '</th>'; }).join('') + '</tr>';
+
+  var body = document.getElementById('calBody');
+  body.innerHTML = '';
+  for(var li=startRow; li<3; li++){
+    var tr = document.createElement('tr');
+    var yrtd = document.createElement('td');
+    yrtd.className = 'yrtd';
+    yrtd.innerHTML = '<div class="yr-main">' + LEVELS[li] + '</div><div class="yr-be">ปี ' + years[li] + '</div>';
     tr.appendChild(yrtd);
-    for(var mi=0;mi<12;mi++){
-      (function(li,mi){
-        var td=document.createElement('td');
-        var courses=cal[li][mi];
-        var inner='';
+    for(var mi=0; mi<12; mi++){
+      (function(li, mi){
+        var td = document.createElement('td');
+        var courses = cal[li][mi];
+        var inner = '';
         courses.forEach(function(cid){
-          var c=COURSES.find(function(x){return x.id===cid;});
-          if(!c)return;
-          inner+='<div class="chip"><div class="chipdot" style="background:'+getColor(c)+'"></div>'+
-            '<span class="chipname">'+c.name+'</span>'+
+          var c = COURSES.find(function(x){ return x.id === cid; });
+          if(!c) return;
+          inner += '<div class="chip"><div class="chipdot" style="background:' + getColor(c) + '"></div>' +
+            '<span class="chipname">' + c.name + '</span>' +
             '<span class="chipx" data-li="'+li+'" data-mi="'+mi+'" data-cid="'+cid+'">✕</span></div>';
         });
-        inner+='<div class="cell-add"><span>+ เพิ่ม</span></div>';
-        td.innerHTML=inner;
+        inner += '<div class="cell-add"><span>+ เพิ่ม</span></div>';
+        td.innerHTML = inner;
         td.querySelectorAll('.chipx').forEach(function(x){
-          x.addEventListener('click',function(e){
-            removeFromCell(parseInt(this.dataset.li),parseInt(this.dataset.mi),this.dataset.cid,e);
+          x.addEventListener('click', function(e){
+            removeFromCell(parseInt(this.dataset.li), parseInt(this.dataset.mi), this.dataset.cid, e);
           });
         });
-        td.addEventListener('click',function(){openModal(li,mi);});
+        td.addEventListener('click', function(){ openModal(li, mi); });
         tr.appendChild(td);
-      })(li,mi);
+      })(li, mi);
     }
     body.appendChild(tr);
   }
 }
 
 function calcStats(){
-  var placed={},monthsSet={};
-  var startRow=getStartRow();
-  for(var li=startRow;li<3;li++){
-    for(var mi=0;mi<12;mi++){
-      if(cal[li][mi].length>0)monthsSet[li+'_'+mi]=1;
-      cal[li][mi].forEach(function(id){placed[id]=1;});
+  var placed = {};
+  var monthsSet = {};
+  var startRow = getStartRow();
+  for(var li=startRow; li<3; li++){
+    for(var mi=0; mi<12; mi++){
+      if(cal[li][mi].length > 0) monthsSet[li+'_'+mi] = 1;
+      cal[li][mi].forEach(function(id){ placed[id]=1; });
     }
   }
-  var ids=Object.keys(placed);
-  var totalHrs=0,totalPrice=0;
+  var ids = Object.keys(placed);
+  var totalHrs=0, totalPrice=0;
   ids.forEach(function(id){
-    var c=COURSES.find(function(x){return x.id===id;});
-    if(c){totalHrs+=c.hours;totalPrice+=c.price;}
+    var c = COURSES.find(function(x){ return x.id===id; });
+    if(c){ totalHrs += c.hours; totalPrice += c.price; }
   });
-  var months=Object.keys(monthsSet).length;
-  var pFilter=guruMode?'':'filter:blur(6px);';
-  document.getElementById('statsRow').innerHTML=
-    '<div class="scard"><div class="snum">'+ids.length+'</div><div class="slbl">จำนวนคอร์ส</div></div>'+
-    '<div class="scard"><div class="snum">'+totalHrs+'</div><div class="slbl">ชั่วโมงทั้งหมด</div></div>'+
-    '<div class="scard"><div class="snum">'+months+'</div><div class="slbl">เดือนที่มีคอร์ส</div></div>'+
+  var months = Object.keys(monthsSet).length;
+  var pFilter = guruMode ? '' : 'filter:blur(6px);';
+  document.getElementById('statsRow').innerHTML =
+    '<div class="scard"><div class="snum">'+ids.length+'</div><div class="slbl">จำนวนคอร์ส</div></div>' +
+    '<div class="scard"><div class="snum">'+totalHrs+'</div><div class="slbl">ชั่วโมงทั้งหมด</div></div>' +
+    '<div class="scard"><div class="snum">'+months+'</div><div class="slbl">เดือนที่มีคอร์ส</div></div>' +
     '<div class="scard"><div class="snum" style="'+pFilter+'">฿'+totalPrice.toLocaleString()+'</div><div class="slbl">มูลค่ารวม</div></div>';
 }
 
-function updateAll(){calcStats();}
-function gv(id){return document.getElementById(id)?document.getElementById(id).value||'—':'—';}
+function updateAll(){ calcStats(); }
+function gv(id){ return document.getElementById(id).value || '—'; }
 
 function populatePrintView(){
-  document.getElementById('pN').textContent=gv('stName');
-  document.getElementById('pNN').textContent=gv('stNick');
-  document.getElementById('pLV').textContent=gv('stLevel');
-  document.getElementById('pSCH').textContent=gv('stSch');
-  document.getElementById('pCODE').textContent=gv('stCode');
-  var gpa=document.getElementById('stGpa').value;
-  document.getElementById('pGPA').textContent=gpa?'GPA '+gpa:'—';
-  var rm={'1':'รอบ 1 — Portfolio','2':'รอบ 2 — Quota','3':'รอบ 3 — Admission','4':'รอบ 4 — Direct'};
-  document.getElementById('pROUND').textContent='TCAS '+rm[document.getElementById('stRound').value];
-  var branch=document.getElementById('stBranch').value;
-  var guru=document.getElementById('stGuru').value;
-  var uni=document.getElementById('stUni').value;
-  var fac=document.getElementById('stFac').value;
-  var lines=['สาขา: '+branch.split(' — ')[0]];
-  if(guru)lines.push('Guru: '+guru);
-  lines.push('GPA: '+(gpa||'—'));
-  if(uni)lines.push('เป้า: '+uni);
-  if(fac)lines.push(fac);
-  document.getElementById('pINFO').innerHTML=lines.join('<br>');
-  document.getElementById('pFOOTER').textContent='Guru: '+(guru||'—')+' | สาขา '+branch.split(' — ')[0]+' | รหัส: '+(document.getElementById('stCode').value||'—');
-  document.getElementById('pvQrLabel').innerHTML='แอด LINE<br><strong style="color:#fff;">สาขา '+branch+'</strong><br>รับโปร + แผนฟรี';
-  var years=getYears();
-  document.getElementById('pvCalHead').innerHTML='<tr><th class="pvcyr">ชั้น/ปี</th>'+MONTHS.map(function(m){return'<th>'+m+'</th>';}).join('')+'</tr>';
-  var body=document.getElementById('pvCalBody');
-  body.innerHTML='';
-  var pvStartRow=getStartRow();
-  for(var li=pvStartRow;li<3;li++){
-    var tr=document.createElement('tr');
-    var yrtd=document.createElement('td');
-    yrtd.className='pvyrtd';
-    yrtd.innerHTML='<div class="pvyr-main">'+LEVELS[li]+'</div><div class="pvyr-be">ปี '+years[li]+'</div>';
+  document.getElementById('pN').textContent = gv('stName');
+  document.getElementById('pNN').textContent = gv('stNick');
+  document.getElementById('pLV').textContent = gv('stLevel');
+  document.getElementById('pSCH').textContent = gv('stSch');
+  document.getElementById('pCODE').textContent = gv('stCode');
+  var gpa = document.getElementById('stGpa').value;
+  document.getElementById('pGPA').textContent = gpa ? 'GPA ' + gpa : '—';
+  var rm = {'1':'รอบ 1 — Portfolio','2':'รอบ 2 — Quota','3':'รอบ 3 — Admission','4':'รอบ 4 — Direct'};
+  document.getElementById('pROUND').textContent = 'TCAS ' + rm[document.getElementById('stRound').value];
+  var branch = document.getElementById('stBranch').value;
+  var guru = document.getElementById('stGuru').value;
+  var uni = document.getElementById('stUni').value;
+  var fac = document.getElementById('stFac').value;
+  var lines = ['สาขา: ' + branch.split(' — ')[0]];
+  if(guru) lines.push('Guru: ' + guru);
+  lines.push('GPA: ' + (gpa || '—'));
+  if(uni) lines.push('เป้า: ' + uni);
+  if(fac) lines.push(fac);
+  document.getElementById('pINFO').innerHTML = lines.join('<br>');
+  document.getElementById('pFOOTER').textContent = 'Guru: '+(guru||'—')+' | สาขา '+branch.split(' — ')[0]+' | รหัส: '+(document.getElementById('stCode').value||'—');
+  document.getElementById('pvQrLabel').innerHTML = 'แอด LINE<br><strong style="color:#fff;">สาขา '+branch+'</strong><br>รับโปร + แผนฟรี';
+
+  var years = getYears();
+  document.getElementById('pvCalHead').innerHTML =
+    '<tr><th class="pvcyr">ชั้น/ปี</th>' +
+    MONTHS.map(function(m){ return '<th>'+m+'</th>'; }).join('') + '</tr>';
+
+  var body = document.getElementById('pvCalBody');
+  body.innerHTML = '';
+  var pvStartRow = getStartRow();
+  for(var li=pvStartRow; li<3; li++){
+    var tr = document.createElement('tr');
+    var yrtd = document.createElement('td');
+    yrtd.className = 'pvyrtd';
+    yrtd.innerHTML = '<div class="pvyr-main">'+LEVELS[li]+'</div><div class="pvyr-be">ปี '+years[li]+'</div>';
     tr.appendChild(yrtd);
-    for(var mi=0;mi<12;mi++){
-      var td=document.createElement('td');
-      var courses=cal[li][mi];
-      if(courses.length>0){
-        var html2='';
+    for(var mi=0; mi<12; mi++){
+      var td = document.createElement('td');
+      var courses = cal[li][mi];
+      if(courses.length > 0){
+        var html2 = '';
         courses.forEach(function(cid){
-          var c=COURSES.find(function(x){return x.id===cid;});
-          if(!c)return;
-          var clr=getColor(c);
-          var priceStr=guruMode?'฿'+c.price.toLocaleString():'';
-          html2+='<div class="pvcard" style="background:'+clr+';">'+
+          var c = COURSES.find(function(x){ return x.id===cid; });
+          if(!c) return;
+          var clr = getColor(c);
+          var priceStr = guruMode ? '฿'+c.price.toLocaleString() : '';
+          html2 += '<div class="pvcard" style="background:'+clr+';">'+
             '<span class="pvcard-start">&#9654; START</span>'+
             '<div class="pvcard-name">'+c.name+'</div>'+
             '<div class="pvcard-hrs">&#9202; '+c.hours+' ชม.</div>'+
-            (priceStr?'<div class="pvcard-price">'+priceStr+'</div>':'')+
+            (priceStr ? '<div class="pvcard-price">'+priceStr+'</div>' : '')+
             '</div>';
         });
-        td.innerHTML=html2;
+        td.innerHTML = html2;
       }
       tr.appendChild(td);
     }
     body.appendChild(tr);
   }
-  var placed={};
-  var pvSR=getStartRow();
-  for(var li2=pvSR;li2<3;li2++) for(var mi2=0;mi2<12;mi2++) cal[li2][mi2].forEach(function(id){placed[id]=1;});
-  var pids=Object.keys(placed);
-  var legEl=document.getElementById('pvLegend');
-  if(pids.length===0){
-    legEl.innerHTML='<div style="font-size:9px;color:#94A3B8;font-style:italic;">ยังไม่มีคอร์สในแผน</div>';
-  }else{
-    legEl.innerHTML=pids.map(function(id){
-      var c=COURSES.find(function(x){return x.id===id;});
-      if(!c)return'';
-      return'<div class="pvleg-item"><div class="pvleg-dot" style="background:'+getColor(c)+'"></div>'+c.name+'</div>';
+
+  var placed = {};
+  var pvSR = getStartRow();
+  for(var li2=pvSR;li2<3;li2++) for(var mi2=0;mi2<12;mi2++) cal[li2][mi2].forEach(function(id){ placed[id]=1; });
+  var pids = Object.keys(placed);
+  var legEl = document.getElementById('pvLegend');
+  if(pids.length === 0){
+    legEl.innerHTML = '<div style="font-size:9px;color:#94A3B8;font-style:italic;">ยังไม่มีคอร์สในแผน</div>';
+  } else {
+    legEl.innerHTML = pids.map(function(id){
+      var c = COURSES.find(function(x){ return x.id===id; });
+      if(!c) return '';
+      return '<div class="pvleg-item"><div class="pvleg-dot" style="background:'+getColor(c)+'"></div>'+c.name+'</div>';
     }).join('');
   }
+
   var scoreFields=[['scTgat','TGAT'],['scMath','คณิตศาสตร์'],['scPhy','ฟิสิกส์'],['scChem','เคมี'],['scBio','ชีววิทยา'],['scEng','ภาษาอังกฤษ']];
-  var scHtml='',uni2=document.getElementById('stUni').value,fac2=document.getElementById('stFac').value;
-  if(uni2||fac2)scHtml+='<div class="pvsc-row"><span class="pvsc-lbl">เป้าหมาย</span><span class="pvsc-val">'+(uni2||'')+(fac2?' / '+fac2:'')+'</span></div>';
+  var scHtml='', uni2=document.getElementById('stUni').value, fac2=document.getElementById('stFac').value;
+  if(uni2||fac2) scHtml+='<div class="pvsc-row"><span class="pvsc-lbl">เป้าหมาย</span><span class="pvsc-val">'+(uni2||'')+(fac2?' / '+fac2:'')+'</span></div>';
   scoreFields.forEach(function(sf){
     var v=document.getElementById(sf[0]).value;
-    if(v)scHtml+='<div class="pvsc-row"><span class="pvsc-lbl">+ '+sf[1]+'</span><span class="pvsc-val">'+v+'%</span></div>';
+    if(v) scHtml+='<div class="pvsc-row"><span class="pvsc-lbl">+ '+sf[1]+'</span><span class="pvsc-val">'+v+'%</span></div>';
   });
-  if(!scHtml)scHtml='<div style="font-size:8px;color:#94A3B8;font-style:italic;">กรอกข้อมูลด้านซ้ายเพื่อแสดง</div>';
-  document.getElementById('pvScores').innerHTML=scHtml;
-  var totalHrs2=0,totalPrice2=0,monthsSet2={};
-  pids.forEach(function(id){var c=COURSES.find(function(x){return x.id===id;});if(c){totalHrs2+=c.hours;totalPrice2+=c.price;}});
-  for(var li3=0;li3<3;li3++) for(var mi3=0;mi3<12;mi3++) if(cal[li3][mi3].length>0)monthsSet2[li3+'_'+mi3]=1;
+  if(!scHtml) scHtml='<div style="font-size:8px;color:#94A3B8;font-style:italic;">กรอกข้อมูลด้านซ้ายเพื่อแสดง</div>';
+  document.getElementById('pvScores').innerHTML = scHtml;
+
+  var totalHrs2=0, totalPrice2=0, monthsSet2={};
+  pids.forEach(function(id){ var c=COURSES.find(function(x){return x.id===id;}); if(c){totalHrs2+=c.hours;totalPrice2+=c.price;} });
+  for(var li3=0;li3<3;li3++) for(var mi3=0;mi3<12;mi3++) if(cal[li3][mi3].length>0) monthsSet2[li3+'_'+mi3]=1;
   document.getElementById('pvStats').innerHTML=
     '<div class="pvstat-box"><div class="pvstat-num">'+Object.keys(monthsSet2).length+'</div><div class="pvstat-lbl">เดือนที่มีคอร์ส</div></div>'+
     '<div class="pvstat-box"><div class="pvstat-num">'+(guruMode?'฿'+totalPrice2.toLocaleString():'—')+'</div><div class="pvstat-lbl">มูลค่ารวม</div></div>'+
@@ -1097,245 +1177,40 @@ function populatePrintView(){
 }
 
 function togglePreview(){
-  prevOpen=!prevOpen;
-  var btn=document.getElementById('prevBtn');
-  var pv=document.getElementById('pv');
+  prevOpen = !prevOpen;
+  var btn = document.getElementById('prevBtn');
+  var pv = document.getElementById('pv');
   if(prevOpen){
     populatePrintView();
-    pv.style.cssText='display:block;position:fixed;inset:0;z-index:9999;overflow-y:auto;';
-    btn.textContent='✕ ปิด Preview';
+    pv.style.cssText = 'display:block;position:fixed;inset:0;z-index:9999;overflow-y:auto;';
+    btn.textContent = '✕ ปิด Preview';
     btn.classList.add('red');
-  }else{
-    pv.style.cssText='display:none;';
-    btn.textContent='👁 Preview';
+  } else {
+    pv.style.cssText = 'display:none;';
+    btn.textContent = '👁 Preview';
     btn.classList.remove('red');
   }
 }
-function closePreview(){prevOpen=true;togglePreview();}
+
+function closePreview(){ prevOpen=true; togglePreview(); }
+
 function printPlan(){
   populatePrintView();
-  document.getElementById('pv').style.cssText='display:block;';
-  setTimeout(function(){window.print();setTimeout(function(){if(!prevOpen)document.getElementById('pv').style.cssText='display:none;';},800);},150);
+  document.getElementById('pv').style.cssText = 'display:block;';
+  setTimeout(function(){ window.print(); setTimeout(function(){ if(!prevOpen) document.getElementById('pv').style.cssText='display:none;'; },800); },150);
 }
 
-// ═══════════════════════════════════════════════════
-//  GENERATOR WIZARD — AUTO-POPULATE MEMBER PLANNER
-// ═══════════════════════════════════════════════════
-var genTrack = '';
-var genSelSubjs = [];
-
-var GEN_TRACKS = {
-  medical:{name:'สายแพทย์',subjs:['PHY','CHEM','BIO','MATH1','ENG','TGAT','TPAT1'],persona:'แพทย์'},
-  engineering:{name:'สายวิศวะ/IT',subjs:['PHY','CHEM','MATH1','ENG','TGAT','TPAT3'],persona:'วิศวะ'},
-  business:{name:'สายบริหาร',subjs:['MATH1','MATH2','ENG','SOC','TGAT'],persona:'Business'},
-  science:{name:'วิทย์ทั่วไป',subjs:['PHY','CHEM','BIO','MATH1','ENG','TGAT'],persona:'วิศวะ'},
-  arts:{name:'สายศิลป์/ภาษา',subjs:['ENG','THAI','SOC','MATH2','TGAT'],persona:'นิติศาสตร์'},
-  custom:{name:'Custom',subjs:[],persona:''}
-};
-
-var GEN_SUBJ = {
-  PHY:{n:'ฟิสิกส์',e:'⚡',col:'#1565C0',codes:['Pack TCAS ฟิสิกส์','Upskill ฟิสิกส์ A-Level']},
-  CHEM:{n:'เคมี',e:'🧪',col:'#8E44AD',codes:['Pack TCAS เคมี','Upskill เคมี A-Level']},
-  BIO:{n:'ชีววิทยา',e:'🧬',col:'#1E8449',codes:['Pack TCAS ชีววิทยา','Upskill ชีววิทยา A-Level']},
-  MATH1:{n:'คณิตศาสตร์ 1',e:'📐',col:'#C0392B',codes:['Pack TCAS คณิตศาสตร์','Upskill คณิต A-Level']},
-  MATH2:{n:'คณิตศาสตร์ 2',e:'📏',col:'#D35400',codes:['Pack TCAS คณิตศาสตร์']},
-  ENG:{n:'ภาษาอังกฤษ',e:'🔤',col:'#148F77',codes:['Pack TCAS ภาษาอังกฤษ','A-Level ภาษาอังกฤษ']},
-  THAI:{n:'ภาษาไทย',e:'📜',col:'#935116',codes:['ม.ปลาย เนื้อหา']},
-  SOC:{n:'สังคมศึกษา',e:'🌏',col:'#717D7E',codes:['ม.ปลาย เนื้อหา']},
-  TGAT:{n:'TGAT',e:'🧠',col:'#1B2A4A',codes:['TGAT 1','TGAT 2&3']},
-  TPAT1:{n:'TPAT1 (แพทย์)',e:'🏥',col:'#7D0039',codes:['TPAT 1 ความถนัดแพทย์']},
-  TPAT3:{n:'TPAT3 (วิศวะ)',e:'⚙️',col:'#117A65',codes:['TPAT 3 วิทยาศาสตร์-เทคโนโลยี']}
-};
-
-// Subject → score field mapping
-var SUBJ_SCORE_MAP = {
-  PHY:'scPhy', CHEM:'scChem', BIO:'scBio', MATH1:'scMath', MATH2:'scMath',
-  ENG:'scEng', TGAT:'scTgat'
-};
-
-function openGenModal(){
-  genTrack='';genSelSubjs=[];
-  // Reset steps
-  genGo(1);
-  document.getElementById('genOverlay').classList.add('open');
-  // Set today date
-  document.getElementById('gDate').value=new Date().toISOString().split('T')[0];
-}
-
-function closeGenModal(){
-  document.getElementById('genOverlay').classList.remove('open');
-}
-
-// Close on overlay background click
-document.getElementById('genOverlay').addEventListener('click',function(e){
-  if(e.target===this)closeGenModal();
-});
-
-function genGo(n){
-  if(n===2&&!genValidate1())return;
-  if(n===3){
-    if(!genTrack){alert('กรุณาเลือกสายการเรียน');return;}
-    genBuildSubjGrid();
-  }
-  [1,2,3].forEach(function(i){
-    var el=document.getElementById('gstep'+i);
-    if(el)el.style.display=i===n?'block':'none';
-    var ind=document.getElementById('gstep-ind-'+i);
-    if(ind){
-      ind.className='gen-step';
-      if(i===n)ind.className+=' active';
-      if(i<n)ind.className+=' done';
-    }
-  });
-}
-
-function genValidate1(){
-  if(!document.getElementById('gName').value.trim()){alert('กรุณากรอกชื่อนักเรียน');return false;}
-  if(!document.getElementById('gGrade').value){alert('กรุณาเลือกระดับชั้น');return false;}
-  if(!document.getElementById('gStream').value){alert('กรุณาเลือกแผนการเรียน');return false;}
-  if(!document.getElementById('gPdpa').checked){alert('กรุณายืนยันความยินยอม PDPA ก่อนดำเนินการต่อ');return false;}
-  return true;
-}
-
-function genPickTrack(el){
-  document.querySelectorAll('.gen-track-card').forEach(function(c){c.classList.remove('selected');});
-  el.classList.add('selected');
-  genTrack=el.dataset.track;
-}
-
-function genBuildSubjGrid(){
-  var base=genTrack==='custom'?Object.keys(GEN_SUBJ):(GEN_TRACKS[genTrack]?GEN_TRACKS[genTrack].subjs:[]);
-  genSelSubjs=base.slice();
-  var grid=document.getElementById('gSubjGrid');
-  var extras=Object.keys(GEN_SUBJ).filter(function(k){return base.indexOf(k)<0;});
-  grid.innerHTML=[].concat(base,extras).map(function(code){
-    var s=GEN_SUBJ[code];
-    var inBase=base.indexOf(code)>=0;
-    return'<div class="gen-subj-item'+(inBase?' checked':'')+'" id="gsi-'+code+'" onclick="genToggleSubj(\''+code+'\',this)">'+
-      '<input type="checkbox" id="gcb-'+code+'"'+(inBase?' checked':'')+'>'+
-      '<div><div class="gen-subj-label">'+s.e+' '+s.n+'</div>'+
-      '<div class="gen-subj-code">'+s.codes[0]+'</div></div></div>';
-  }).join('');
-
-  // Build score grid
-  var scoreSubjs=base.filter(function(c){return['TGAT','TPAT1','TPAT3'].indexOf(c)<0;});
-  document.getElementById('gScoreGrid').innerHTML=scoreSubjs.map(function(code){
-    var s=GEN_SUBJ[code];
-    return'<div class="gen-fg">'+
-      '<label class="gen-lbl">'+s.e+' '+s.n+'</label>'+
-      '<input class="gen-inp" type="number" id="gsc-'+code+'" placeholder="เป้า 0-100" min="0" max="100"/>'+
-      '</div>';
-  }).join('');
-}
-
-function genToggleSubj(code,el){
-  var cb=document.getElementById('gcb-'+code);
-  cb.checked=!cb.checked;
-  el.classList.toggle('checked',cb.checked);
-  if(cb.checked){if(genSelSubjs.indexOf(code)<0)genSelSubjs.push(code);}
-  else{genSelSubjs=genSelSubjs.filter(function(s){return s!==code;});}
-}
-
-function genApplyPlan(){
-  if(!genSelSubjs.length){alert('กรุณาเลือกอย่างน้อย 1 วิชา');return;}
-
-  // ── Collect generator form values ──
-  var gName=document.getElementById('gName').value.trim();
-  var gNick=document.getElementById('gNick').value.trim();
-  var gGrade=document.getElementById('gGrade').value; // m4, m5, m6
-  var gSchool=document.getElementById('gSchool').value.trim();
-  var gGPA=document.getElementById('gGPA').value;
-  var gEmail=document.getElementById('gEmail').value.trim();
-  var gPhone=document.getElementById('gPhone').value.trim();
-  var gSale=document.getElementById('gSale').value.trim();
-  var gBranch=document.getElementById('gBranch').value.trim();
-  var gFaculty=document.getElementById('gFaculty').value.trim();
-  var gTcasR=document.getElementById('gTcasR').value;
-
-  // ── Map grade ──
-  var gradeMap={m4:'ม.4',m5:'ม.5',m6:'ม.6'};
-  var levelVal=gradeMap[gGrade]||'ม.4';
-
-  // ── Map persona ──
-  var personaVal=(GEN_TRACKS[genTrack]&&GEN_TRACKS[genTrack].persona)||'';
-
-  // ── Populate Member Planner fields ──
-  document.getElementById('stName').value=gName;
-  document.getElementById('stNick').value=gNick;
-  document.getElementById('stSch').value=gSchool;
-  document.getElementById('stGpa').value=gGPA;
-  document.getElementById('stEmail').value=gEmail;
-  document.getElementById('stPhone').value=gPhone;
-  document.getElementById('stGuru').value=gSale;
-  document.getElementById('stFac').value=gFaculty;
-  document.getElementById('stRound').value=gTcasR;
-
-  // Branch: match first word to Member Planner options
-  var branchCode=gBranch.split(' ')[0];
-  var branchSel=document.getElementById('stBranch');
-  for(var i=0;i<branchSel.options.length;i++){
-    if(branchSel.options[i].text===branchCode||branchSel.options[i].value===branchCode){
-      branchSel.selectedIndex=i;break;
-    }
-  }
-
-  // Level — set before renderCal
-  var levelSel=document.getElementById('stLevel');
-  for(var j=0;j<levelSel.options.length;j++){
-    if(levelSel.options[j].value===levelVal){levelSel.selectedIndex=j;break;}
-  }
-
-  // Persona
-  if(personaVal){
-    var personaSel=document.getElementById('stPersona');
-    for(var k=0;k<personaSel.options.length;k++){
-      if(personaSel.options[k].value===personaVal){personaSel.selectedIndex=k;break;}
-    }
-  }
-
-  // Scores from generator score grid
-  genSelSubjs.forEach(function(code){
-    var scoreEl=document.getElementById('gsc-'+code);
-    if(!scoreEl||!scoreEl.value)return;
-    var targetField=SUBJ_SCORE_MAP[code];
-    if(targetField){
-      var tf=document.getElementById(targetField);
-      if(tf&&!tf.value)tf.value=scoreEl.value;
-    }
-  });
-
-  // TGAT score
-  var gscTgat=document.getElementById('gsc-TGAT');
-  if(gscTgat&&gscTgat.value&&!document.getElementById('scTgat').value){
-    document.getElementById('scTgat').value=gscTgat.value;
-  }
-
-  // PDPA mirror
-  if(document.getElementById('gPdpa').checked){
-    document.getElementById('stPdpa').checked=true;
-  }
-
-  // Apply persona plan to calendar (will re-render)
-  if(personaVal){
-    applyPersonaPrefill();
-  }else{
-    renderCal();
-  }
-  calcStats();
-
-  // Close modal + show toast
-  closeGenModal();
-  showToast('✅ สร้างแผนสำเร็จ! กรุณาตรวจสอบและปรับแต่งแผนได้เลย');
-}
-
-function showToast(msg){
-  var t=document.getElementById('toast');
-  document.getElementById('toastMsg').textContent=msg;
-  t.classList.add('show');
-  setTimeout(function(){t.classList.remove('show');},3500);
-}
-
-window.addEventListener('load',init);
+window.addEventListener('load', init);
 </script>
+
+<!-- LOADING OVERLAY -->
+<div id="loadingOverlay">
+  <div class="loading-box">
+    <div class="loading-spinner"></div>
+    <div class="loading-msg" id="loadingMsg">กำลังบันทึก...</div>
+  </div>
+</div>
+<!-- TOAST -->
+<div id="toast"></div>
 </body>
 </html>
