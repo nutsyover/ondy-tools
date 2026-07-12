@@ -4,636 +4,1113 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>ONDY Tools Hub</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.0/chart.umd.min.js"></script>
 <style>
-:root{--navy:#1B2A4A;--orange:#F26522;--maroon:#7D0039;--red:#CC0033;--green:#059669;--bd:#E2E8F0;--bg:#F0F4F8;}
-*{box-sizing:border-box;margin:0;padding:0;}
-body{font-family:'Segoe UI',Arial,sans-serif;background:var(--bg);min-height:100vh;}
+:root {
+  --maroon:#7D0039; --orange:#F26522; --navy:#1B2A4A;
+  --gold:#FFC107; --green:#059669; --teal:#0891B2;
+  --purple:#7C3AED; --red:#DC2626; --bg:#F0F2F5;
+  --nav-h:56px;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Segoe UI',Arial,sans-serif;background:var(--bg);color:#1a1a2e;min-height:100vh}
 
-/* ════ LOGIN SCREEN ════ */
+/* ── LOGIN ─────────────────────────────────── */
 #loginScreen{
-  position:fixed;inset:0;z-index:9999;
-  background:linear-gradient(135deg,#0F1B2D 0%,#1B2A4A 55%,#2D1B69 100%);
-  display:flex;align-items:center;justify-content:center;
+  position:fixed;inset:0;z-index:1000;
+  background:linear-gradient(135deg,var(--navy) 0%,#2d1b69 100%);
+  display:flex;align-items:center;justify-content:center;flex-direction:column;gap:14px
 }
 .login-box{
-  background:#fff;border-radius:18px;padding:40px 36px;width:380px;max-width:92vw;
-  text-align:center;box-shadow:0 24px 64px rgba(0,0,0,.45);
+  background:#fff;border-radius:16px;padding:40px 36px;
+  width:380px;box-shadow:0 24px 64px rgba(0,0,0,.4)
 }
-.login-logo{font-size:42px;font-weight:900;color:#F59E0B;letter-spacing:-2px;line-height:1;}
-.login-sub{font-size:11px;color:#94A3B8;letter-spacing:2.5px;text-transform:uppercase;margin-bottom:28px;margin-top:4px;}
-.login-inp{
-  width:100%;padding:11px 14px;border:1.5px solid var(--bd);border-radius:9px;
-  font-size:13px;margin-bottom:10px;font-family:inherit;color:#0F172A;
-  transition:border .15s;
+.login-logo{text-align:center;margin-bottom:28px}
+.login-brand{font-size:34px;font-weight:800;color:var(--maroon);letter-spacing:3px}
+.login-sub{font-size:11px;color:#64748b;letter-spacing:3px;text-transform:uppercase;margin-top:4px}
+.login-field{margin-bottom:14px}
+.login-field label{display:block;font-size:11px;font-weight:700;color:#475569;
+  margin-bottom:5px;text-transform:uppercase;letter-spacing:.8px}
+.login-field input{
+  width:100%;padding:10px 13px;border:1.5px solid #e2e8f0;
+  border-radius:8px;font-size:14px;outline:none;transition:border-color .2s
 }
-.login-inp:focus{outline:none;border-color:var(--navy);}
-#loginErr{
-  display:none;color:#DC2626;font-size:11px;margin-bottom:10px;
-  padding:8px 12px;background:#FEF2F2;border-radius:7px;text-align:left;
-}
+.login-field input:focus{border-color:var(--maroon)}
 .login-btn{
-  width:100%;background:var(--navy);color:#fff;border:none;
-  padding:13px;border-radius:9px;font-size:14px;font-weight:700;cursor:pointer;
-  font-family:inherit;transition:background .15s;margin-top:2px;
+  width:100%;padding:12px;background:var(--maroon);color:#fff;
+  border:none;border-radius:8px;font-size:15px;font-weight:700;
+  cursor:pointer;margin-top:6px;transition:opacity .2s
 }
-.login-btn:hover{background:#2D4270;}
-.login-footer{font-size:10px;color:#CBD5E1;margin-top:18px;}
-
-/* ════ MAIN APP ════ */
-#mainApp{display:none;}
-header{
-  background:linear-gradient(135deg,#0F1B2D 0%,#1B2A4A 60%,#2D1B69 100%);
-  padding:36px 40px 32px;text-align:center;
-  box-shadow:0 4px 24px rgba(0,0,0,.4);
+.login-btn:hover{opacity:.88}
+.login-err{color:var(--red);font-size:13px;text-align:center;margin-top:10px;min-height:18px}
+.role-hint{
+  margin-top:18px;padding:11px 14px;background:#f8fafc;
+  border-radius:8px;font-size:11px;color:#94a3b8;line-height:1.7
 }
-.logo{font-size:48px;font-weight:900;color:#F59E0B;letter-spacing:-2px;line-height:1;}
-.logo span{color:#fff;font-size:20px;font-weight:400;display:block;margin-top:4px;letter-spacing:2px;opacity:.7;}
-.tagline{font-size:13px;color:#94A3B8;margin-top:10px;}
-.logout-btn{
-  position:absolute;top:16px;right:20px;background:rgba(255,255,255,.1);
-  border:1px solid rgba(255,255,255,.2);color:#94A3B8;font-size:11px;
-  padding:5px 13px;border-radius:8px;cursor:pointer;font-family:inherit;
+.security-banner{
+  background:rgba(255,193,7,.15);border:1px solid rgba(255,193,7,.4);
+  border-radius:10px;padding:12px 18px;width:380px;
+  font-size:12px;color:#fef3c7;line-height:1.6;text-align:center
 }
-.logout-btn:hover{background:rgba(255,255,255,.18);color:#fff;}
+.security-banner strong{color:#fcd34d;display:block;margin-bottom:3px}
 
-.sync-bar{
-  display:flex;align-items:center;justify-content:center;gap:16px;
-  background:#0F172A;padding:10px 24px;font-size:12px;color:#64748B;
-  border-bottom:1px solid #1E293B;flex-wrap:wrap;
+/* ── TOP NAV ────────────────────────────────── */
+#topNav{
+  position:fixed;top:0;left:0;right:0;height:var(--nav-h);
+  background:var(--navy);display:flex;align-items:center;
+  padding:0 18px;z-index:100;box-shadow:0 2px 12px rgba(0,0,0,.25);gap:10px
 }
-#syncBadgeHub{font-weight:700;padding:2px 10px;border-radius:10px;background:#334155;color:#94A3B8;}
-#syncTimeHub{color:#64748B;}
-button.refresh-btn{
-  background:#1E293B;border:1px solid #334155;color:#94A3B8;
-  padding:4px 14px;border-radius:8px;font-size:11px;cursor:pointer;font-weight:600;
+.nav-brand{font-weight:800;font-size:18px;color:#fff;letter-spacing:1px;flex-shrink:0}
+.nav-brand span{color:var(--orange)}
+.nav-home{
+  background:rgba(255,255,255,.13);color:#fff;border:none;cursor:pointer;
+  padding:6px 14px;border-radius:7px;font-size:13px;font-weight:600;
+  display:flex;align-items:center;gap:5px;transition:background .2s;flex-shrink:0
 }
-button.refresh-btn:hover{background:#334155;color:#fff;}
+.nav-home:hover{background:rgba(255,255,255,.24)}
+.nav-crumb{
+  flex:1;font-size:13px;color:rgba(255,255,255,.55);
+  display:flex;align-items:center;gap:6px;overflow:hidden
+}
+.nav-crumb-cur{color:#fff;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.nav-crumb-sep{color:rgba(255,255,255,.3)}
+.nav-right{display:flex;align-items:center;gap:9px;flex-shrink:0}
+.role-badge{
+  padding:3px 11px;border-radius:20px;
+  font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.5px
+}
+.rb-superadmin{background:var(--maroon);color:#fff}
+.rb-admin{background:rgba(255,255,255,.15);color:#fff;border:1px solid rgba(255,255,255,.25)}
+.rb-analyst{background:var(--teal);color:#fff}
+.rb-sales{background:var(--green);color:#fff}
+.nav-uname{color:rgba(255,255,255,.85);font-size:13px}
+.nav-logout{
+  background:rgba(255,255,255,.1);color:#fff;
+  border:1px solid rgba(255,255,255,.2);padding:5px 12px;
+  border-radius:6px;font-size:12px;cursor:pointer;transition:background .2s
+}
+.nav-logout:hover{background:rgba(255,255,255,.22)}
+@media(max-width:600px){.nav-uname{display:none}}
 
-main{max-width:960px;margin:40px auto;padding:0 20px 60px;}
-h2{font-size:13px;font-weight:700;color:#64748B;text-transform:uppercase;letter-spacing:1px;margin-bottom:20px;}
+/* ── APP SHELL ──────────────────────────────── */
+#mainApp{padding-top:calc(var(--nav-h) + 18px);min-height:100vh}
+.view{display:none}
+.view.active{display:block}
 
-.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:20px;margin-bottom:40px;}
-
+/* ── HOME ───────────────────────────────────── */
+#vHome{padding:20px;max-width:1200px;margin:0 auto}
+.page-title{font-size:22px;font-weight:800;color:var(--navy);margin-bottom:4px}
+.page-sub{font-size:13px;color:#64748b;margin-bottom:16px}
+.warn-bar{
+  display:flex;gap:10px;align-items:flex-start;
+  background:#fff7ed;border:1.5px solid #fed7aa;border-radius:10px;
+  padding:13px 16px;margin-bottom:22px
+}
+.warn-bar .wi{font-size:17px;flex-shrink:0;margin-top:1px}
+.warn-bar p{font-size:12px;color:#7c2d12;line-height:1.55}
+.warn-bar strong{display:block;margin-bottom:2px;font-size:13px}
+.cards-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:14px}
 .card{
-  background:white;border:1px solid var(--bd);border-radius:16px;
-  overflow:hidden;text-decoration:none;color:inherit;
-  box-shadow:0 2px 8px rgba(0,0,0,.06);
-  transition:transform .15s,box-shadow .15s;
-  display:block;cursor:pointer;
+  background:#fff;border-radius:13px;padding:22px;cursor:pointer;
+  transition:transform .18s,box-shadow .18s;border:1.5px solid transparent;
+  box-shadow:0 2px 8px rgba(0,0,0,.06);position:relative;overflow:hidden
 }
-.card:hover{transform:translateY(-3px);box-shadow:0 8px 24px rgba(0,0,0,.12);}
-.card-header{padding:22px 22px 14px;display:flex;align-items:flex-start;gap:14px;}
-.card-icon{width:48px;height:48px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:22px;flex-shrink:0;}
-.card-title{font-size:15px;font-weight:800;color:#0F172A;margin-bottom:3px;}
-.card-sub{font-size:11px;color:#64748B;line-height:1.5;}
-.card-body{padding:0 22px 18px;font-size:12px;color:#475569;line-height:1.7;border-top:1px solid #F1F5F9;}
-.card-body ul{margin-left:16px;margin-top:10px;}
-.card-body li{margin-bottom:3px;}
-.card-footer{padding:10px 22px;background:#F8FAFC;display:flex;align-items:center;justify-content:space-between;font-size:11px;color:#94A3B8;}
-.pill{display:inline-block;padding:2px 9px;border-radius:20px;font-size:10px;font-weight:700;}
-
-.kpi-row{display:flex;gap:12px;flex-wrap:wrap;margin-bottom:32px;}
-.kpi{flex:1;min-width:140px;background:white;border:1px solid var(--bd);border-radius:12px;padding:16px 18px;}
-.kpi-val{font-size:24px;font-weight:900;color:#0F172A;line-height:1;}
-.kpi-lbl{font-size:10px;color:#64748B;margin-top:4px;font-weight:600;text-transform:uppercase;}
-.kpi-sub{font-size:11px;color:#94A3B8;margin-top:2px;}
-
-footer{text-align:center;font-size:11px;color:#94A3B8;padding:24px;border-top:1px solid var(--bd);background:white;}
-
-/* ════ PLANNER MODAL ════ */
-#plannerModal{
-  display:none;position:fixed;inset:0;z-index:1500;
-  flex-direction:column;background:#F0F4F8;
+.card:hover{transform:translateY(-4px);box-shadow:0 10px 28px rgba(0,0,0,.12);border-color:rgba(125,0,57,.18)}
+.card::before{content:'';position:absolute;top:0;left:0;right:0;height:4px;background:var(--ca,var(--maroon))}
+.card-icon{font-size:30px;margin-bottom:11px}
+.card-title{font-size:14px;font-weight:700;color:var(--navy);margin-bottom:5px}
+.card-desc{font-size:12px;color:#64748b;line-height:1.5}
+.card-badge{
+  position:absolute;top:12px;right:12px;background:#f1f5f9;color:#475569;
+  padding:2px 8px;border-radius:9px;font-size:10px;font-weight:600
 }
-#plannerModal.open{display:flex;}
-.planner-modal-bar{
-  background:var(--navy);padding:12px 18px;
+
+/* ── SECTION SHELL ──────────────────────────── */
+.section-wrap{padding:20px;max-width:1400px;margin:0 auto}
+.section-head{display:flex;align-items:center;gap:12px;margin-bottom:18px}
+.section-title{font-size:19px;font-weight:800;color:var(--navy)}
+.back-btn{
+  background:#fff;border:1.5px solid #e2e8f0;padding:6px 14px;
+  border-radius:8px;font-size:13px;font-weight:600;cursor:pointer;
+  display:flex;align-items:center;gap:5px;color:var(--navy);transition:all .2s;flex-shrink:0
+}
+.back-btn:hover{background:var(--navy);color:#fff;border-color:var(--navy)}
+
+/* ── HQ MONITOR ─────────────────────────────── */
+.filter-bar{
+  background:#fff;border-radius:12px;padding:14px 16px;
+  margin-bottom:18px;display:flex;flex-wrap:wrap;gap:10px;align-items:flex-end;
+  box-shadow:0 2px 8px rgba(0,0,0,.06)
+}
+.fg{display:flex;flex-direction:column;gap:4px}
+.fg label{font-size:10px;font-weight:700;color:#475569;text-transform:uppercase;letter-spacing:.7px}
+.fg select,.fg input{
+  padding:7px 10px;border:1.5px solid #e2e8f0;border-radius:7px;
+  font-size:13px;outline:none;min-width:130px
+}
+.fg select:focus,.fg input:focus{border-color:var(--navy)}
+.f-reset{
+  padding:8px 13px;background:#fff;color:#64748b;
+  border:1.5px solid #e2e8f0;border-radius:7px;font-size:13px;cursor:pointer
+}
+.stats-row{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:18px}
+.stat-card{
+  background:#fff;border-radius:10px;padding:16px;
+  box-shadow:0 2px 8px rgba(0,0,0,.06);border-left:4px solid var(--sc,var(--navy))
+}
+.stat-val{font-size:28px;font-weight:800;color:var(--navy)}
+.stat-label{font-size:12px;color:#64748b;margin-top:2px}
+.stat-note{font-size:11px;margin-top:4px;font-weight:600;color:#64748b}
+.charts-grid{display:grid;grid-template-columns:2fr 1fr;gap:14px;margin-bottom:14px}
+.charts-row2{display:grid;grid-template-columns:2fr 1fr;gap:14px;margin-bottom:18px}
+.chart-card{background:#fff;border-radius:12px;padding:16px;box-shadow:0 2px 8px rgba(0,0,0,.06)}
+.chart-title{font-size:12px;font-weight:700;color:var(--navy);margin-bottom:12px;text-transform:uppercase;letter-spacing:.5px}
+.chart-wrap{position:relative;height:200px}
+.tbl-wrap{background:#fff;border-radius:12px;overflow:hidden;box-shadow:0 2px 8px rgba(0,0,0,.06)}
+.tbl-head{
   display:flex;align-items:center;justify-content:space-between;
-  flex-shrink:0;gap:10px;flex-wrap:wrap;
+  padding:13px 16px;border-bottom:1px solid #f1f5f9
 }
-.planner-modal-title{color:#fff;font-size:14px;font-weight:800;display:flex;align-items:center;gap:8px;}
-.planner-modal-badge{
-  background:var(--maroon);color:#fff;font-size:10px;font-weight:700;
-  padding:2px 9px;border-radius:20px;
+.tbl-head-title{font-size:14px;font-weight:700;color:var(--navy)}
+.tbl-count{font-size:12px;color:#94a3b8}
+table.dt{width:100%;border-collapse:collapse}
+table.dt th{
+  background:#f8fafc;padding:9px 13px;font-size:11px;font-weight:700;
+  color:#475569;text-align:left;text-transform:uppercase;letter-spacing:.5px;
+  border-bottom:1px solid #e2e8f0;white-space:nowrap
 }
-.planner-modal-actions{display:flex;gap:8px;flex-wrap:wrap;}
-.pm-btn{
-  border:none;font-family:inherit;font-size:12px;font-weight:700;
-  padding:7px 16px;border-radius:7px;cursor:pointer;transition:all .15s;
-}
-.pm-btn-email{background:#059669;color:#fff;}
-.pm-btn-email:hover{background:#047857;}
-.pm-btn-print{background:rgba(255,255,255,.15);color:#fff;border:1.5px solid rgba(255,255,255,.2);}
-.pm-btn-print:hover{background:rgba(255,255,255,.25);}
-.pm-btn-close{background:#EF4444;color:#fff;}
-.pm-btn-close:hover{background:#DC2626;}
-#plannerFrame{
-  flex:1;border:none;width:100%;height:0;
-  background:#F0F4F8;
+table.dt td{padding:9px 13px;font-size:13px;color:#334155;border-bottom:1px solid #f1f5f9;white-space:nowrap}
+table.dt tr:hover td{background:#f8fafc}
+.bp-HIGH{background:#fee2e2;color:#991b1b;padding:2px 8px;border-radius:9px;font-size:11px;font-weight:700}
+.bp-MID {background:#ffedd5;color:#9a3412;padding:2px 8px;border-radius:9px;font-size:11px;font-weight:700}
+.bp-LOW {background:#dcfce7;color:#166534;padding:2px 8px;border-radius:9px;font-size:11px;font-weight:700}
+.bt{padding:2px 8px;border-radius:9px;font-size:11px;font-weight:700}
+.bta{background:#dbeafe;color:#1e40af}
+.btb{background:#ccfbf1;color:#134e4a}
+.btc{background:#dcfce7;color:#166534}
+.btd{background:#f3f4f6;color:#374151}
+.idle-ok{color:var(--green);font-weight:700}
+.idle-warn{color:var(--orange);font-weight:700}
+.idle-crit{color:var(--red);font-weight:700}
+@media(max-width:900px){
+  .charts-grid,.charts-row2{grid-template-columns:1fr}
+  .stats-row{grid-template-columns:repeat(2,1fr)}
 }
 
-/* ════ EMAIL COMPOSE MODAL ════ */
-#emailModal{
-  display:none;position:fixed;inset:0;z-index:3000;
-  background:rgba(0,0,0,.6);align-items:center;justify-content:center;
+/* ── PLANNER ─────────────────────────────────── */
+#vPlanner.active{
+  display:flex;flex-direction:column;
+  position:fixed;top:var(--nav-h);left:0;right:0;bottom:0;z-index:50;background:#fff
 }
-#emailModal.open{display:flex;}
-.email-box{
-  background:#fff;border-radius:14px;width:560px;max-width:96vw;
-  box-shadow:0 20px 60px rgba(0,0,0,.4);overflow:hidden;
+.ptoolbar{
+  background:#fff;padding:9px 14px;display:flex;align-items:center;
+  gap:9px;border-bottom:1px solid #e2e8f0;flex-shrink:0
 }
-.email-head{
-  background:var(--navy);padding:14px 18px;
-  display:flex;align-items:center;justify-content:space-between;
+.tbtn{
+  padding:7px 15px;border-radius:7px;font-size:13px;font-weight:600;
+  cursor:pointer;border:none;transition:opacity .2s;display:flex;align-items:center;gap:5px
 }
-.email-head-title{color:#fff;font-weight:700;font-size:14px;}
-.email-close-btn{
-  background:rgba(255,255,255,.15);border:none;color:#fff;
-  width:26px;height:26px;border-radius:50%;cursor:pointer;font-size:15px;
-  display:flex;align-items:center;justify-content:center;
-}
-.email-body{padding:18px;}
-.email-field{margin-bottom:12px;}
-.email-lbl{font-size:11px;font-weight:700;color:#64748B;display:block;margin-bottom:4px;}
-.email-inp{
-  width:100%;padding:9px 11px;border:1.5px solid var(--bd);border-radius:7px;
-  font-size:12px;font-family:inherit;color:#0F172A;transition:border .15s;
-}
-.email-inp:focus{outline:none;border-color:var(--navy);}
-textarea.email-inp{resize:vertical;min-height:130px;line-height:1.65;}
-.email-foot{
-  padding:12px 18px;border-top:1px solid var(--bd);
-  display:flex;gap:8px;justify-content:flex-end;align-items:center;
-  background:#F8FAFC;
-}
-.e-btn{
-  padding:8px 16px;border-radius:7px;font-size:12px;font-weight:600;
-  cursor:pointer;border:none;font-family:inherit;transition:all .15s;
-}
-.e-btn-cancel{background:#fff;border:1.5px solid var(--bd);color:#374151;}
-.e-btn-cancel:hover{background:#F1F5F9;}
-.e-btn-copy{background:#F1F5F9;border:1.5px solid var(--bd);color:#1B2A4A;font-weight:700;}
-.e-btn-copy:hover{background:#E2E8F0;}
-.e-btn-send{background:#1B2A4A;color:#fff;}
-.e-btn-send:hover{background:#2D4270;}
-#copyDone{display:none;color:#059669;font-size:11px;font-weight:600;}
+.tbtn:hover{opacity:.85}
+.tbtn-m{background:var(--maroon);color:#fff}
+.tbtn-t{background:var(--teal);color:#fff}
+.tbtn-o{background:#fff;color:var(--navy);border:1.5px solid #e2e8f0}
+#plannerFrame{flex:1;border:none;width:100%}
 
-/* ════ TOAST ════ */
-.hub-toast{
-  display:none;position:fixed;bottom:24px;right:24px;
-  background:var(--navy);color:#fff;padding:12px 20px;border-radius:10px;
-  font-size:13px;font-weight:600;z-index:8000;
-  box-shadow:0 4px 16px rgba(0,0,0,.3);align-items:center;gap:10px;
+/* ── LARK ────────────────────────────────────── */
+.lark-card{
+  background:#fff;border-radius:14px;padding:36px;text-align:center;
+  box-shadow:0 4px 18px rgba(0,0,0,.09);margin-bottom:20px
 }
-.hub-toast.show{display:flex;}
+.lark-icon{font-size:56px;margin-bottom:14px}
+.lark-title{font-size:20px;font-weight:800;color:var(--navy);margin-bottom:8px}
+.lark-desc{font-size:14px;color:#64748b;margin-bottom:26px;line-height:1.7}
+.lark-main-btn{
+  display:inline-block;padding:14px 38px;background:var(--teal);
+  color:#fff;border-radius:10px;font-size:16px;font-weight:700;
+  text-decoration:none;transition:opacity .2s
+}
+.lark-main-btn:hover{opacity:.85}
+.lark-links{margin-top:22px;display:flex;gap:10px;justify-content:center;flex-wrap:wrap}
+.lark-link{
+  padding:10px 20px;background:#f8fafc;color:var(--navy);
+  border:1.5px solid #e2e8f0;border-radius:8px;font-size:13px;
+  font-weight:600;text-decoration:none;display:inline-block;transition:all .2s
+}
+.lark-link:hover{background:var(--navy);color:#fff;border-color:var(--navy)}
+.ondemand-note{
+  background:#f0f9ff;border:1.5px solid #bae6fd;border-radius:10px;
+  padding:14px 18px;font-size:13px;color:#0369a1;line-height:1.6
+}
+.ondemand-note strong{display:block;margin-bottom:4px;font-size:14px}
+
+/* ── SETTINGS ────────────────────────────────── */
+.settings-card{
+  background:#fff;border-radius:12px;padding:24px;
+  box-shadow:0 2px 8px rgba(0,0,0,.06);margin-bottom:16px
+}
+.settings-card h3{font-size:15px;font-weight:700;color:var(--navy);margin-bottom:14px}
+.role-table{width:100%;border-collapse:collapse;font-size:13px}
+.role-table th{
+  background:#f8fafc;padding:9px 12px;text-align:left;
+  border:1px solid #e2e8f0;font-size:11px;text-transform:uppercase;color:#475569
+}
+.role-table td{padding:9px 12px;border:1px solid #e2e8f0;color:#334155}
+.info-box{
+  background:#fff7ed;border:1px solid #fed7aa;border-radius:8px;padding:12px 14px;
+  font-size:13px;color:#7c2d12;line-height:1.6
+}
+.cred-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;margin-top:14px}
+.cred-item{
+  background:#f8fafc;border-radius:8px;padding:12px 14px;
+  border-left:4px solid var(--ci,var(--navy))
+}
+.cred-role{font-size:11px;font-weight:700;color:#475569;text-transform:uppercase;margin-bottom:4px}
+.cred-user{font-size:13px;font-weight:600;color:var(--navy)}
+.cred-pass{font-size:12px;color:#64748b;font-family:monospace}
+
+/* ── EMAIL MODAL ─────────────────────────────── */
+.modal-ov{
+  position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:500;
+  display:none;align-items:center;justify-content:center
+}
+.modal-ov.open{display:flex}
+.modal-box{
+  background:#fff;border-radius:14px;padding:28px;
+  width:560px;max-width:95vw;max-height:90vh;overflow-y:auto
+}
+.modal-title{font-size:17px;font-weight:700;color:var(--navy);margin-bottom:20px}
+.mf{margin-bottom:13px}
+.mf label{display:block;font-size:11px;font-weight:700;color:#475569;
+  margin-bottom:4px;text-transform:uppercase;letter-spacing:.7px}
+.mf input,.mf textarea{
+  width:100%;padding:9px 12px;border:1.5px solid #e2e8f0;
+  border-radius:8px;font-size:14px;outline:none;font-family:inherit
+}
+.mf input:focus,.mf textarea:focus{border-color:var(--maroon)}
+.mf textarea{resize:vertical;min-height:130px}
+.modal-acts{display:flex;gap:9px;margin-top:18px;justify-content:flex-end;flex-wrap:wrap}
+.btn-cancel{padding:9px 18px;background:#f1f5f9;color:#475569;border:none;border-radius:8px;cursor:pointer;font-size:14px}
+.btn-copy{padding:9px 18px;background:#e0f2fe;color:#0369a1;border:none;border-radius:8px;cursor:pointer;font-size:14px}
+.btn-send{padding:9px 22px;background:var(--maroon);color:#fff;border:none;border-radius:8px;cursor:pointer;font-size:14px;font-weight:700}
+
+/* ── HQ MONITOR v2 ───────────────────────────── */
+.hq-summary{display:flex;gap:12px;margin-bottom:16px;flex-wrap:wrap}
+.hq-pill{background:#fff;border-radius:10px;padding:12px 18px;box-shadow:0 2px 8px rgba(0,0,0,.06);text-align:center;flex:1;min-width:110px}
+.hq-pill-v{font-size:24px;font-weight:800;color:var(--navy)}
+.hq-pill-l{font-size:11px;color:#64748b;margin-top:2px}
+.hq-pill.hp-g .hq-pill-v{color:#059669}
+.hq-pill.hp-r .hq-pill-v{color:#dc2626}
+.hq-pill.hp-y .hq-pill-v{color:#d97706}
+.hq-top-bar{display:flex;justify-content:space-between;align-items:center;margin-bottom:14px;gap:10px;flex-wrap:wrap}
+.hq-vtabs{display:flex;gap:3px;background:#f1f5f9;padding:4px;border-radius:9px}
+.hq-vtab{padding:7px 16px;border:none;border-radius:6px;background:transparent;font-size:13px;font-weight:600;color:#64748b;cursor:pointer;transition:all .15s}
+.hq-vtab.act{background:#fff;color:var(--navy);box-shadow:0 1px 4px rgba(0,0,0,.1)}
+.hq-ebtn{padding:7px 16px;background:var(--navy);color:#fff;border:none;border-radius:8px;font-size:13px;font-weight:600;cursor:pointer;transition:opacity .2s}
+.hq-ebtn:hover{opacity:.85}
+.hq-ebtn.on{background:var(--maroon)}
+/* Hub */
+.hq-hub{background:#fff;border-radius:14px;margin-bottom:12px;box-shadow:0 2px 8px rgba(0,0,0,.06);overflow:hidden}
+.hq-hdr{display:flex;align-items:center;gap:12px;padding:14px 16px;cursor:pointer;user-select:none;transition:background .15s}
+.hq-hdr:hover{background:#f8fafc}
+.hq-hico{width:36px;height:36px;border-radius:9px;display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0}
+.hq-hname{font-size:15px;font-weight:800;color:var(--navy);flex:1}
+.hq-hmeta{display:flex;gap:14px;align-items:center;flex-wrap:wrap}
+.hq-hms{font-size:12px;color:#64748b}
+.hq-hms strong{color:var(--navy)}
+.hq-pill2{padding:3px 10px;border-radius:20px;font-size:11px;font-weight:700}
+.p2g{background:#dcfce7;color:#166534}
+.p2y{background:#fef9c3;color:#854d0e}
+.p2r{background:#fee2e2;color:#991b1b}
+.hq-arr{font-size:12px;color:#94a3b8;transition:transform .2s;flex-shrink:0}
+.hq-arr.o{transform:rotate(90deg)}
+.hq-hbody{padding:0 14px 14px;display:none}
+.hq-hbody.o{display:block}
+/* Champion */
+.hq-champ{border:1.5px solid #e2e8f0;border-radius:10px;margin-bottom:8px;overflow:hidden}
+.hq-chdr{display:flex;align-items:center;gap:10px;padding:10px 14px;cursor:pointer;background:#f8fafc;transition:background .15s}
+.hq-chdr:hover{background:#f1f5f9}
+.hq-cdot{width:10px;height:10px;border-radius:50%;flex-shrink:0}
+.hq-cname{font-size:14px;font-weight:700;color:var(--navy);flex:1}
+.hq-cmeta{font-size:12px;color:#64748b}
+.hq-carr{font-size:11px;color:#94a3b8;transition:transform .2s;flex-shrink:0}
+.hq-carr.o{transform:rotate(90deg)}
+.hq-cbody{padding:10px 12px;display:none}
+.hq-cbody.o{display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:8px}
+/* Branch card */
+.hq-br{background:#fff;border-radius:8px;padding:12px;border:1.5px solid #e2e8f0}
+.hq-br.bsg{border-color:#86efac}
+.hq-br.bsy{border-color:#fde68a}
+.hq-br.bsr{border-color:#fca5a5}
+.hq-brc{font-size:10px;font-weight:800;color:#94a3b8;letter-spacing:1.2px;margin-bottom:1px}
+.hq-brn{font-size:13px;font-weight:700;color:var(--navy);margin-bottom:8px}
+.hq-krow{display:flex;align-items:center;gap:6px;margin-bottom:4px}
+.hq-kl{font-size:10px;color:#64748b;width:78px;flex-shrink:0}
+.hq-kv{font-size:11px;font-weight:700;width:42px;text-align:right;flex-shrink:0}
+.hq-bw{flex:1;background:#f1f5f9;border-radius:99px;height:6px;overflow:hidden}
+.hq-bf{height:6px;border-radius:99px}
+.bg-g{background:#059669}
+.bg-y{background:#f59e0b}
+.bg-r{background:#dc2626}
+.hq-bback{font-size:10px;color:#94a3b8;margin-top:6px}
+/* Edit panel */
+.hq-ep{background:#fff8f0;border:2px solid #fed7aa;border-radius:12px;padding:18px;margin-bottom:16px}
+.hq-ep-t{font-size:14px;font-weight:700;color:#9a3412;margin-bottom:14px}
+.hq-ep-h{margin-bottom:14px}
+.hq-ep-hn{font-size:13px;font-weight:700;color:var(--navy);margin-bottom:8px;padding-bottom:4px;border-bottom:1px solid #e2e8f0}
+.hq-ep-cr{display:flex;align-items:flex-start;gap:8px;margin-bottom:8px;flex-wrap:wrap}
+.hq-ep-cl{font-size:12px;color:#64748b;width:85px;flex-shrink:0;padding-top:6px}
+.hq-ep-ci{padding:5px 9px;border:1.5px solid #e2e8f0;border-radius:6px;font-size:13px;font-weight:600;width:130px;outline:none;flex-shrink:0}
+.hq-ep-ci:focus{border-color:var(--navy)}
+.hq-ep-bs{display:flex;flex-wrap:wrap;gap:4px;align-items:center}
+.hq-ep-bt{padding:3px 8px;background:#f1f5f9;border-radius:5px;font-size:11px;font-weight:700;color:var(--navy)}
+.hq-ep-mv{padding:2px 5px;border:1px solid #e2e8f0;border-radius:5px;font-size:10px;background:#fff;outline:none;color:#475569;max-width:160px}
+.hq-ep-acts{display:flex;gap:8px;margin-top:14px;flex-wrap:wrap}
+.hq-ep-sv{padding:8px 20px;background:var(--green);color:#fff;border:none;border-radius:7px;font-size:13px;font-weight:700;cursor:pointer}
+.hq-ep-cn{padding:8px 16px;background:#f1f5f9;color:#475569;border:none;border-radius:7px;font-size:13px;cursor:pointer}
+.hq-ep-rs{padding:8px 16px;background:#fee2e2;color:#991b1b;border:none;border-radius:7px;font-size:13px;cursor:pointer}
+/* Scatter + Table */
+.hq-sw{background:#fff;border-radius:12px;padding:20px;box-shadow:0 2px 8px rgba(0,0,0,.06);margin-bottom:14px}
+.hq-sw-t{font-size:13px;font-weight:700;color:var(--navy);margin-bottom:14px}
+.hq-leg{display:flex;gap:16px;flex-wrap:wrap;margin-top:12px}
+.hq-leg-i{display:flex;align-items:center;gap:5px;font-size:12px;color:#475569}
+.hq-leg-d{width:10px;height:10px;border-radius:50%;flex-shrink:0}
+@media(max-width:700px){.hq-hmeta{display:none}.hq-cbody.o{grid-template-columns:1fr}}
 </style>
 </head>
 <body>
 
-<!-- ════════════════════════════════
-     LOGIN SCREEN
-     ════════════════════════════════ -->
+<!-- ═══════════════ LOGIN ═══════════════ -->
 <div id="loginScreen">
   <div class="login-box">
-    <div class="login-logo">ONDY</div>
-    <div class="login-sub">Tools Hub · Internal</div>
-    <input class="login-inp" type="text" id="loginUser" placeholder="Username" autocomplete="username"
-           onkeydown="if(event.key==='Enter')document.getElementById('loginPass').focus()"/>
-    <input class="login-inp" type="password" id="loginPass" placeholder="Password" autocomplete="current-password"
-           onkeydown="if(event.key==='Enter')doLogin()"/>
-    <div id="loginErr"></div>
-    <button class="login-btn" onclick="doLogin()">🔓 เข้าสู่ระบบ</button>
-    <div class="login-footer">OnDemand Education · ระบบสำหรับพนักงานเท่านั้น</div>
+    <div class="login-logo">
+      <div class="login-brand">ONDY</div>
+      <div class="login-sub">Tools Hub — Secure Access</div>
+    </div>
+    <div class="login-field">
+      <label>Username</label>
+      <input id="lu" type="text" placeholder="Enter username" autocomplete="off"
+        onkeydown="if(event.key==='Enter')document.getElementById('lp').focus()">
+    </div>
+    <div class="login-field">
+      <label>Password</label>
+      <input id="lp" type="password" placeholder="Enter password"
+        onkeydown="if(event.key==='Enter')doLogin()">
+    </div>
+    <button class="login-btn" onclick="doLogin()">เข้าสู่ระบบ</button>
+    <div class="login-err" id="loginErr"></div>
+    <div class="role-hint">
+      <strong style="font-size:11px;color:#64748b">ROLES:</strong>
+      Super Admin · Admin · Analyst · Sales<br>
+      ติดต่อ IT เพื่อขอรหัสผ่าน
+    </div>
+  </div>
+  <div class="security-banner">
+    <strong>⚠️ ข้อควรระวังด้านความปลอดภัย</strong>
+    GitHub Pages = Public Hosting — ข้อมูลใน HTML ถูกเปิดเผยได้<br>
+    แนะนำย้ายไป <strong>Cloudflare Pages + Access Control</strong> สำหรับข้อมูลจริง
   </div>
 </div>
 
-<!-- ════════════════════════════════
-     PLANNER MODAL (full-screen)
-     ════════════════════════════════ -->
-<div id="plannerModal">
-  <div class="planner-modal-bar">
-    <div class="planner-modal-title">
-      📅 Individual Planner Generator
-      <span class="planner-modal-badge">ONDY MEMBER</span>
-    </div>
-    <div class="planner-modal-actions">
-      <button class="pm-btn pm-btn-email" onclick="openEmailModal()">
-        📧 ส่ง Email ให้นักเรียน
-      </button>
-      <button class="pm-btn pm-btn-print" onclick="printPlan()">
-        🖨 Print / PDF
-      </button>
-      <button class="pm-btn pm-btn-close" onclick="closePlanner()">
-        ✕ ปิด
-      </button>
-    </div>
+<!-- ═══════════════ TOP NAV ═══════════════ -->
+<nav id="topNav" style="display:none">
+  <span class="nav-brand">ON<span>DY</span></span>
+  <button class="nav-home" onclick="goHome()">🏠 Home</button>
+  <div class="nav-crumb">
+    <span>Home</span>
+    <span class="nav-crumb-sep" id="bcSep" style="display:none">›</span>
+    <span class="nav-crumb-cur" id="bcCur"></span>
   </div>
-  <iframe id="plannerFrame" src="ONDY_Member_Planner.html"></iframe>
-</div>
+  <div class="nav-right">
+    <span class="role-badge" id="navBadge"></span>
+    <span class="nav-uname" id="navName"></span>
+    <button class="nav-logout" onclick="doLogout()">ออก</button>
+  </div>
+</nav>
 
-<!-- ════════════════════════════════
-     EMAIL COMPOSE MODAL
-     ════════════════════════════════ -->
-<div id="emailModal">
-  <div class="email-box">
-    <div class="email-head">
-      <div class="email-head-title">📧 ส่ง Email แผนการเรียน ONDY</div>
-      <button class="email-close-btn" onclick="closeEmailModal()">✕</button>
+<!-- ═══════════════ MAIN APP ═══════════════ -->
+<div id="mainApp" style="display:none">
+
+<!-- ── HOME ── -->
+<div id="vHome" class="view active">
+  <div style="padding:20px;max-width:1200px;margin:0 auto">
+    <div class="page-title">🛠️ ONDY Tools Hub</div>
+    <div class="page-sub" id="welcomeMsg"></div>
+    <div class="warn-bar" style="margin-top:14px">
+      <span class="wi">⚠️</span>
+      <p>
+        <strong>GitHub Pages Security Notice</strong>
+        GitHub Pages = Public Hosting — ทุกคนที่รู้ URL สามารถดู source code ได้ รวมถึงรหัสผ่านที่ Hardcode ไว้<br>
+        Production จริงแนะนำ: <strong>Cloudflare Pages + Email Access Policy (ฟรี)</strong> หรือ self-hosted server ที่มี Server-side Auth
+      </p>
     </div>
-    <div class="email-body">
-      <div class="email-field">
-        <label class="email-lbl">ถึง (Email นักเรียน / ผู้ปกครอง)</label>
-        <input class="email-inp" type="email" id="emailTo" placeholder="student@email.com"/>
-      </div>
-      <div class="email-field">
-        <label class="email-lbl">CC (ไม่บังคับ)</label>
-        <input class="email-inp" type="email" id="emailCc" placeholder="parent@email.com หรือ guru@ondemand.in.th"/>
-      </div>
-      <div class="email-field">
-        <label class="email-lbl">หัวข้อ Email</label>
-        <input class="email-inp" type="text" id="emailSubject"/>
-      </div>
-      <div class="email-field">
-        <label class="email-lbl">เนื้อหา</label>
-        <textarea class="email-inp" id="emailBody" rows="9"></textarea>
-      </div>
-    </div>
-    <div class="email-foot">
-      <span id="copyDone">✅ คัดลอกแล้ว!</span>
-      <button class="e-btn e-btn-cancel" onclick="closeEmailModal()">ยกเลิก</button>
-      <button class="e-btn e-btn-copy" onclick="copyEmailContent()">📋 คัดลอกเนื้อหา</button>
-      <button class="e-btn e-btn-send" onclick="sendViaMailto()">📤 เปิด Email Client</button>
-    </div>
+    <div class="cards-grid" id="cardsGrid"></div>
   </div>
 </div>
 
-<!-- ════════════════════════════════
-     MAIN APP
-     ════════════════════════════════ -->
-<div id="mainApp">
-  <header style="position:relative;">
-    <div class="logo">ONDY <span>TOOLS HUB</span></div>
-    <div class="tagline">OnDemand Internal Tools · Synced with Tableau Backlog Dashboard · Auto-refresh every 30 min</div>
-    <button class="logout-btn" onclick="doLogout()">🔒 ออกจากระบบ</button>
-  </header>
-
-  <div class="sync-bar">
-    <span id="syncBadgeHub" style="background:#334155;color:#94A3B8;">⬤ Loading…</span>
-    <span id="syncTimeHub">กำลังโหลดข้อมูล…</span>
-    <button class="refresh-btn" onclick="loadData(true)">⟳ Refresh Now</button>
-    <span>|</span>
-    <a href="https://bi.learn.co.th/#/site/LearnCorp/views/OndyOnlyTrackingDashboard/2_Backlog"
-       target="_blank" style="color:#60A5FA;font-size:11px;text-decoration:none;">
-      🔗 Open Tableau Dashboard ↗
-    </a>
-  </div>
-
-  <main>
-    <div class="kpi-row" id="kpiRow">
-      <div class="kpi"><div class="kpi-val" id="kpiSales">—</div><div class="kpi-lbl">Salespersons</div><div class="kpi-sub">ที่มีข้อมูล Backlog</div></div>
-      <div class="kpi"><div class="kpi-val" id="kpiBacklog">—</div><div class="kpi-lbl">Total Backlog Leads</div><div class="kpi-sub">ยังไม่ Convert</div></div>
-      <div class="kpi"><div class="kpi-val" id="kpiConvRate">—</div><div class="kpi-lbl">Avg Conv Rate</div><div class="kpi-sub">เฉลี่ยทุกพนักงาน</div></div>
-      <div class="kpi"><div class="kpi-val" id="kpiLastSync">—</div><div class="kpi-lbl">Last Sync</div><div class="kpi-sub">จาก Tableau</div></div>
+<!-- ── HQ MONITOR ── -->
+<div id="vHQ" class="view">
+  <div class="section-wrap">
+    <div class="section-head">
+      <button class="back-btn" onclick="goHome()">← Home</button>
+      <div class="section-title">📊 HQ Backlog Monitor — H1 2026</div>
     </div>
 
-    <h2>🛠 Tools</h2>
-    <div class="grid">
+    <!-- Summary Pills -->
+    <div class="hq-summary" id="hqSum"></div>
 
-      <!-- HQ Backlog Monitor -->
-      <a class="card" href="ONDY_HQ_Backlog_Monitor.html">
-        <div class="card-header">
-          <div class="card-icon" style="background:#EEF2FF;">🏢</div>
-          <div>
-            <div class="card-title">HQ Backlog Monitor</div>
-            <div class="card-sub">Dashboard หลัก — ติดตาม Backlog × Conversion</div>
-          </div>
-        </div>
-        <div class="card-body">
-          ดูยอดจริงรายเดือน, Conv Rate แยก Tier, Email Alert ส่ง Sale/นักเรียน
-          <ul>
-            <li>HQ Monitor matrix รายพนักงาน</li>
-            <li>Tier Performance</li>
-            <li>📧 Email Studio (Sale + Student)</li>
-          </ul>
-        </div>
-        <div class="card-footer">
-          <span class="pill" style="background:#EEF2FF;color:#4F46E5;">● Live Tableau Data</span>
-          <span>→ เปิด Dashboard</span>
-        </div>
-      </a>
+    <!-- View Tabs + Edit Button -->
+    <div class="hq-top-bar">
+      <div class="hq-vtabs">
+        <button class="hq-vtab act" onclick="hqV('tree',this)">🌳 Hierarchy</button>
+        <button class="hq-vtab" onclick="hqV('scatter',this)">📉 Scatter</button>
+        <button class="hq-vtab" onclick="hqV('table',this)">📋 Table</button>
+      </div>
+      <button id="hqEBtn" class="hq-ebtn" onclick="hqToggleEdit()">✏️ Edit Structure</button>
+    </div>
 
-      <!-- Individual Planner Generator — opens in MODAL -->
-      <div class="card" onclick="openPlanner()">
-        <div class="card-header">
-          <div class="card-icon" style="background:#FFF7ED;">📅</div>
-          <div>
-            <div class="card-title">Individual Planner Generator</div>
-            <div class="card-sub">สร้างแผนการเรียนส่วนตัว + ส่ง Email ให้นักเรียน</div>
-          </div>
+    <!-- Edit Structure Panel -->
+    <div id="hqEP" style="display:none" class="hq-ep">
+      <div class="hq-ep-t">⚙️ Customize Champion Names &amp; Branch Assignments</div>
+      <div id="hqEBody"></div>
+      <div class="hq-ep-acts">
+        <button class="hq-ep-sv" onclick="hqSave()">💾 Save</button>
+        <button class="hq-ep-cn" onclick="hqToggleEdit()">Cancel</button>
+        <button class="hq-ep-rs" onclick="hqReset()">↺ Reset Default</button>
+      </div>
+    </div>
+
+    <!-- Tree View -->
+    <div id="hqTreeP"></div>
+
+    <!-- Scatter View -->
+    <div id="hqSctP" style="display:none">
+      <div class="hq-sw">
+        <div class="hq-sw-t">📉 New ONDY H1 vs Backlog Conversion Rate — Target: New ≥65 / Conv ≥80%</div>
+        <div style="position:relative;height:430px"><canvas id="cSct"></canvas></div>
+        <div class="hq-leg" id="hqLeg"></div>
+      </div>
+    </div>
+
+    <!-- Table View -->
+    <div id="hqTblP" style="display:none">
+      <div class="tbl-wrap">
+        <div class="tbl-head">
+          <span class="tbl-head-title">Branch Performance — H1 2026</span>
+          <span class="tbl-count" id="hqTblC">36 สาขา</span>
         </div>
-        <div class="card-body">
-          กรอกข้อมูลนักเรียน → ระบบสร้างแผน ONDY พร้อม calendar 3 ปี
-          <ul>
-            <li>🎯 Auto-Generate Plan (3 ขั้นตอน)</li>
-            <li>ระดับชั้น ม.4 / ม.5 / ม.6 × 4 Persona</li>
-            <li>📧 ส่ง Email แผนการเรียนให้นักเรียนได้ทันที</li>
-          </ul>
-        </div>
-        <div class="card-footer">
-          <span class="pill" style="background:#FFF7ED;color:#EA580C;">● ONDY Member Planner</span>
-          <span>→ เปิดใช้งาน ↗</span>
+        <div style="overflow-x:auto">
+          <table class="dt">
+            <thead><tr>
+              <th style="cursor:pointer" onclick="hqSort('hub')">Hub ↕</th>
+              <th style="cursor:pointer" onclick="hqSort('champ')">Champion ↕</th>
+              <th style="cursor:pointer" onclick="hqSort('code')">Code ↕</th>
+              <th>สาขา</th>
+              <th style="cursor:pointer" onclick="hqSort('newOndy')">New ONDY ↕</th>
+              <th style="cursor:pointer" onclick="hqSort('conv')">Conv% ↕</th>
+              <th style="cursor:pointer" onclick="hqSort('backlog')">Backlog ↕</th>
+              <th>Status</th>
+            </tr></thead>
+            <tbody id="hqTB"></tbody>
+          </table>
         </div>
       </div>
-
-      <!-- Lead Scoring System -->
-      <a class="card" href="ONDY_Lead_Scoring_System.html">
-        <div class="card-header">
-          <div class="card-icon" style="background:#FEF2F2;">🎯</div>
-          <div>
-            <div class="card-title">Lead Scoring System</div>
-            <div class="card-sub">บันทึก Lead + คำนวณ Score อัตโนมัติ</div>
-          </div>
-        </div>
-        <div class="card-body">
-          กรอกข้อมูล Lead ตาม Lark Form → ได้ HOT / WARM / COLD + Track แนะนำ
-          <ul>
-            <li>Demographic score (โรงเรียน / คณะ / เกรด)</li>
-            <li>Behavioral score (Intent signals)</li>
-            <li>Alert template พร้อมส่ง Guru</li>
-          </ul>
-        </div>
-        <div class="card-footer">
-          <span class="pill" style="background:#FEF2F2;color:#DC2626;">● Lead Intake</span>
-          <span>→ บันทึก Lead</span>
-        </div>
-      </a>
-
     </div>
 
-    <h2>📋 Setup Guide</h2>
-    <div style="background:white;border:1px solid var(--bd);border-radius:12px;padding:20px 24px;font-size:12px;color:#374151;line-height:1.9;">
-      <b style="font-size:13px;color:#0F172A;">วิธี deploy บน GitHub Pages</b>
-      <ol style="margin-left:18px;margin-top:12px;margin-bottom:16px;">
-        <li>สร้าง GitHub repo ใหม่ (public หรือ private + Pages enabled)</li>
-        <li>Push ไฟล์ทั้งหมดในโฟลเดอร์นี้ขึ้น repo</li>
-        <li>ไปที่ Settings → Pages → Source: <b>main branch / root</b></li>
-        <li>เพิ่ม Secrets (Settings → Secrets → Actions):
-          <ul style="margin-left:16px;">
-            <li><code>TABLEAU_USERNAME</code> = email เข้า bi.learn.co.th</li>
-            <li><code>TABLEAU_PASSWORD</code> = password</li>
-          </ul>
-        </li>
-        <li>GitHub Actions จะ sync ข้อมูลทุก 30 นาทีโดยอัตโนมัติ</li>
-        <li>URL ของเว็บจะเป็น <code>https://[username].github.io/[repo-name]/</code></li>
-      </ol>
-      <b>Manual trigger:</b> GitHub → Actions tab → "Sync Tableau Data" → Run workflow
-    </div>
-  </main>
-
-  <footer>ONDY Tools Hub · OnDemand Internal · Data synced from Tableau via GitHub Actions</footer>
+  </div>
 </div>
 
-<!-- TOAST -->
-<div class="hub-toast" id="hubToast">
-  <span id="hubToastMsg"></span>
+<!-- ── PLANNER ── -->
+<div id="vPlanner" class="view">
+  <div class="ptoolbar">
+    <button class="tbtn tbtn-o" onclick="goHome()">← Home</button>
+    <span style="font-size:14px;font-weight:700;color:var(--navy)">📋 Individual Planner</span>
+    <div style="flex:1"></div>
+    <button class="tbtn tbtn-m" onclick="openEmailModal()">📧 ส่ง Email ให้นักเรียน</button>
+    <button class="tbtn tbtn-t" onclick="doPrint()">🖨️ Print</button>
+  </div>
+  <iframe id="plannerFrame" src="" style="flex:1;border:none;width:100%"></iframe>
+</div>
+
+<!-- ── LARK ── -->
+<div id="vLark" class="view">
+  <div class="section-wrap" style="max-width:860px">
+    <div class="section-head">
+      <button class="back-btn" onclick="goHome()">← Home</button>
+      <div class="section-title">🦅 Lark System</div>
+    </div>
+    <div class="lark-card">
+      <div class="lark-icon">🦅</div>
+      <div class="lark-title">เชื่อมต่อ Lark — ONDY CRM Suite</div>
+      <div class="lark-desc">
+        คลิกเพื่อเข้าสู่ Lark Suite โดยตรง<br>
+        ล็อกอินด้วย Account ONDY ของคุณ
+      </div>
+      <a href="https://www.larksuite.com" target="_blank" class="lark-main-btn">🚀 เปิด Lark Suite</a>
+      <div class="lark-links">
+        <a href="https://www.larksuite.com" target="_blank" class="lark-link">📋 Lark Base (CRM)</a>
+        <a href="https://www.larksuite.com" target="_blank" class="lark-link">📅 Lark Calendar</a>
+        <a href="https://www.larksuite.com" target="_blank" class="lark-link">💬 Lark Messenger</a>
+        <a href="https://www.larksuite.com" target="_blank" class="lark-link">📊 Lark Docs</a>
+      </div>
+    </div>
+    <div class="ondemand-note">
+      <strong>💡 เชื่อม On Demand Website → Lark โดยตรง</strong>
+      เพิ่ม redirect link จากหน้า On Demand → <code>https://[your-domain]/index.html</code>
+      หลัง Login สำเร็จ ระบบ redirect ไป Lark อัตโนมัติ<br>
+      (SSO ที่ปลอดภัยต้องการ Backend Auth เช่น Firebase / Supabase)
+    </div>
+  </div>
+</div>
+
+<!-- ── REPORTS ── -->
+<div id="vReports" class="view">
+  <div class="section-wrap" style="max-width:1000px">
+    <div class="section-head">
+      <button class="back-btn" onclick="goHome()">← Home</button>
+      <div class="section-title">📈 Reports & Analytics</div>
+    </div>
+    <div style="background:#fff;border-radius:12px;padding:48px;text-align:center;color:#64748b;box-shadow:0 2px 8px rgba(0,0,0,.06)">
+      <div style="font-size:48px;margin-bottom:14px">📊</div>
+      <div style="font-size:16px;font-weight:700;margin-bottom:6px;color:var(--navy)">เชื่อมต่อ Tableau หรือ Looker Studio</div>
+      <div style="font-size:13px">Embed รายงาน Real-time ของแต่ละสาขา, Conversion KPI และ Revenue Summary ที่นี่</div>
+    </div>
+  </div>
+</div>
+
+<!-- ── SETTINGS ── -->
+<div id="vSettings" class="view">
+  <div class="section-wrap" style="max-width:700px">
+    <div class="section-head">
+      <button class="back-btn" onclick="goHome()">← Home</button>
+      <div class="section-title">⚙️ Settings</div>
+    </div>
+    <div class="settings-card">
+      <h3>Role-Based Access Control</h3>
+      <table class="role-table">
+        <tr><th>Role</th><th>Planner</th><th>HQ Monitor</th><th>Lark</th><th>Email</th><th>Reports</th><th>Settings</th></tr>
+        <tr><td><span class="role-badge rb-superadmin">Super Admin</span></td><td>✅</td><td>✅</td><td>✅</td><td>✅</td><td>✅</td><td>✅</td></tr>
+        <tr><td><span class="role-badge rb-admin">Admin</span></td><td>✅</td><td>✅</td><td>✅</td><td>✅</td><td>✅</td><td>—</td></tr>
+        <tr><td><span class="role-badge rb-analyst">Analyst</span></td><td>—</td><td>✅</td><td>✅</td><td>—</td><td>✅</td><td>—</td></tr>
+        <tr><td><span class="role-badge rb-sales">Sales</span></td><td>✅</td><td>—</td><td>✅</td><td>✅</td><td>—</td><td>—</td></tr>
+      </table>
+    </div>
+    <div class="settings-card">
+      <h3>Login Credentials (Hardcoded — Demo Only)</h3>
+      <div class="info-box">⚠️ รหัสผ่านเหล่านี้ถูก Hardcode ใน HTML — ไม่ปลอดภัยสำหรับ Production<br>แนะนำ: Firebase Auth / Supabase / Auth0 สำหรับระบบจริง</div>
+      <div class="cred-grid">
+        <div class="cred-item" style="--ci:var(--maroon)">
+          <div class="cred-role">Super Admin</div>
+          <div class="cred-user">Ondemand2026</div>
+          <div class="cred-pass">Pass: 123456</div>
+        </div>
+        <div class="cred-item" style="--ci:var(--navy)">
+          <div class="cred-role">Admin</div>
+          <div class="cred-user">OndyAdmin</div>
+          <div class="cred-pass">Pass: admin26</div>
+        </div>
+        <div class="cred-item" style="--ci:var(--teal)">
+          <div class="cred-role">Analyst</div>
+          <div class="cred-user">OndyData</div>
+          <div class="cred-pass">Pass: data26</div>
+        </div>
+        <div class="cred-item" style="--ci:var(--green)">
+          <div class="cred-role">Sales</div>
+          <div class="cred-user">OndySales</div>
+          <div class="cred-pass">Pass: sell26</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+</div><!-- /mainApp -->
+
+<!-- EMAIL MODAL -->
+<div class="modal-ov" id="emailModal">
+  <div class="modal-box">
+    <div class="modal-title">📧 ส่ง Email ให้นักเรียน</div>
+    <div class="mf"><label>To</label><input id="eTo" type="email" placeholder="student@email.com"></div>
+    <div class="mf"><label>CC</label><input id="eCc" type="email" placeholder="parent@email.com (optional)"></div>
+    <div class="mf"><label>Subject</label><input id="eSubj" type="text"></div>
+    <div class="mf"><label>Body</label><textarea id="eBody"></textarea></div>
+    <div class="modal-acts">
+      <button class="btn-cancel" onclick="closeEmail()">ยกเลิก</button>
+      <button class="btn-copy" onclick="copyEmail()">📋 Copy</button>
+      <button class="btn-send" onclick="sendEmail()">📨 เปิด Email Client</button>
+    </div>
+  </div>
 </div>
 
 <script>
-// ════════════════════════════════════════════
-//  LOGIN
-// ════════════════════════════════════════════
-var VALID_USER = 'Ondemand2026';
-var VALID_PASS = '123456';
+// ════════════════════ AUTH ════════════════════
+const USERS=[
+  {u:'Ondemand2026',p:'123456',  role:'superadmin',name:'Super Admin'},
+  {u:'OndyAdmin',  p:'admin26', role:'admin',      name:'Admin'},
+  {u:'OndyData',   p:'data26',  role:'analyst',    name:'Analyst'},
+  {u:'OndySales',  p:'sell26',  role:'sales',      name:'Sales Guru'},
+];
+let cRole='',cName='';
 
 function doLogin(){
-  var user = document.getElementById('loginUser').value.trim();
-  var pass = document.getElementById('loginPass').value;
-  var errEl = document.getElementById('loginErr');
-  if(user === VALID_USER && pass === VALID_PASS){
-    errEl.style.display = 'none';
-    errEl.textContent = '';
-    document.getElementById('loginScreen').style.display = 'none';
-    document.getElementById('mainApp').style.display = 'block';
-    sessionStorage.setItem('ondyAuth','1');
-    loadData();
-  } else {
-    errEl.textContent = '⚠ Username หรือ Password ไม่ถูกต้อง กรุณาลองใหม่';
-    errEl.style.display = 'block';
-    errEl.style.cssText = 'display:block;color:#DC2626;font-size:11px;margin-bottom:10px;padding:8px 12px;background:#FEF2F2;border-radius:7px;text-align:left;';
-    document.getElementById('loginPass').value = '';
-    document.getElementById('loginPass').focus();
-  }
+  const u=document.getElementById('lu').value.trim();
+  const p=document.getElementById('lp').value;
+  const m=USERS.find(x=>x.u===u&&x.p===p);
+  if(!m){document.getElementById('loginErr').textContent='Username หรือ Password ไม่ถูกต้อง';return;}
+  cRole=m.role;cName=m.name;
+  sessionStorage.setItem('ondyAuth',JSON.stringify({role:cRole,name:cName}));
+  bootApp();
 }
 
 function doLogout(){
   sessionStorage.removeItem('ondyAuth');
-  document.getElementById('mainApp').style.display = 'none';
-  document.getElementById('loginScreen').style.display = 'flex';
-  document.getElementById('loginUser').value = '';
-  document.getElementById('loginPass').value = '';
+  cRole='';cName='';
+  document.getElementById('loginScreen').style.display='flex';
+  document.getElementById('topNav').style.display='none';
+  document.getElementById('mainApp').style.display='none';
+  document.getElementById('lu').value='';
+  document.getElementById('lp').value='';
+  document.getElementById('loginErr').textContent='';
 }
 
-// Auto-login check on load
-window.addEventListener('DOMContentLoaded', function(){
-  if(sessionStorage.getItem('ondyAuth') === '1'){
-    document.getElementById('loginScreen').style.display = 'none';
-    document.getElementById('mainApp').style.display = 'block';
-    loadData();
-  } else {
-    document.getElementById('loginScreen').style.display = 'flex';
-    document.getElementById('loginUser').focus();
-  }
+window.addEventListener('DOMContentLoaded',()=>{
+  const s=sessionStorage.getItem('ondyAuth');
+  if(s){try{const d=JSON.parse(s);cRole=d.role;cName=d.name;bootApp();}catch(e){}}
 });
 
-// ════════════════════════════════════════════
-//  PLANNER MODAL
-// ════════════════════════════════════════════
-var plannerLoaded = false;
+function bootApp(){
+  document.getElementById('loginScreen').style.display='none';
+  document.getElementById('topNav').style.display='flex';
+  document.getElementById('mainApp').style.display='block';
+  const b=document.getElementById('navBadge');
+  const labels={superadmin:'Super Admin',admin:'Admin',analyst:'Analyst',sales:'Sales'};
+  b.textContent=labels[cRole]||cRole;
+  b.className='role-badge rb-'+cRole;
+  document.getElementById('navName').textContent=cName;
+  document.getElementById('welcomeMsg').textContent=
+    `สวัสดี ${cName} · ${new Date().toLocaleDateString('th-TH',{dateStyle:'long'})}`;
+  buildCards();
+  showView('vHome');
+  initCharts();
+}
 
-function openPlanner(){
-  var modal = document.getElementById('plannerModal');
-  modal.classList.add('open');
-  if(!plannerLoaded){
-    document.getElementById('plannerFrame').src = 'ONDY_Member_Planner.html';
-    plannerLoaded = true;
+// ════════════════════ NAV ════════════════════
+const VTITLES={
+  vHome:'Dashboard',vHQ:'HQ Backlog Monitor',vPlanner:'Individual Planner',
+  vLark:'Lark System',vReports:'Reports & Analytics',vSettings:'Settings'
+};
+
+function showView(id){
+  document.querySelectorAll('.view').forEach(v=>v.classList.remove('active'));
+  const el=document.getElementById(id);
+  if(el)el.classList.add('active');
+  const t=VTITLES[id]||'';
+  document.getElementById('bcCur').textContent=id==='vHome'?'':t;
+  document.getElementById('bcSep').style.display=id==='vHome'?'none':'inline';
+  if(id==='vPlanner'){
+    const fr=document.getElementById('plannerFrame');
+    if(!fr.getAttribute('data-loaded')){fr.src='ONDY_Member_Planner.html';fr.setAttribute('data-loaded','1');}
   }
-  document.body.style.overflow = 'hidden';
+  window.scrollTo(0,0);
 }
+function goHome(){showView('vHome');}
 
-function closePlanner(){
-  document.getElementById('plannerModal').classList.remove('open');
-  document.body.style.overflow = '';
-}
+// ════════════════════ CARDS ════════════════════
+const CARDS=[
+  {icon:'📋',title:'Individual Planner',
+   desc:'สร้างและจัดการ ONDY Plan รายบุคคล พร้อมระบบส่ง Email',
+   badge:'Core',accent:'var(--maroon)',roles:['superadmin','admin','sales'],
+   fn:()=>showView('vPlanner')},
+  {icon:'📊',title:'HQ Backlog Monitor',
+   desc:'Dashboard Lead Backlog + Charts วิเคราะห์ Priority / Track / Branch พร้อม Filter & Query',
+   badge:'Analytics',accent:'var(--navy)',roles:['superadmin','admin','analyst'],
+   fn:()=>showView('vHQ')},
+  {icon:'🦅',title:'Lark System (CRM)',
+   desc:'เข้าสู่ Lark Base, Calendar, Docs โดยตรง — เชื่อมระบบ ONDY กับ On Demand Website',
+   badge:'CRM',accent:'var(--teal)',roles:['superadmin','admin','analyst','sales'],
+   fn:()=>showView('vLark')},
+  {icon:'📧',title:'Email Compose',
+   desc:'เขียนและส่ง Email ให้นักเรียน พร้อม Template อัตโนมัติจาก Planner',
+   badge:'Comms',accent:'var(--orange)',roles:['superadmin','admin','sales'],
+   fn:()=>openEmailModal()},
+  {icon:'📈',title:'Reports & Analytics',
+   desc:'Conversion KPI, Revenue Summary รายสาขา — เชื่อมต่อ Tableau / Looker Studio',
+   badge:'Reports',accent:'var(--green)',roles:['superadmin','admin','analyst'],
+   fn:()=>showView('vReports')},
+  {icon:'⚙️',title:'Settings',
+   desc:'จัดการ User Roles, Credentials, System Config (Super Admin เท่านั้น)',
+   badge:'Admin',accent:'var(--purple)',roles:['superadmin'],
+   fn:()=>showView('vSettings')},
+];
 
-function printPlan(){
-  var frame = document.getElementById('plannerFrame');
-  try{
-    frame.contentWindow.printPlan();
-  }catch(e){
-    frame.contentWindow.print();
-  }
-}
-
-// ════════════════════════════════════════════
-//  EMAIL COMPOSE MODAL
-// ════════════════════════════════════════════
-function openEmailModal(){
-  var frame = document.getElementById('plannerFrame');
-  var fdoc = null;
-  try{ fdoc = frame.contentDocument || frame.contentWindow.document; }catch(e){}
-
-  var name='', nick='', email='', phone='', school='', level='', fac='', uni='', guru='', branch='', gpa='';
-
-  if(fdoc){
-    name   = (fdoc.getElementById('stName')   || {}).value  || '';
-    nick   = (fdoc.getElementById('stNick')   || {}).value  || '';
-    email  = (fdoc.getElementById('stEmail')  || {}).value  || '';
-    phone  = (fdoc.getElementById('stPhone')  || {}).value  || '';
-    school = (fdoc.getElementById('stSch')    || {}).value  || '';
-    level  = (fdoc.getElementById('stLevel')  || {}).value  || '';
-    fac    = (fdoc.getElementById('stFac')    || {}).value  || '';
-    uni    = (fdoc.getElementById('stUni')    || {}).value  || '';
-    guru   = (fdoc.getElementById('stGuru')   || {}).value  || '';
-    branch = (fdoc.getElementById('stBranch') || {}).value  || '';
-    gpa    = (fdoc.getElementById('stGpa')    || {}).value  || '';
-  }
-
-  var displayName = (name || nick || 'นักเรียน');
-
-  // Pre-fill email fields
-  document.getElementById('emailTo').value = email;
-  document.getElementById('emailCc').value = '';
-  document.getElementById('emailSubject').value = 'แผนการเรียน ONDY สำหรับ ' + displayName;
-
-  var bodyLines = [
-    'เรียน คุณ' + displayName + (nick && nick !== name ? ' (' + nick + ')' : '') + ' และผู้ปกครอง',
-    '',
-    'สวัสดีครับ/ค่ะ ทีมงาน OnDemand ' + (branch ? 'สาขา ' + branch : '') + ' ขอส่งแผนการเรียน ONDY',
-    'ที่ออกแบบเฉพาะสำหรับ' + displayName + ' โดยเฉพาะดังนี้',
-    '',
-    '══════════════════════════════',
-    '📋 ข้อมูลนักเรียน',
-    '══════════════════════════════',
-    '• ชื่อ: ' + (name || '—') + (nick ? ' (ชื่อเล่น: ' + nick + ')' : ''),
-    '• ระดับชั้น: ' + (level || '—'),
-    (school ? '• โรงเรียน: ' + school : ''),
-    (gpa    ? '• GPA: ' + gpa : ''),
-    '',
-    '══════════════════════════════',
-    '🎯 เป้าหมาย TCAS',
-    '══════════════════════════════',
-    (uni  ? '• มหาวิทยาลัย: ' + uni : ''),
-    (fac  ? '• คณะ / สาขา: ' + fac : ''),
-    '',
-    '══════════════════════════════',
-    '👨‍🏫 ทีม ONDY ผู้วางแผน',
-    '══════════════════════════════',
-    '• Guru: ' + (guru || '—'),
-    '• สาขา OnDemand: ' + (branch || '—'),
-    '',
-    'สามารถดูและพิมพ์แผนการเรียนเพิ่มเติมได้ที่:',
-    'https://nutsyover.github.io/ondy-tools/ONDY_Member_Planner.html',
-    '',
-    'หากมีข้อสงสัยหรือต้องการปรับแผน สามารถติดต่อ Guru ได้โดยตรงครับ/ค่ะ',
-    '',
-    'ด้วยความปรารถนาดี',
-    'ทีมงาน OnDemand Academy',
-    'www.ondemand.in.th | Tel: 02-251-9456',
-  ].filter(function(l){ return l !== undefined && l !== null; }).join('\n');
-
-  document.getElementById('emailBody').value = bodyLines;
-  document.getElementById('copyDone').style.display = 'none';
-  document.getElementById('emailModal').classList.add('open');
-}
-
-function closeEmailModal(){
-  document.getElementById('emailModal').classList.remove('open');
-}
-
-function copyEmailContent(){
-  var subject = document.getElementById('emailSubject').value;
-  var body = document.getElementById('emailBody').value;
-  var full = 'หัวข้อ: ' + subject + '\n\n' + body;
-  navigator.clipboard.writeText(full).then(function(){
-    var done = document.getElementById('copyDone');
-    done.style.display = 'inline';
-    showHubToast('📋 คัดลอกเนื้อหา Email เรียบร้อยแล้ว');
-    setTimeout(function(){ done.style.display = 'none'; }, 3000);
-  }).catch(function(){
-    // Fallback
-    var ta = document.getElementById('emailBody');
-    ta.select();
-    document.execCommand('copy');
-    showHubToast('📋 คัดลอกแล้ว (Ctrl+C)');
+function buildCards(){
+  const g=document.getElementById('cardsGrid');
+  g.innerHTML='';
+  CARDS.filter(c=>c.roles.includes(cRole)).forEach(c=>{
+    const d=document.createElement('div');
+    d.className='card';
+    d.style.setProperty('--ca',c.accent);
+    d.innerHTML=`<span class="card-badge">${c.badge}</span>
+      <div class="card-icon">${c.icon}</div>
+      <div class="card-title">${c.title}</div>
+      <div class="card-desc">${c.desc}</div>`;
+    d.onclick=c.fn;
+    g.appendChild(d);
   });
 }
 
-function sendViaMailto(){
-  var to      = document.getElementById('emailTo').value.trim();
-  var cc      = document.getElementById('emailCc').value.trim();
-  var subject = document.getElementById('emailSubject').value;
-  var body    = document.getElementById('emailBody').value;
-
-  var link = 'mailto:' + to
-    + (cc ? '?cc=' + encodeURIComponent(cc) + '&' : '?')
-    + 'subject=' + encodeURIComponent(subject)
-    + '&body=' + encodeURIComponent(body);
-
-  window.open(link, '_blank');
-  showHubToast('📧 เปิด Email Client แล้ว — กรุณาตรวจสอบและส่ง');
+// ════════════════════ PLANNER ════════════════════
+function doPrint(){
+  const fr=document.getElementById('plannerFrame');
+  try{fr.contentWindow.printPlan&&fr.contentWindow.printPlan();}
+  catch(e){fr.contentWindow.print();}
 }
 
-// ════════════════════════════════════════════
-//  TOAST
-// ════════════════════════════════════════════
-function showHubToast(msg){
-  var t = document.getElementById('hubToast');
-  document.getElementById('hubToastMsg').textContent = msg;
-  t.classList.add('show');
-  setTimeout(function(){ t.classList.remove('show'); }, 3500);
-}
-
-// ════════════════════════════════════════════
-//  TABLEAU DATA LOADER
-// ════════════════════════════════════════════
-async function loadData(manual){
-  var badge  = document.getElementById('syncBadgeHub');
-  var timeEl = document.getElementById('syncTimeHub');
+// ════════════════════ EMAIL ════════════════════
+function openEmailModal(){
+  let nm='',em='',nk='',sch='',guru='',br='';
   try{
-    var r = await fetch('./data/backlog.json?t=' + Date.now());
-    if(!r.ok) throw new Error('HTTP ' + r.status);
-    var d = await r.json();
+    const d=document.getElementById('plannerFrame').contentDocument;
+    if(d){
+      nm  =(d.getElementById('stName')  ||{}).value||'';
+      em  =(d.getElementById('stEmail') ||{}).value||'';
+      nk  =(d.getElementById('stNick')  ||{}).value||'';
+      sch =(d.getElementById('stSch')   ||{}).value||'';
+      guru=(d.getElementById('stGuru')  ||{}).value||'';
+      br  =(d.getElementById('stBranch')||{}).value||'';
+    }
+  }catch(e){}
+  document.getElementById('eTo').value=em;
+  document.getElementById('eCc').value='';
+  document.getElementById('eSubj').value=nm
+    ?`[ONDY] แผนการเรียนของ ${nm||nk} — ${br||'ONDY'}`
+    :'[ONDY] แผนการเรียนของคุณ';
+  document.getElementById('eBody').value=nm
+    ?`เรียน ${nm||nk} ที่รัก\n\nGuru ${guru||'ONDY'} ขอส่งแผนการเรียน ONDY Plan ที่ออกแบบเฉพาะสำหรับคุณ\n\n📚 สรุปแผน:\n• โรงเรียน: ${sch}\n• Guru: ${guru}\n• สาขา: ${br}\n\nหากมีคำถาม ติดต่อ Guru ได้เลยนะคะ 😊\n\nขอบคุณที่ไว้วางใจ ONDY ครับ/ค่ะ`
+    :`เรียนน้องที่รัก\n\nขอส่งแผนการเรียน ONDY Plan มาให้นะคะ\n\nหากมีคำถาม ติดต่อ Guru ได้เลยค่ะ 😊`;
+  document.getElementById('emailModal').classList.add('open');
+}
+function closeEmail(){document.getElementById('emailModal').classList.remove('open');}
+function sendEmail(){
+  const to=document.getElementById('eTo').value;
+  const cc=document.getElementById('eCc').value;
+  const sub=encodeURIComponent(document.getElementById('eSubj').value);
+  const body=encodeURIComponent(document.getElementById('eBody').value);
+  window.open(`mailto:${to}${cc?'&cc='+encodeURIComponent(cc):''}&subject=${sub}&body=${body}`,'_blank');
+}
+function copyEmail(){
+  const txt=`To: ${document.getElementById('eTo').value}\nSubject: ${document.getElementById('eSubj').value}\n\n${document.getElementById('eBody').value}`;
+  navigator.clipboard.writeText(txt).then(()=>alert('Copied!'));
+}
 
-    var salespeople  = (d.raw || []).length;
-    var totalBacklog = Object.values(d.conv || {}).reduce(function(s,v){
-      return s + Math.max((v.countAll||0)-(v.countConverted||0), 0);
-    }, 0);
-    var rates = Object.values(d.conv || {}).map(function(v){
-      return v.countAll > 0 ? v.countConverted/v.countAll : null;
-    }).filter(function(x){ return x !== null; });
-    var avgRate = rates.length
-      ? (rates.reduce(function(a,b){return a+b;},0)/rates.length*100).toFixed(1)+'%'
-      : '—';
-    var lastSync = d.lastUpdated
-      ? new Date(d.lastUpdated).toLocaleString('th-TH',{day:'2-digit',month:'short',hour:'2-digit',minute:'2-digit'})
-      : '—';
+// ════════════════════ HQ MONITOR v2 — Real H1 2026 Data ════════════════════
 
-    document.getElementById('kpiSales').textContent    = salespeople;
-    document.getElementById('kpiBacklog').textContent  = totalBacklog.toLocaleString();
-    document.getElementById('kpiConvRate').textContent = avgRate;
-    document.getElementById('kpiLastSync').textContent = lastSync;
+// Branch performance data (Excel: ONDY_H1_2026_Performance.xlsx)
+const BD={
+  MBK:{name:'เอ็มบีเค',       n:128,t:132,p:121,bl:11,cv:91.7},
+  PKL:{name:'ปิ่นเกล้า',      n:95, t:98, p:89, bl:9, cv:90.8},
+  SNR:{name:'ศรีนครินทร์',    n:85, t:88, p:81, bl:7, cv:92.0},
+  NGW:{name:'งามวงศ์วาน',    n:63, t:65, p:61, bl:4, cv:93.8},
+  RST:{name:'รังสิต',         n:53, t:55, p:52, bl:3, cv:94.5},
+  VVY:{name:'วิสุทธานี',      n:75, t:78, p:66, bl:12,cv:84.6},
+  NPT:{name:'นครปฐม',        n:67, t:69, p:58, bl:11,cv:84.1},
+  PKS:{name:'เพชรเกษม',      n:59, t:61, p:52, bl:9, cv:85.2},
+  HYD:{name:'หาดใหญ่',       n:85, t:88, p:85, bl:3, cv:96.6},
+  SNI:{name:'สุราษฎร์ (ใต้)', n:62, t:65, p:51, bl:14,cv:78.5},
+  NRT:{name:'นครราชสีมา S',  n:43, t:45, p:38, bl:7, cv:84.4},
+  TRG:{name:'ตรัง',           n:54, t:57, p:48, bl:9, cv:84.2},
+  PKT:{name:'ภูเก็ต',         n:65, t:68, p:57, bl:11,cv:83.8},
+  CPN:{name:'ชุมพร',          n:44, t:47, p:16, bl:31,cv:34.0},
+  RBR:{name:'ราชบุรี',        n:35, t:37, p:32, bl:5, cv:86.5},
+  SPB:{name:'สุพรรณบุรี',     n:46, t:48, p:42, bl:6, cv:87.5},
+  PBI:{name:'เพชรบุรี',       n:42, t:44, p:39, bl:5, cv:88.6},
+  NSN:{name:'นครศรีธรรมราช', n:62, t:66, p:43, bl:23,cv:65.2},
+  LRI:{name:'ลพบุรี',         n:49, t:52, p:37, bl:15,cv:71.2},
+  SRI:{name:'สุราษฎร์ธานี',  n:38, t:41, p:29, bl:12,cv:70.7},
+  AYA:{name:'อยุธยา',         n:24, t:26, p:2,  bl:24,cv:7.7},
+  CMI:{name:'เชียงใหม่',      n:177,t:188,p:148,bl:40,cv:78.7},
+  CRI:{name:'เชียงราย',       n:24, t:26, p:16, bl:10,cv:61.5},
+  LPG:{name:'ลำปาง',          n:68, t:72, p:49, bl:23,cv:68.1},
+  PLK:{name:'พิษณุโลก',       n:55, t:59, p:42, bl:17,cv:71.2},
+  MDH:{name:'มุกดาหาร',       n:33, t:35, p:24, bl:11,cv:68.6},
+  UBN:{name:'อุบลราชธานี',    n:33, t:35, p:26, bl:9, cv:74.3},
+  NMA:{name:'นครราชสีมา',     n:62, t:65, p:51, bl:14,cv:78.5},
+  BRM:{name:'บุรีรัมย์',      n:59, t:62, p:9,  bl:53,cv:14.5},
+  UDN:{name:'อุดรธานี',       n:79, t:83, p:68, bl:15,cv:81.9},
+  KKN:{name:'ขอนแก่น',        n:71, t:75, p:53, bl:22,cv:70.7},
+  RET:{name:'ร้อยเอ็ด',       n:41, t:43, p:37, bl:6, cv:86.0},
+  CBI:{name:'ชลบุรี',         n:52, t:55, p:48, bl:7, cv:87.3},
+  RYG:{name:'ระยอง',          n:46, t:48, p:40, bl:8, cv:83.3},
+  COO:{name:'ฉะเชิงเทรา 1',  n:51, t:55, p:41, bl:14,cv:74.5},
+  CCO:{name:'ฉะเชิงเทรา 2',  n:21, t:22, p:17, bl:5, cv:77.3},
+};
 
-    var isLive = d.source && d.source.includes('Tableau');
-    badge.textContent       = isLive ? '● LIVE' : '● CACHED';
-    badge.style.background  = isLive ? '#14532D' : '#1E3A5F';
-    badge.style.color       = isLive ? '#86EFAC' : '#93C5FD';
-    timeEl.textContent      = 'อัปเดตล่าสุด ' + lastSync;
-  }catch(e){
-    badge.textContent      = '● OFFLINE';
-    badge.style.background = '#7F1D1D';
-    badge.style.color      = '#FCA5A5';
-    timeEl.textContent     = 'ไม่สามารถโหลดข้อมูลได้ — ' + e.message;
-  }
+// Default hierarchy: Hub → Champion → Branches
+const DEF=[
+  {id:'bkk',name:'BKK Hub',col:'#1565C0',ico:'🏙️',ch:[
+    {id:'zee', name:'ZEE',       brs:['MBK','PKL']},
+    {id:'simp',name:'SIMP',      brs:['SNR','NGW','RST']},
+    {id:'gift',name:'Gift',      brs:['VVY','NPT','PKS']},
+  ]},
+  {id:'sw',name:'South+West Hub',col:'#00796B',ico:'🌴',ch:[
+    {id:'sw1',name:'Champion 1', brs:['HYD','SNI','NRT']},
+    {id:'sw2',name:'Champion 2', brs:['TRG','CPN','PKT']},
+    {id:'sw3',name:'Champion 3', brs:['RBR','SPB','PBI']},
+  ]},
+  {id:'esn',name:'Esarn+East Hub',col:'#7B1FA2',ico:'🌾',ch:[
+    {id:'es1',name:'Champion 1', brs:['UBN','NMA','KKN']},
+    {id:'es2',name:'Champion 2', brs:['UDN','BRM','RET','MDH']},
+    {id:'es3',name:'Champion 3', brs:['CBI','RYG','COO','CCO']},
+  ]},
+  {id:'cn',name:'Central+North Hub',col:'#E65100',ico:'🏔️',ch:[
+    {id:'cn1',name:'Champion 1', brs:['NSN','LRI','SRI','AYA']},
+    {id:'cn2',name:'Champion 2', brs:['CMI','CRI','LPG','PLK']},
+  ]},
+];
+
+function getStruct(){try{const s=localStorage.getItem('hqStruct');if(s)return JSON.parse(s);}catch(e){}return JSON.parse(JSON.stringify(DEF));}
+let STRUCT=getStruct();
+
+// ── KPI helpers ──
+function kN(n){return n>=65?'g':n>=40?'y':'r';}
+function kC(c){return c>=80?'g':c>=60?'y':'r';}
+function bSt(code){const b=BD[code];if(!b)return'y';const ng=kN(b.n),cg=kC(b.cv);if(ng==='g'&&cg==='g')return'g';if(ng==='r'||cg==='r')return'r';return'y';}
+function aggC(codes){
+  const tn=codes.reduce((s,c)=>s+(BD[c]?BD[c].n:0),0);
+  const tb=codes.reduce((s,c)=>s+(BD[c]?BD[c].bl:0),0);
+  const brs=codes.map(c=>BD[c]).filter(Boolean);
+  const ac=brs.length?Math.round(brs.reduce((s,b)=>s+b.cv,0)/brs.length*10)/10:0;
+  const g=codes.filter(c=>bSt(c)==='g').length;
+  const r=codes.filter(c=>bSt(c)==='r').length;  return{tn,tb,ac,g,r,cnt:codes.length};
+}
+function allCodes(){return STRUCT.flatMap(h=>h.ch.flatMap(c=>c.brs));}
+
+// ── State ──
+let hqCurV='tree',hqSctInited=false,hqSortF='newOndy',hqSortD=-1,hqEM=false;
+
+// ── Init (called at boot) ──
+function initCharts(){
+  STRUCT=getStruct();
+  hqRenderSum();
+  hqRenderTree();
+}
+
+// ── Summary pills ──
+function hqRenderSum(){
+  const all=allCodes();
+  const{tn,tb,ac,g,r}=aggC(all);
+  const y=all.length-g-r;
+  document.getElementById('hqSum').innerHTML=`
+    <div class="hq-pill"><div class="hq-pill-v">${tn.toLocaleString()}</div><div class="hq-pill-l">New ONDY H1</div></div>
+    <div class="hq-pill"><div class="hq-pill-v">${ac}%</div><div class="hq-pill-l">Avg Conv Rate</div></div>
+    <div class="hq-pill"><div class="hq-pill-v">${tb}</div><div class="hq-pill-l">Total Backlog</div></div>
+    <div class="hq-pill hp-g"><div class="hq-pill-v">${g}</div><div class="hq-pill-l">On Track</div></div>
+    <div class="hq-pill hp-y"><div class="hq-pill-v">${y}</div><div class="hq-pill-l">Monitor</div></div>
+    <div class="hq-pill hp-r"><div class="hq-pill-v">${r}</div><div class="hq-pill-l">Need Help</div></div>`;
+}
+
+// ── Tree render ──
+function hqRenderTree(){
+  const con=document.getElementById('hqTreeP');con.innerHTML='';
+  STRUCT.forEach(hub=>{
+    const allBrs=hub.ch.flatMap(c=>c.brs);
+    const{tn,tb,ac,g,r}=aggC(allBrs);
+    const y=allBrs.length-g-r;
+    const hpill=r>0?'p2r':y>allBrs.length*.4?'p2y':'p2g';
+    const hptxt=r>0?`${r} Need Help`:y>0?`${y} Monitor`:'All OK';
+    const hEl=document.createElement('div');hEl.className='hq-hub';
+    hEl.innerHTML=`<div class="hq-hdr" onclick="hqTogH(this)">
+      <div class="hq-hico" style="background:${hub.col}22">${hub.ico}</div>
+      <div class="hq-hname">${hub.name}</div>
+      <div class="hq-hmeta">
+        <span class="hq-hms"><strong>${tn}</strong> New ONDY</span>
+        <span class="hq-hms"><strong>${ac}%</strong> Conv</span>
+        <span class="hq-hms">BL: <strong>${tb}</strong></span>
+        <span class="hq-pill2 ${hpill}">${hptxt}</span>
+      </div>
+      <span class="hq-arr o">&#9658;</span>
+    </div><div class="hq-hbody o"></div>`;
+    const body=hEl.querySelector('.hq-hbody');
+    hub.ch.forEach(champ=>{
+      const{tn:cn,tb:cb,ac:cc,g:cg,r:cr}=aggC(champ.brs);
+      const cy=champ.brs.length-cg-cr;
+      const cpill=cr>0?'p2r':cy>champ.brs.length*.5?'p2y':'p2g';
+      const cEl=document.createElement('div');cEl.className='hq-champ';
+      cEl.innerHTML=`<div class="hq-chdr" onclick="hqTogC(this)">
+        <div class="hq-cdot" style="background:${hub.col}"></div>
+        <div class="hq-cname">${champ.name}</div>
+        <div class="hq-cmeta">${champ.brs.length} branches | New: <strong>${cn}</strong> | Conv: <strong>${cc}%</strong> | BL: ${cb}</div>
+        <span class="hq-pill2 ${cpill}" style="font-size:10px">${cg}OK ${cr}Help</span>
+        <span class="hq-carr">&#9658;</span>
+      </div><div class="hq-cbody"></div>`;
+      const cbody=cEl.querySelector('.hq-cbody');
+      champ.brs.forEach(code=>{
+        const b=BD[code];if(!b)return;
+        const st=bSt(code),ns=kN(b.n),cs=kC(b.cv);
+        const nc={g:'#059669',y:'#d97706',r:'#dc2626'};
+        const ni=['g','y','r'].indexOf(ns),ci2=['g','y','r'].indexOf(cs);
+        const niIcon=['OK','Warn','Low'],ciIcon=['OK','Warn','Low'];
+        const nw=Math.min(100,Math.round(b.n/65*100));
+        const cw=Math.min(100,Math.round(b.cv));
+        const brEl=document.createElement('div');brEl.className='hq-br bs'+st;
+        brEl.innerHTML=`<div class="hq-brc">${code}</div>
+          <div class="hq-brn">${b.name}</div>
+          <div class="hq-krow">
+            <span class="hq-kl">New ONDY</span>
+            <span class="hq-kv" style="color:${nc[ns]}">${b.n}</span>
+            <div class="hq-bw"><div class="hq-bf bg-${ns}" style="width:${nw}%"></div></div>
+            <span style="font-size:10px;color:${nc[ns]}">${niIcon[ni]}</span>
+          </div>
+          <div class="hq-krow">
+            <span class="hq-kl">Backlog Conv</span>
+            <span class="hq-kv" style="color:${nc[cs]}">${b.cv}%</span>
+            <div class="hq-bw"><div class="hq-bf bg-${cs}" style="width:${cw}%"></div></div>
+            <span style="font-size:10px;color:${nc[cs]}">${ciIcon[ci2]}</span>
+          </div>
+          <div class="hq-bback">Backlog: ${b.bl} | Total H1: ${b.t}</div>`;
+        cbody.appendChild(brEl);
+      });
+      body.appendChild(cEl);
+    });
+    con.appendChild(hEl);
+  });
+}
+function hqTogH(hdr){hdr.querySelector('.hq-arr').classList.toggle('o');hdr.nextElementSibling.classList.toggle('o');}
+function hqTogC(hdr){hdr.querySelector('.hq-carr').classList.toggle('o');hdr.nextElementSibling.classList.toggle('o');}
+
+// ── View switch ──
+function hqV(v,btn){
+  hqCurV=v;
+  document.querySelectorAll('.hq-vtab').forEach(b=>b.classList.remove('act'));
+  if(btn)btn.classList.add('act');
+  document.getElementById('hqTreeP').style.display=v==='tree'?'':'none';
+  document.getElementById('hqSctP').style.display=v==='scatter'?'':'none';
+  document.getElementById('hqTblP').style.display=v==='table'?'':'none';
+  if(v==='scatter'&&!hqSctInited){hqInitSct();hqSctInited=true;}
+  if(v==='table')hqRenderTbl();
+}
+
+// ── Scatter plot ──
+let sctChart=null;
+const HUB_COLORS=['#1565C0','#00796B','#7B1FA2','#E65100'];
+function hqInitSct(){
+  const datasets=STRUCT.map((hub,i)=>({
+    label:hub.name,
+    data:hub.ch.flatMap(c=>c.brs).map(code=>{
+      const b=BD[code];if(!b)return null;
+      return{x:b.n,y:b.cv,label:`${code} ${b.name}`};
+    }).filter(Boolean),
+    backgroundColor:HUB_COLORS[i]+'bb',pointRadius:7,pointHoverRadius:10,type:'scatter'
+  }));
+  datasets.push(
+    {label:'_tN',type:'line',data:[{x:65,y:0},{x:65,y:102}],borderColor:'#059669',borderWidth:1.5,
+     borderDash:[5,4],pointRadius:0,fill:false,tension:0,order:10},
+    {label:'_tC',type:'line',data:[{x:0,y:80},{x:210,y:80}],borderColor:'#7C3AED',borderWidth:1.5,
+     borderDash:[5,4],pointRadius:0,fill:false,tension:0,order:10}
+  );
+  if(sctChart)sctChart.destroy();
+  sctChart=new Chart(document.getElementById('cSct').getContext('2d'),{
+    type:'scatter',data:{datasets},
+    options:{responsive:true,maintainAspectRatio:false,
+      plugins:{legend:{position:'bottom',labels:{boxWidth:10,font:{size:11},
+        filter:item=>!item.text.startsWith('_')}},
+        tooltip:{callbacks:{label:ctx=>ctx.raw.label?`${ctx.raw.label}: New=${ctx.raw.x}, Conv=${ctx.raw.y}%`:''}}},
+      scales:{
+        x:{title:{display:true,text:'New ONDY H1 (Target 65)'},beginAtZero:true,max:210},
+        y:{title:{display:true,text:'Backlog Conv% (Target 80%)'},min:0,max:102,
+          ticks:{callback:v=>v<102?v+'%':''}}}
+    }
+  });
+  document.getElementById('hqLeg').innerHTML=STRUCT.map((h,i)=>
+    `<div class="hq-leg-i"><div class="hq-leg-d" style="background:${HUB_COLORS[i]}"></div>${h.name}</div>`
+  ).join('');
+}
+
+// ── Table ──
+function hqRenderTbl(){
+  const rows=[];
+  STRUCT.forEach(hub=>hub.ch.forEach(c=>c.brs.forEach(code=>{
+    const b=BD[code];if(!b)return;
+    rows.push({hub:hub.name,champ:c.name,code,name:b.name,newOndy:b.n,conv:b.cv,backlog:b.bl,st:bSt(code)});
+  })));
+  rows.sort((a,b)=>a[hqSortF]>b[hqSortF]?hqSortD:-hqSortD);
+  document.getElementById('hqTblC').textContent=`${rows.length} branches`;
+  const nc={g:'#059669',y:'#d97706',r:'#dc2626'};
+  document.getElementById('hqTB').innerHTML=rows.map(r=>`<tr>
+    <td>${r.hub.replace(' Hub','')}</td><td>${r.champ}</td>
+    <td><strong>${r.code}</strong></td><td>${r.name}</td>
+    <td style="color:${nc[kN(r.newOndy)]};font-weight:700">${r.newOndy}</td>
+    <td style="color:${nc[kC(r.conv)]};font-weight:700">${r.conv}%</td>
+    <td>${r.backlog}</td>
+    <td><span class="hq-pill2 p2${r.st}">${r.st==='g'?'On Track':r.st==='y'?'Monitor':'Need Help'}</span></td>
+  </tr>`).join('');
+}
+function hqSort(f){if(hqSortF===f)hqSortD*=-1;else{hqSortF=f;hqSortD=-1;}hqRenderTbl();}
+
+// ── Edit Mode ──
+function hqToggleEdit(){
+  hqEM=!hqEM;
+  const btn=document.getElementById('hqEBtn');
+  btn.classList.toggle('on',hqEM);
+  btn.textContent=hqEM?'Cancel Edit':'Edit Structure';
+  document.getElementById('hqEP').style.display=hqEM?'block':'none';
+  if(hqEM)hqBuildEP();
+}
+function hqBuildEP(){
+  const opts=STRUCT.flatMap(h=>h.ch.map(c=>({key:`${h.id}__${c.id}`,lbl:`${h.name} - ${c.name}`})));
+  document.getElementById('hqEBody').innerHTML=STRUCT.map((hub,hi)=>`
+    <div class="hq-ep-h">
+      <div class="hq-ep-hn">${hub.ico} ${hub.name}</div>
+      ${hub.ch.map((c,ci)=>`
+        <div class="hq-ep-cr">
+          <span class="hq-ep-cl">Champ ${ci+1}</span>
+          <input class="hq-ep-ci" id="cin_${hi}_${ci}" value="${c.name}">
+          <div class="hq-ep-bs">${c.brs.map(br=>`
+            <span class="hq-ep-bt">${br}</span>
+            <select id="bm_${br}" class="hq-ep-mv">${opts.map(o=>`<option value="${o.key}"${o.key===`${hub.id}__${c.id}`?' selected':''}>${o.lbl}</option>`).join('')}</select>
+          `).join('')}</div>
+        </div>`).join('')}
+    </div>`).join('');
+}
+function hqSave(){
+  const allBrs=STRUCT.flatMap(h=>h.ch.flatMap(c=>c.brs));
+  const assignments={};
+  allBrs.forEach(br=>{const s=document.getElementById(`bm_${br}`);if(s)assignments[br]=s.value;});
+  const ns=JSON.parse(JSON.stringify(STRUCT));
+  ns.forEach((hub,hi)=>hub.ch.forEach((c,ci)=>{
+    const inp=document.getElementById(`cin_${hi}_${ci}`);
+    if(inp)c.name=inp.value.trim()||c.name;
+    c.brs=[];
+  }));
+  allBrs.forEach(br=>{
+    const[hid,cid]=(assignments[br]||'').split('__');
+    const hub=ns.find(h=>h.id===hid);
+    const champ=hub&&hub.ch.find(c=>c.id===cid);
+    if(champ)champ.brs.push(br);
+  });
+  STRUCT=ns;
+  localStorage.setItem('hqStruct',JSON.stringify(STRUCT));
+  hqToggleEdit();hqRenderSum();hqRenderTree();hqSctInited=false;
+}
+function hqReset(){
+  localStorage.removeItem('hqStruct');
+  STRUCT=JSON.parse(JSON.stringify(DEF));
+  if(hqEM)hqToggleEdit();
+  hqRenderSum();hqRenderTree();hqSctInited=false;
+}
+</script>
+</body>
+</html>
+);
+  });
+  STRUCT=ns;
+  localStorage.setItem('hqStruct',JSON.stringify(STRUCT));
+  hqToggleEdit();hqRenderSum();hqRenderTree();hqSctInited=false;
+}
+function hqReset(){
+  localStorage.removeItem('hqStruct');
+  STRUCT=JSON.parse(JSON.stringify(DEF));
+  if(hqEM)hqToggleEdit();
+  hqRenderSum();hqRenderTree();hqSctInited=false;
 }
 </script>
 </body>
