@@ -4,6 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>ONDY Member Individual Planner</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
 <style>
 :root{
   --maroon:#7D0039;--pink-bg:#FCE4EC;--pink-light:#FFF0F6;--pink-border:#F8BBD9;
@@ -261,62 +262,7 @@ header{background:var(--navy);padding:12px 20px;display:flex;align-items:center;
       <div class="pvfooter-logo">Ondy Member</div>
       <div style="display:flex;align-items:center;gap:6px;">
         <div id="pvQrLabel" style="font-size:7px;color:rgba(255,255,255,.7);text-align:right;line-height:1.5;">แอด LINE<br>สาขาใกล้บ้าน<br>รับโปร + แผนฟรี</div>
-        <div style="width:44px;height:44px;background:#fff;border-radius:4px;padding:3px;flex-shrink:0;">
-          <svg viewBox="0 0 40 40" width="38" height="38" style="color:#7D0039;">
-            <rect width="40" height="40" fill="white"/>
-            <rect x="1" y="1" width="12" height="12" rx="1.5" fill="currentColor"/>
-            <rect x="3" y="3" width="8" height="8" rx="1" fill="white"/>
-            <rect x="5" y="5" width="4" height="4" rx=".5" fill="currentColor"/>
-            <rect x="27" y="1" width="12" height="12" rx="1.5" fill="currentColor"/>
-            <rect x="29" y="3" width="8" height="8" rx="1" fill="white"/>
-            <rect x="31" y="5" width="4" height="4" rx=".5" fill="currentColor"/>
-            <rect x="1" y="27" width="12" height="12" rx="1.5" fill="currentColor"/>
-            <rect x="3" y="29" width="8" height="8" rx="1" fill="white"/>
-            <rect x="5" y="31" width="4" height="4" rx=".5" fill="currentColor"/>
-            <rect x="15" y="1" width="2" height="2" fill="currentColor"/>
-            <rect x="19" y="1" width="4" height="2" fill="currentColor"/>
-            <rect x="25" y="1" width="2" height="2" fill="currentColor"/>
-            <rect x="15" y="5" width="4" height="2" fill="currentColor"/>
-            <rect x="21" y="5" width="2" height="4" fill="currentColor"/>
-            <rect x="15" y="9" width="2" height="4" fill="currentColor"/>
-            <rect x="19" y="11" width="4" height="2" fill="currentColor"/>
-            <rect x="1" y="15" width="4" height="2" fill="currentColor"/>
-            <rect x="7" y="15" width="2" height="4" fill="currentColor"/>
-            <rect x="11" y="15" width="4" height="2" fill="currentColor"/>
-            <rect x="15" y="15" width="2" height="2" fill="currentColor"/>
-            <rect x="19" y="15" width="4" height="2" fill="currentColor"/>
-            <rect x="25" y="15" width="2" height="4" fill="currentColor"/>
-            <rect x="29" y="15" width="4" height="2" fill="currentColor"/>
-            <rect x="35" y="15" width="4" height="2" fill="currentColor"/>
-            <rect x="1" y="19" width="2" height="4" fill="currentColor"/>
-            <rect x="5" y="19" width="4" height="2" fill="currentColor"/>
-            <rect x="11" y="19" width="2" height="2" fill="currentColor"/>
-            <rect x="15" y="19" width="6" height="2" fill="currentColor"/>
-            <rect x="23" y="19" width="2" height="2" fill="currentColor"/>
-            <rect x="27" y="19" width="4" height="2" fill="currentColor"/>
-            <rect x="33" y="19" width="6" height="2" fill="currentColor"/>
-            <rect x="3" y="23" width="2" height="2" fill="currentColor"/>
-            <rect x="7" y="23" width="4" height="2" fill="currentColor"/>
-            <rect x="13" y="23" width="2" height="4" fill="currentColor"/>
-            <rect x="17" y="23" width="4" height="2" fill="currentColor"/>
-            <rect x="23" y="23" width="2" height="2" fill="currentColor"/>
-            <rect x="27" y="23" width="6" height="2" fill="currentColor"/>
-            <rect x="35" y="23" width="4" height="4" fill="currentColor"/>
-            <rect x="15" y="27" width="2" height="2" fill="currentColor"/>
-            <rect x="19" y="27" width="4" height="2" fill="currentColor"/>
-            <rect x="25" y="27" width="2" height="2" fill="currentColor"/>
-            <rect x="29" y="27" width="4" height="2" fill="currentColor"/>
-            <rect x="15" y="31" width="4" height="2" fill="currentColor"/>
-            <rect x="21" y="31" width="2" height="4" fill="currentColor"/>
-            <rect x="25" y="31" width="4" height="2" fill="currentColor"/>
-            <rect x="31" y="31" width="2" height="2" fill="currentColor"/>
-            <rect x="35" y="31" width="4" height="2" fill="currentColor"/>
-            <rect x="15" y="35" width="2" height="4" fill="currentColor"/>
-            <rect x="19" y="37" width="6" height="2" fill="currentColor"/>
-            <rect x="27" y="35" width="2" height="4" fill="currentColor"/>
-            <rect x="31" y="35" width="4" height="2" fill="currentColor"/>
-          </svg>
-        </div>
+        <div id="pvQrBox" style="width:126px;height:126px;background:#fff;border-radius:4px;padding:3px;flex-shrink:0;overflow:hidden;display:flex;align-items:center;justify-content:center;"></div>
       </div>
     </div>
   </div>
@@ -492,33 +438,25 @@ header{background:var(--navy);padding:12px 20px;display:flex;align-items:center;
 // ═══════════════════════════════════════════════════════════════
 var APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxPLACEHOLDER/exec';
 
-// ─── LOAD GURU LIST FROM APPS SCRIPT ───────────────────────────
+// ─── GURU LIST (from Sheet เก็บข้อมูล NEW Ondy Only - column ชื่อผู้ดูแล) ───
+var GURU_LIST = [
+  'CCOPHUENG','CPNTONG','CRINEEN','HYDKATAI','HYDYA',
+  'KKNBELL','MBKMEEN','MBKPIA','NGWFilm','NRTKIT',
+  'NSNGIB','NSNMILD','PBIMON','PKLBOY','PKTZEERO',
+  'RBRDEAR','RSTFAI','SNIPEKKY','SNIPRANNY','SNRTONFAI',
+  'SPBGIFT','TRGPUKKI','UBNUN','VVYEIF'
+];
 function loadGurus(){
-  if(!APPS_SCRIPT_URL || APPS_SCRIPT_URL.indexOf('PLACEHOLDER') >= 0) {
-    // Fallback: show freetext only
-    var sel = document.getElementById('stGuru');
-    sel.innerHTML = '<option value="">— ไม่ได้เชื่อม Apps Script —</option><option value="__freetext__">✏️ พิมพ์เอง (Freetext)</option>';
-    document.getElementById('guruFreeRow').style.display = 'block';
-    return;
-  }
-  fetch(APPS_SCRIPT_URL + '?action=getGurus')
-    .then(function(r){ return r.json(); })
-    .then(function(data){
-      var sel = document.getElementById('stGuru');
-      sel.innerHTML = '<option value="">— เลือก Guru —</option>';
-      (data.gurus || []).forEach(function(g){
-        var opt = document.createElement('option');
-        opt.value = g; opt.textContent = g;
-        sel.appendChild(opt);
-      });
-      var ft = document.createElement('option');
-      ft.value = '__freetext__'; ft.textContent = '✏️ พิมพ์เอง (Freetext)';
-      sel.appendChild(ft);
-    })
-    .catch(function(){
-      var sel = document.getElementById('stGuru');
-      sel.innerHTML = '<option value="">— โหลดไม่ได้ —</option><option value="__freetext__">✏️ พิมพ์เอง (Freetext)</option>';
-    });
+  var sel = document.getElementById('stGuru');
+  sel.innerHTML = '<option value="">— เลือก Guru —</option>';
+  GURU_LIST.forEach(function(g){
+    var opt = document.createElement('option');
+    opt.value = g; opt.textContent = g;
+    sel.appendChild(opt);
+  });
+  var ft = document.createElement('option');
+  ft.value = '__freetext__'; ft.textContent = 'อื่นๆ (พิมพ์เอง)';
+  sel.appendChild(ft);
 }
 
 function onGuruChange(){
@@ -1101,6 +1039,7 @@ function populatePrintView(){
   document.getElementById('pINFO').innerHTML = lines.join('<br>');
   document.getElementById('pFOOTER').textContent = 'Guru: '+(guru||'—')+' | สาขา '+branch.split(' — ')[0]+' | รหัส: '+(document.getElementById('stCode').value||'—');
   document.getElementById('pvQrLabel').innerHTML = 'แอด LINE<br><strong style="color:#fff;">สาขา '+branch+'</strong><br>รับโปร + แผนฟรี';
+  _lastQrCode = ''; renderBranchQR();
 
   var years = getYears();
   document.getElementById('pvCalHead').innerHTML =
@@ -1197,6 +1136,64 @@ function printPlan(){
   populatePrintView();
   document.getElementById('pv').style.cssText = 'display:block;';
   setTimeout(function(){ window.print(); setTimeout(function(){ if(!prevOpen) document.getElementById('pv').style.cssText='display:none;'; },800); },150);
+}
+
+// Branch LINE OA - using direct line.me/ti/p/@id (shorter = simpler QR = easier to scan)
+var BRANCH_LINE = {
+  MBK:'https://line.me/ti/p/@488tlziw',
+  PKL:'https://lin.ee/3BzeSs4',
+  SNR:'https://lin.ee/aATi2AK',
+  NGW:'https://lin.ee/rgtoydn',
+  RST:'https://lin.ee/d5mTLr8',
+  VVY:'https://lin.ee/WKsGwFD',
+  NPT:'https://lin.ee/KifAXMv',
+  PKS:'https://lin.ee/NkYXGwS',
+  HYD:'https://page.line.me/txa2158j',
+  SRI:'https://page.line.me/jmq5111u',
+  TRG:'https://lin.ee/OwF9SXR',
+  PKT:'https://lin.ee/tUIzsIS',
+  CPN:'https://lin.ee/YibUozF',
+  RBR:'https://page.line.me/hzf8537o',
+  SPB:'https://lin.ee/WRTJ9zl',
+  PBI:'https://lin.ee/MmlWObA',
+  NSN:'https://page.line.me/jvm3631g',
+  LRI:'https://lin.ee/gp1Jca2',
+  AYA:'https://lin.ee/jR4mYwl',
+  CMI:'https://page.line.me/jim2965y',
+  CRI:'https://lin.ee/7ShcYNp',
+  LPG:'https://lin.ee/HDRilH0',
+  PLK:'https://lin.ee/Ex2pES5',
+  UBN:'https://lin.ee/PhlN83j',
+  NMA:'https://lin.ee/H95p9GK',
+  KKN:'https://lin.ee/4ExWKB7',
+  UDN:'https://lin.ee/GL30N64',
+  BRM:'https://lin.ee/nQ9pvH8',
+  RET:'https://lin.ee/Hkfd1Ov',
+  CBI:'https://lin.ee/B8psEfk',
+  RYG:'https://lin.ee/ozFrlWj',
+  CCO:'https://lin.ee/Af4IpNm',
+  MDH:'https://lin.ee/bEr35X5',
+  WST:'https://lin.ee/WKsGwFD',
+  SNI:'https://page.line.me/jmq5111u',
+  NRT:'https://lin.ee/H95p9GK',
+  COO:'https://lin.ee/Af4IpNm',
+};
+var _lastQrCode = '';
+function renderBranchQR(){
+  var sel = document.getElementById('stBranch');
+  if(!sel) return;
+  var code = sel.value.split(' ')[0];
+  var box = document.getElementById('pvQrBox');
+  if(!box) return;
+  if(code === _lastQrCode) return;
+  _lastQrCode = code;
+  box.innerHTML = '';
+  var url = BRANCH_LINE[code];
+  if(url && typeof QRCode !== 'undefined'){
+    new QRCode(box, {text:url, width:120, height:120,
+      colorDark:'#7D0039', colorLight:'#ffffff',
+      correctLevel:QRCode.CorrectLevel.L});
+  }
 }
 
 window.addEventListener('load', init);
