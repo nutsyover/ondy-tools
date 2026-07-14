@@ -282,6 +282,7 @@ header{background:var(--navy);padding:12px 20px;display:flex;align-items:center;
     <button class="hbtn" id="prevBtn" onclick="togglePreview()">&#128065; Preview</button>
     <button class="hbtn" onclick="printPlan()">&#128424; Print / PDF</button>
     <button class="hbtn save" onclick="savePlanToSheet()">&#128190; บันทึกแผน</button>
+    <button class="hbtn" style="background:#1a7a3a;color:#fff;" onclick="downloadSavedCSV()">&#128229; ดาวน์โหลด CSV</button>
     <button class="hbtn email-btn" onclick="sendEmailPDF()">&#128140; ส่ง Email+PDF</button>
   </div>
 </header>
@@ -541,7 +542,7 @@ function buildPayload(){
   };
 }
 
-// ─── SAVE TO SHEET ──────────────────────────────────────────────
+// ─── SAVE TO SHEET (or localStorage fallback) ───────────────────
 function savePlanToSheet(){
   var payload = buildPayload();
   if(!payload.firstName){ showToast('กรุณากรอกชื่อนักเรียน','error'); return; }
@@ -550,29 +551,70 @@ function savePlanToSheet(){
   var hasCourse = payload.months.some(function(m){ return m.courses.trim(); });
   if(!hasCourse){ showToast('ต้องมีอย่างน้อย 1 คอร์สในแผน','error'); return; }
 
-  if(APPS_SCRIPT_URL.indexOf('PLACEHOLDER') >= 0){
-    showToast('⚠️ ยังไม่ได้ตั้งค่า APPS_SCRIPT_URL — กรุณาใส่ URL Apps Script','error',6000);
+  // ถ้ามี Apps Script URL จริง — ส่งออนไลน์
+  if(APPS_SCRIPT_URL.indexOf('PLACEHOLDER') < 0){
+    setLoading(true, 'กำลังบันทึกแผนลง Google Sheets...');
+    fetch(APPS_SCRIPT_URL, {
+      method: 'POST',
+      body: JSON.stringify(Object.assign({ action: 'save' }, payload))
+    })
+    .then(function(r){ return r.json(); })
+    .then(function(data){
+      setLoading(false);
+      if(data.ok){
+        showToast('✅ บันทึกสำเร็จ! ID: ' + data.onDyId, 'success', 5000);
+      } else {
+        showToast('❌ ' + (data.error||'เกิดข้อผิดพลาด'), 'error');
+      }
+    })
+    .catch(function(err){
+      setLoading(false);
+      showToast('❌ ไม่สามารถเชื่อมต่อ: ' + err.message, 'error');
+    });
     return;
   }
 
-  setLoading(true, 'กำลังบันทึกแผนลง Google Sheets...');
-  fetch(APPS_SCRIPT_URL, {
-    method: 'POST',
-    body: JSON.stringify(Object.assign({ action: 'save' }, payload))
-  })
-  .then(function(r){ return r.json(); })
-  .then(function(data){
-    setLoading(false);
-    if(data.ok){
-      showToast('✅ บันทึกสำเร็จ! ID: ' + data.onDyId, 'success', 5000);
-    } else {
-      showToast('❌ ' + (data.error||'เกิดข้อผิดพลาด'), 'error');
-    }
-  })
-  .catch(function(err){
-    setLoading(false);
-    showToast('❌ ไม่สามารถเชื่อมต่อ: ' + err.message, 'error');
+  // ─── fallback: บันทึกใน localStorage ───────────────────────────
+  var ts = Date.now();
+  var planId = 'ONDY-' + payload.branch.split(' ')[0] + '-' + ts.toString().slice(-6);
+  payload.savedAt = new Date(ts).toLocaleString('th-TH');
+  payload.planId  = planId;
+
+  try {
+    var existing = JSON.parse(localStorage.getItem('ondyPlans') || '[]');
+    existing.push(payload);
+    localStorage.setItem('ondyPlans', JSON.stringify(existing));
+    showToast('✅ บันทึกสำเร็จ (เครื่องนี้) | ID: ' + planId + '\n\nกด "ดาวน์โหลด CSV" เพื่อส่งข้อมูลให้ HQ', 'success', 7000);
+  } catch(e){
+    showToast('❌ บันทึกไม่ได้: ' + e.message, 'error');
+  }
+}
+
+// ─── DOWNLOAD SAVED PLANS AS CSV ────────────────────────────────
+function downloadSavedCSV(){
+  var plans;
+  try { plans = JSON.parse(localStorage.getItem('ondyPlans') || '[]'); } catch(e){ plans = []; }
+  if(!plans.length){ showToast('ยังไม่มีแผนที่บันทึกไว้','error'); return; }
+
+  var cols = ['planId','savedAt','branch','guru','firstName','lastName','school','grade',
+              'phone','email','odmId','faculty','university','source',
+              'planMonths','totalValue','totalHours','hoursPerDay','planDays'];
+  var csv = cols.join(',') + '\n';
+  plans.forEach(function(p){
+    csv += cols.map(function(c){
+      var v = String(p[c]||'').replace(/"/g,'""');
+      return '"' + v + '"';
+    }).join(',') + '\n';
   });
+
+  var blob = new Blob(['﻿'+csv], {type:'text/csv;charset=utf-8'});
+  var url  = URL.createObjectURL(blob);
+  var a    = document.createElement('a');
+  a.href   = url;
+  a.download = 'ONDY_Plans_' + new Date().toISOString().slice(0,10) + '.csv';
+  a.click();
+  URL.revokeObjectURL(url);
+  showToast('✅ ดาวน์โหลด CSV สำเร็จ (' + plans.length + ' แผน)', 'success', 4000);
 }
 
 // ─── SEND EMAIL + PDF ───────────────────────────────────────────
