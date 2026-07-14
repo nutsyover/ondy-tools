@@ -87,7 +87,7 @@ header{background:var(--navy);padding:12px 20px;display:flex;align-items:center;
 .mf-cancel{background:var(--white);border:1.5px solid var(--gray2);color:var(--dark);font-size:12px;padding:6px 14px;border-radius:7px;cursor:pointer;}
 .mf-confirm{background:var(--orange);border:none;color:#fff;font-size:12px;font-weight:700;padding:6px 18px;border-radius:7px;cursor:pointer;}
 
-/* ── PRINT VIEW ── */
+/* ââ PRINT VIEW ââ */
 #pv{display:none;font-family:'Segoe UI',system-ui,sans-serif;background:#fff;}
 #pv .pvpage{width:297mm;min-height:210mm;background:var(--pink-bg);box-sizing:border-box;margin:0 auto;}
 #pv .pvbar{background:#334155;padding:9px 16px;display:flex;justify-content:space-between;align-items:center;}
@@ -140,13 +140,13 @@ header{background:var(--navy);padding:12px 20px;display:flex;align-items:center;
 #pv .pvfooter-logo{font-size:11px;font-weight:800;color:var(--gold);}
 
 
-/* ── SAVE / EMAIL BUTTONS ── */
+/* ââ SAVE / EMAIL BUTTONS ââ */
 .hbtn.save{background:#059669;border-color:#059669;}
 .hbtn.save:hover{background:#047857;}
 .hbtn.email-btn{background:#0891B2;border-color:#0891B2;}
 .hbtn.email-btn:hover{background:#0E7490;}
 
-/* ── LOADING OVERLAY ── */
+/* ââ LOADING OVERLAY ââ */
 #loadingOverlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.6);z-index:9998;align-items:center;justify-content:center;}
 #loadingOverlay.open{display:flex;}
 .loading-box{background:#fff;border-radius:14px;padding:28px 36px;text-align:center;box-shadow:0 20px 60px rgba(0,0,0,.3);}
@@ -154,13 +154,13 @@ header{background:var(--navy);padding:12px 20px;display:flex;align-items:center;
 @keyframes spin{to{transform:rotate(360deg)}}
 .loading-msg{font-size:13px;color:#64748B;}
 
-/* ── NOTIFICATION TOAST ── */
+/* ââ NOTIFICATION TOAST ââ */
 #toast{position:fixed;bottom:24px;right:24px;background:#1E293B;color:#fff;padding:12px 20px;border-radius:10px;font-size:12px;z-index:99999;opacity:0;transform:translateY(10px);transition:all .3s;pointer-events:none;max-width:320px;}
 #toast.show{opacity:1;transform:translateY(0);}
 #toast.success{background:#059669;}
 #toast.error{background:#DC2626;}
 
-/* ── GURU SELECT ── */
+/* ââ GURU SELECT ââ */
 #guruFreeRow{display:none;margin-top:6px;}
 
 @media print{
@@ -181,32 +181,32 @@ header{background:var(--navy);padding:12px 20px;display:flex;align-items:center;
   <div class="modal">
     <div class="modal-head">
       <div>
-        <div class="modal-head-title" id="modalTitle">เลือกคอร์สสำหรับเดือนนี้</div>
-        <div class="modal-head-sub" id="modalSub">คลิกคอร์สเพื่อเลือก/ยกเลิก</div>
+        <div class="modal-head-title" id="modalTitle">à¹à¸¥à¸·à¸­à¸à¸à¸­à¸£à¹à¸ªà¸ªà¸³à¸«à¸£à¸±à¸à¹à¸à¸·à¸­à¸à¸à¸µà¹</div>
+        <div class="modal-head-sub" id="modalSub">à¸à¸¥à¸´à¸à¸à¸­à¸£à¹à¸ªà¹à¸à¸·à¹à¸­à¹à¸¥à¸·à¸­à¸/à¸¢à¸à¹à¸¥à¸´à¸</div>
       </div>
       <button class="modal-close" onclick="closeModal()">&#x2715;</button>
     </div>
     <div class="modal-body">
       <div class="mtabs" id="mtabs">
-        <div class="mtab active" onclick="mFilterCat('all',this)">ทั้งหมด</div>
-        <div class="mtab" onclick="mFilterCat('b99',this)">99B ปรับพื้นฐาน</div>
+        <div class="mtab active" onclick="mFilterCat('all',this)">à¸à¸±à¹à¸à¸«à¸¡à¸</div>
+        <div class="mtab" onclick="mFilterCat('b99',this)">99B à¸à¸£à¸±à¸à¸à¸·à¹à¸à¸à¸²à¸</div>
         <div class="mtab" onclick="mFilterCat('pack-tcas',this)">Pack TCAS</div>
         <div class="mtab" onclick="mFilterCat('pack-upskill',this)">TCAS + Upskill</div>
         <div class="mtab" onclick="mFilterCat('alevel',this)">A-Level</div>
         <div class="mtab" onclick="mFilterCat('tgat',this)">TGAT</div>
         <div class="mtab" onclick="mFilterCat('tpat',this)">TPAT</div>
         <div class="mtab" onclick="mFilterCat('bundle',this)">Bundle</div>
-        <div class="mtab" onclick="mFilterCat('sr',this)">ม.ปลาย เนื้อหา</div>
-        <div class="mtab" onclick="mFilterCat('jr',this)">ม.ต้น เนื้อหา</div>
+        <div class="mtab" onclick="mFilterCat('sr',this)">à¸¡.à¸à¸¥à¸²à¸¢ à¹à¸à¸·à¹à¸­à¸«à¸²</div>
+        <div class="mtab" onclick="mFilterCat('jr',this)">à¸¡.à¸à¹à¸ à¹à¸à¸·à¹à¸­à¸«à¸²</div>
         <div class="mtab" onclick="mFilterCat('ielts',this)">IELTS/SAT</div>
       </div>
       <div class="mclist" id="mclist"></div>
     </div>
     <div class="modal-foot">
-      <div class="mf-info">เลือกแล้ว: <strong id="mSelCount">0</strong> คอร์ส</div>
+      <div class="mf-info">à¹à¸¥à¸·à¸­à¸à¹à¸¥à¹à¸§: <strong id="mSelCount">0</strong> à¸à¸­à¸£à¹à¸ª</div>
       <div class="mf-btns">
-        <button class="mf-cancel" onclick="closeModal()">ยกเลิก</button>
-        <button class="mf-confirm" onclick="confirmModal()">&#10003; ยืนยัน</button>
+        <button class="mf-cancel" onclick="closeModal()">à¸¢à¸à¹à¸¥à¸´à¸</button>
+        <button class="mf-confirm" onclick="confirmModal()">&#10003; à¸¢à¸·à¸à¸¢à¸±à¸</button>
       </div>
     </div>
   </div>
@@ -215,24 +215,24 @@ header{background:var(--navy);padding:12px 20px;display:flex;align-items:center;
 <!-- PRINT VIEW -->
 <div id="pv">
   <div class="pvbar">
-    <span>&#128065; Preview — ONDY Member Individual Planner (A4 Landscape)</span>
-    <button class="pvclosebtn" onclick="closePreview()">&#x2715; ปิด</button>
+    <span>&#128065; Preview â ONDY Member Individual Planner (A4 Landscape)</span>
+    <button class="pvclosebtn" onclick="closePreview()">&#x2715; à¸à¸´à¸</button>
   </div>
   <div class="pvpage">
     <div class="pvtop">
       <div class="pvstud">
-        <div class="pvstud-title">ข้อมูลนักเรียน</div>
-        <div class="pvsr"><span class="pvslbl">ชื่อจริง:</span><span class="pvsval" id="pN"></span></div>
-        <div class="pvsr"><span class="pvslbl">ชื่อเล่น:</span><span class="pvsval" id="pNN"></span></div>
-        <div class="pvsr"><span class="pvslbl">ชั้น:</span><span class="pvsval" id="pLV"></span></div>
-        <div class="pvsr"><span class="pvslbl">โรงเรียน:</span><span class="pvsval" id="pSCH"></span></div>
-        <div class="pvsr"><span class="pvslbl">รหัส:</span><span class="pvsval" id="pCODE"></span></div>
+        <div class="pvstud-title">à¸à¹à¸­à¸¡à¸¹à¸¥à¸à¸±à¸à¹à¸£à¸µà¸¢à¸</div>
+        <div class="pvsr"><span class="pvslbl">à¸à¸·à¹à¸­à¸à¸£à¸´à¸:</span><span class="pvsval" id="pN"></span></div>
+        <div class="pvsr"><span class="pvslbl">à¸à¸·à¹à¸­à¹à¸¥à¹à¸:</span><span class="pvsval" id="pNN"></span></div>
+        <div class="pvsr"><span class="pvslbl">à¸à¸±à¹à¸:</span><span class="pvsval" id="pLV"></span></div>
+        <div class="pvsr"><span class="pvslbl">à¹à¸£à¸à¹à¸£à¸µà¸¢à¸:</span><span class="pvsval" id="pSCH"></span></div>
+        <div class="pvsr"><span class="pvslbl">à¸£à¸«à¸±à¸ª:</span><span class="pvsval" id="pCODE"></span></div>
       </div>
       <div class="pvgoal">
-        <div class="pvglbl">เป้าหมาย</div>
+        <div class="pvglbl">à¹à¸à¹à¸²à¸«à¸¡à¸²à¸¢</div>
         <div class="pvgcirc"><span class="pvgicon">&#9654;</span></div>
         <div class="pvgval" id="pGPA"></div>
-        <div class="pvgbtn" id="pROUND">TCAS รอบ 3</div>
+        <div class="pvgbtn" id="pROUND">TCAS à¸£à¸­à¸ 3</div>
       </div>
       <div class="pvtitle">
         <div class="pvmaintitle">Ondy Member</div>
@@ -248,11 +248,11 @@ header{background:var(--navy);padding:12px 20px;display:flex;align-items:center;
     </div>
     <div class="pvbottom">
       <div class="pvlegend">
-        <div class="pvleg-title">คอร์สในแผน ONDY</div>
+        <div class="pvleg-title">à¸à¸­à¸£à¹à¸ªà¹à¸à¹à¸à¸ ONDY</div>
         <div id="pvLegend"></div>
       </div>
       <div class="pvscores">
-        <div class="pvsc-title">&#127919; เกณฑ์คะแนน / Target</div>
+        <div class="pvsc-title">&#127919; à¹à¸à¸à¸à¹à¸à¸°à¹à¸à¸ / Target</div>
         <div id="pvScores"></div>
       </div>
       <div class="pvstats" id="pvStats"></div>
@@ -261,7 +261,7 @@ header{background:var(--navy);padding:12px 20px;display:flex;align-items:center;
       <div>OnDemand Education Co., Ltd. | www.ondemand.in.th | Tel: 02-251-9456 | <span id="pFOOTER"></span></div>
       <div class="pvfooter-logo">Ondy Member</div>
       <div style="display:flex;align-items:center;gap:6px;">
-        <div id="pvQrLabel" style="font-size:7px;color:rgba(255,255,255,.7);text-align:right;line-height:1.5;">แอด LINE<br>สาขาใกล้บ้าน<br>รับโปร + แผนฟรี</div>
+        <div id="pvQrLabel" style="font-size:7px;color:rgba(255,255,255,.7);text-align:right;line-height:1.5;">à¹à¸­à¸ LINE<br>à¸ªà¸²à¸à¸²à¹à¸à¸¥à¹à¸à¹à¸²à¸<br>à¸£à¸±à¸à¹à¸à¸£ + à¹à¸à¸à¸à¸£à¸µ</div>
         <div id="pvQrBox" style="width:126px;height:126px;background:#fff;border-radius:4px;padding:3px;flex-shrink:0;overflow:hidden;display:flex;align-items:center;justify-content:center;"></div>
       </div>
     </div>
@@ -275,15 +275,15 @@ header{background:var(--navy);padding:12px 20px;display:flex;align-items:center;
       <span class="h-name">ONDY Member</span>
       <span class="h-badge">INDIVIDUAL PLANNER</span>
     </div>
-    <div class="h-sub">วางแผนคอร์สรายบุคคล — OnDemand Academy</div>
+    <div class="h-sub">à¸§à¸²à¸à¹à¸à¸à¸à¸­à¸£à¹à¸ªà¸£à¸²à¸¢à¸à¸¸à¸à¸à¸¥ â OnDemand Academy</div>
   </div>
   <div class="h-btns">
     <button class="hbtn" id="guruBtn" onclick="toggleGuru()">&#128274; Guru View</button>
     <button class="hbtn" id="prevBtn" onclick="togglePreview()">&#128065; Preview</button>
     <button class="hbtn" onclick="printPlan()">&#128424; Print / PDF</button>
-    <button class="hbtn save" onclick="savePlanToSheet()">&#128190; บันทึกแผน</button>
-    <button class="hbtn" style="background:#1a7a3a;color:#fff;" onclick="downloadSavedCSV()">&#128229; ดาวน์โหลด CSV</button>
-    <button class="hbtn email-btn" onclick="sendEmailPDF()">&#128140; ส่ง Email+PDF</button>
+    <button class="hbtn save" onclick="savePlanToSheet()">&#128190; à¸à¸±à¸à¸à¸¶à¸à¹à¸à¸</button>
+    <button class="hbtn" style="background:#1a7a3a;color:#fff;" onclick="downloadSavedCSV()">&#128229; à¸à¸²à¸§à¸à¹à¹à¸«à¸¥à¸ CSV</button>
+    <button class="hbtn email-btn" onclick="sendEmailPDF()">&#128140; à¸ªà¹à¸ Email+PDF</button>
   </div>
 </header>
 
@@ -291,46 +291,46 @@ header{background:var(--navy);padding:12px 20px;display:flex;align-items:center;
 <div class="builder">
   <div class="lpanel">
     <div class="bcard">
-      <div class="bcard-title">&#128100; ข้อมูลนักเรียน</div>
+      <div class="bcard-title">&#128100; à¸à¹à¸­à¸¡à¸¹à¸¥à¸à¸±à¸à¹à¸£à¸µà¸¢à¸</div>
       <div class="fgrid">
-        <div><label class="flbl">ชื่อจริง</label><input class="finput" id="stName" type="text" placeholder="ชื่อ" oninput="updateAll()"></div>
-        <div><label class="flbl">นามสกุล</label><input class="finput" id="stLastName" type="text" placeholder="นามสกุล" oninput="updateAll()"></div>
-        <div><label class="flbl">ชื่อเล่น</label><input class="finput" id="stNick" type="text" placeholder="ชื่อเล่น" oninput="updateAll()"></div>
-        <div><label class="flbl">วันเกิด</label><input class="finput" id="stBirth" type="date" oninput="updateAll()"></div>
-        <div><label class="flbl">ชั้นปัจจุบัน</label>
+        <div><label class="flbl">à¸à¸·à¹à¸­à¸à¸£à¸´à¸</label><input class="finput" id="stName" type="text" placeholder="à¸à¸·à¹à¸­" oninput="updateAll()"></div>
+        <div><label class="flbl">à¸à¸²à¸¡à¸ªà¸à¸¸à¸¥</label><input class="finput" id="stLastName" type="text" placeholder="à¸à¸²à¸¡à¸ªà¸à¸¸à¸¥" oninput="updateAll()"></div>
+        <div><label class="flbl">à¸à¸·à¹à¸­à¹à¸¥à¹à¸</label><input class="finput" id="stNick" type="text" placeholder="à¸à¸·à¹à¸­à¹à¸¥à¹à¸" oninput="updateAll()"></div>
+        <div><label class="flbl">à¸§à¸±à¸à¹à¸à¸´à¸</label><input class="finput" id="stBirth" type="date" oninput="updateAll()"></div>
+        <div><label class="flbl">à¸à¸±à¹à¸à¸à¸±à¸à¸à¸¸à¸à¸±à¸</label>
           <select class="finput" id="stLevel" onchange="renderCal();applyPersonaPrefill();updateAll()">
-            <option>ม.4</option><option>ม.5</option><option>ม.6</option>
+            <option>à¸¡.4</option><option>à¸¡.5</option><option>à¸¡.6</option>
           </select></div>
         <div><label class="flbl">GPA</label><input class="finput" id="stGpa" type="number" step="0.01" min="0" max="4" placeholder="0.00" oninput="updateAll()"></div>
-        <div class="full"><label class="flbl">โรงเรียน</label><input class="finput" id="stSch" type="text" placeholder="ชื่อโรงเรียน" oninput="updateAll()"></div>
-        <div><label class="flbl">รหัสนักเรียน</label><input class="finput" id="stCode" type="text" placeholder="รหัส" oninput="updateAll()"></div>
-        <div><label class="flbl">เบอร์โทร <span style="color:#EF4444">*</span></label><input class="finput" id="stPhone" type="tel" placeholder="0812345678" oninput="updateAll()"></div>
-        <div class="full"><label class="flbl">Email นักเรียน <span style="color:#EF4444">*</span></label><input class="finput" id="stEmail" type="email" placeholder="student@email.com" oninput="updateAll()"></div>
-        <div><label class="flbl">Guru ผู้วางแผน <span style="color:#EF4444">*</span></label>
+        <div class="full"><label class="flbl">à¹à¸£à¸à¹à¸£à¸µà¸¢à¸</label><input class="finput" id="stSch" type="text" placeholder="à¸à¸·à¹à¸­à¹à¸£à¸à¹à¸£à¸µà¸¢à¸" oninput="updateAll()"></div>
+        <div><label class="flbl">à¸£à¸«à¸±à¸ªà¸à¸±à¸à¹à¸£à¸µà¸¢à¸</label><input class="finput" id="stCode" type="text" placeholder="à¸£à¸«à¸±à¸ª" oninput="updateAll()"></div>
+        <div><label class="flbl">à¹à¸à¸­à¸£à¹à¹à¸à¸£ <span style="color:#EF4444">*</span></label><input class="finput" id="stPhone" type="tel" placeholder="0812345678" oninput="updateAll()"></div>
+        <div class="full"><label class="flbl">Email à¸à¸±à¸à¹à¸£à¸µà¸¢à¸ <span style="color:#EF4444">*</span></label><input class="finput" id="stEmail" type="email" placeholder="student@email.com" oninput="updateAll()"></div>
+        <div><label class="flbl">Guru à¸à¸¹à¹à¸§à¸²à¸à¹à¸à¸ <span style="color:#EF4444">*</span></label>
           <select class="finput" id="stGuru" onchange="onGuruChange();updateAll()">
-            <option value="">— กำลังโหลด... —</option>
-            <option value="__freetext__">✏️ พิมพ์เอง (Freetext)</option>
+            <option value="">â à¸à¸³à¸¥à¸±à¸à¹à¸«à¸¥à¸... â</option>
+            <option value="__freetext__">âï¸ à¸à¸´à¸¡à¸à¹à¹à¸­à¸ (Freetext)</option>
           </select>
-          <div id="guruFreeRow"><input class="finput" id="stGuruFree" type="text" placeholder="ชื่อ Guru (พิมพ์เอง)" oninput="updateAll()"></div>
+          <div id="guruFreeRow"><input class="finput" id="stGuruFree" type="text" placeholder="à¸à¸·à¹à¸­ Guru (à¸à¸´à¸¡à¸à¹à¹à¸­à¸)" oninput="updateAll()"></div>
         </div>
-        <div class="full"><label class="flbl">สาขา OnDemand</label>
+        <div class="full"><label class="flbl">à¸ªà¸²à¸à¸² OnDemand</label>
           <select class="finput" id="stBranch" onchange="updateAll()">
-            <optgroup label="── AM: AOR │ Hub: Zee ──">
+            <optgroup label="ââ AM: AOR â Hub: Zee ââ">
               <option>MBK</option>
               <option>PKL</option>
             </optgroup>
-            <optgroup label="── AM: AOR │ Hub: Simp ──">
+            <optgroup label="ââ AM: AOR â Hub: Simp ââ">
               <option>SNR</option>
               <option>WST</option>
               <option>NGW</option>
               <option>RST</option>
             </optgroup>
-            <optgroup label="── AM: AOR │ Hub: Gift ──">
+            <optgroup label="ââ AM: AOR â Hub: Gift ââ">
               <option>VVY</option>
               <option>NPT</option>
               <option>PKS</option>
             </optgroup>
-            <optgroup label="── AM: TAE │ Hub: TAE ──">
+            <optgroup label="ââ AM: TAE â Hub: TAE ââ">
               <option>HYD</option>
               <option>SNI</option>
               <option>NRT</option>
@@ -341,7 +341,7 @@ header{background:var(--navy);padding:12px 20px;display:flex;align-items:center;
               <option>SPB</option>
               <option>PBI</option>
             </optgroup>
-            <optgroup label="── AM: BOTUN │ Hub: BOTUN ──">
+            <optgroup label="ââ AM: BOTUN â Hub: BOTUN ââ">
               <option>NSN</option>
               <option>LRI</option>
               <option>SRI</option>
@@ -351,76 +351,76 @@ header{background:var(--navy);padding:12px 20px;display:flex;align-items:center;
               <option>LPG</option>
               <option>PLK</option>
             </optgroup>
-            <optgroup label="── AM: TALAY │ Hub: NIM ──">
+            <optgroup label="ââ AM: TALAY â Hub: NIM ââ">
               <option>UBN</option>
               <option>NMA</option>
               <option>BRM</option>
             </optgroup>
-            <optgroup label="── AM: TALAY │ Hub: TALAY ──">
+            <optgroup label="ââ AM: TALAY â Hub: TALAY ââ">
               <option>UDN</option>
               <option>KKN</option>
               <option>RET</option>
             </optgroup>
-            <optgroup label="── AM: TALAY │ Hub: Most ──">
+            <optgroup label="ââ AM: TALAY â Hub: Most ââ">
               <option>CBI</option>
               <option>RYG</option>
               <option>COO</option>
             </optgroup>
-            <optgroup label="── ออนไลน์ ──">
+            <optgroup label="ââ à¸­à¸­à¸à¹à¸¥à¸à¹ ââ">
               <option>Online</option>
             </optgroup>
           </select></div>
       </div>
     </div>
     <div class="bcard">
-      <div class="bcard-title">&#127919; เป้าหมาย TCAS</div>
+      <div class="bcard-title">&#127919; à¹à¸à¹à¸²à¸«à¸¡à¸²à¸¢ TCAS</div>
       <div class="fgrid">
         <div class="full"><label class="flbl">TCAS Round</label>
           <select class="finput" id="stRound" onchange="updateAll()">
-            <option value="1">รอบ 1 — Portfolio</option>
-            <option value="2">รอบ 2 — Quota</option>
-            <option value="3" selected>รอบ 3 — Admission</option>
-            <option value="4">รอบ 4 — Direct</option>
+            <option value="1">à¸£à¸­à¸ 1 â Portfolio</option>
+            <option value="2">à¸£à¸­à¸ 2 â Quota</option>
+            <option value="3" selected>à¸£à¸­à¸ 3 â Admission</option>
+            <option value="4">à¸£à¸­à¸ 4 â Direct</option>
           </select></div>
-        <div class="full"><label class="flbl">🎓 ONDY Persona — คณะเป้าหมาย</label>
+        <div class="full"><label class="flbl">ð ONDY Persona â à¸à¸à¸°à¹à¸à¹à¸²à¸«à¸¡à¸²à¸¢</label>
           <select class="finput" id="stPersona" onchange="applyPersonaPrefill();updateAll()">
-            <option value="">— ไม่ระบุ (กำหนดเอง) —</option>
-            <option value="แพทย์">🏥 แพทย์ / สัตวแพทย์</option>
-            <option value="วิศวะ">⚙️ วิศวกรรมศาสตร์</option>
-            <option value="Business">📊 Business / บัญชี / เศรษฐศาสตร์</option>
-            <option value="นิติศาสตร์">⚖️ นิติศาสตร์ / รัฐศาสตร์</option>
+            <option value="">â à¹à¸¡à¹à¸£à¸°à¸à¸¸ (à¸à¸³à¸«à¸à¸à¹à¸­à¸) â</option>
+            <option value="à¹à¸à¸à¸¢à¹">ð¥ à¹à¸à¸à¸¢à¹ / à¸ªà¸±à¸à¸§à¹à¸à¸à¸¢à¹</option>
+            <option value="à¸§à¸´à¸¨à¸§à¸°">âï¸ à¸§à¸´à¸¨à¸§à¸à¸£à¸£à¸¡à¸¨à¸²à¸ªà¸à¸£à¹</option>
+            <option value="Business">ð Business / à¸à¸±à¸à¸à¸µ / à¹à¸¨à¸£à¸©à¸à¸¨à¸²à¸ªà¸à¸£à¹</option>
+            <option value="à¸à¸´à¸à¸´à¸¨à¸²à¸ªà¸à¸£à¹">âï¸ à¸à¸´à¸à¸´à¸¨à¸²à¸ªà¸à¸£à¹ / à¸£à¸±à¸à¸¨à¸²à¸ªà¸à¸£à¹</option>
           </select></div>
-        <div class="full"><label class="flbl">มหาวิทยาลัยเป้าหมาย</label><input class="finput" id="stUni" type="text" placeholder="เช่น จุฬา" oninput="updateAll()"></div>
-        <div class="full"><label class="flbl">คณะ / สาขาเป้าหมาย</label><input class="finput" id="stFac" type="text" placeholder="เช่น วิศวกรรมคอมพิวเตอร์" oninput="updateAll()"></div>
-        <div class="full"><label class="flbl">แหล่งที่มา / Source</label>
+        <div class="full"><label class="flbl">à¸¡à¸«à¸²à¸§à¸´à¸à¸¢à¸²à¸¥à¸±à¸¢à¹à¸à¹à¸²à¸«à¸¡à¸²à¸¢</label><input class="finput" id="stUni" type="text" placeholder="à¹à¸à¹à¸ à¸à¸¸à¸¬à¸²" oninput="updateAll()"></div>
+        <div class="full"><label class="flbl">à¸à¸à¸° / à¸ªà¸²à¸à¸²à¹à¸à¹à¸²à¸«à¸¡à¸²à¸¢</label><input class="finput" id="stFac" type="text" placeholder="à¹à¸à¹à¸ à¸§à¸´à¸¨à¸§à¸à¸£à¸£à¸¡à¸à¸­à¸¡à¸à¸´à¸§à¹à¸à¸­à¸£à¹" oninput="updateAll()"></div>
+        <div class="full"><label class="flbl">à¹à¸«à¸¥à¹à¸à¸à¸µà¹à¸¡à¸² / Source</label>
           <select class="finput" id="stSource" onchange="updateAll()">
-            <option value="">— ไม่ระบุ —</option>
-            <option>Walk-in สาขา</option>
+            <option value="">â à¹à¸¡à¹à¸£à¸°à¸à¸¸ â</option>
+            <option>Walk-in à¸ªà¸²à¸à¸²</option>
             <option>Line OA / Social Media</option>
             <option>TikTok</option>
-            <option>งาน / Event</option>
+            <option>à¸à¸²à¸ / Event</option>
             <option>Referral / MGM</option>
             <option>ONDY Online</option>
-            <option>อื่นๆ</option>
+            <option>à¸­à¸·à¹à¸à¹</option>
           </select></div>
       </div>
     </div>
     <div class="bcard">
-      <div class="bcard-title">&#128200; เกณฑ์คะแนนที่ต้องการ</div>
+      <div class="bcard-title">&#128200; à¹à¸à¸à¸à¹à¸à¸°à¹à¸à¸à¸à¸µà¹à¸à¹à¸­à¸à¸à¸²à¸£</div>
       <div class="fgrid">
         <div><label class="flbl">TGAT</label><input class="finput" id="scTgat" type="number" placeholder="%" oninput="updateAll()"></div>
-        <div><label class="flbl">ฟิสิกส์</label><input class="finput" id="scPhy" type="number" placeholder="%" oninput="updateAll()"></div>
-        <div><label class="flbl">คณิตศาสตร์</label><input class="finput" id="scMath" type="number" placeholder="%" oninput="updateAll()"></div>
-        <div><label class="flbl">เคมี</label><input class="finput" id="scChem" type="number" placeholder="%" oninput="updateAll()"></div>
-        <div><label class="flbl">ชีววิทยา</label><input class="finput" id="scBio" type="number" placeholder="%" oninput="updateAll()"></div>
-        <div><label class="flbl">ภาษาอังกฤษ</label><input class="finput" id="scEng" type="number" placeholder="%" oninput="updateAll()"></div>
+        <div><label class="flbl">à¸à¸´à¸ªà¸´à¸à¸ªà¹</label><input class="finput" id="scPhy" type="number" placeholder="%" oninput="updateAll()"></div>
+        <div><label class="flbl">à¸à¸à¸´à¸à¸¨à¸²à¸ªà¸à¸£à¹</label><input class="finput" id="scMath" type="number" placeholder="%" oninput="updateAll()"></div>
+        <div><label class="flbl">à¹à¸à¸¡à¸µ</label><input class="finput" id="scChem" type="number" placeholder="%" oninput="updateAll()"></div>
+        <div><label class="flbl">à¸à¸µà¸§à¸§à¸´à¸à¸¢à¸²</label><input class="finput" id="scBio" type="number" placeholder="%" oninput="updateAll()"></div>
+        <div><label class="flbl">à¸ à¸²à¸©à¸²à¸­à¸±à¸à¸à¸¤à¸©</label><input class="finput" id="scEng" type="number" placeholder="%" oninput="updateAll()"></div>
       </div>
     </div>
   </div>
   <div class="rpanel">
-    <div class="hint-bar">&#128161; <strong>วิธีใช้:</strong> คลิกช่องเดือนในปฏิทินเพื่อเปิดหน้าต่างเลือกคอร์ส | คลิก ✕ บนชิปเพื่อลบ</div>
+    <div class="hint-bar">&#128161; <strong>à¸§à¸´à¸à¸µà¹à¸à¹:</strong> à¸à¸¥à¸´à¸à¸à¹à¸­à¸à¹à¸à¸·à¸­à¸à¹à¸à¸à¸à¸´à¸à¸´à¸à¹à¸à¸·à¹à¸­à¹à¸à¸´à¸à¸«à¸à¹à¸²à¸à¹à¸²à¸à¹à¸¥à¸·à¸­à¸à¸à¸­à¸£à¹à¸ª | à¸à¸¥à¸´à¸ â à¸à¸à¸à¸´à¸à¹à¸à¸·à¹à¸­à¸¥à¸</div>
     <div class="cal-wrap">
-      <div class="bcard-title" style="margin-bottom:10px;">&#128197; ปฏิทินแผนการเรียน 3 ปี <span style="font-size:10px;font-weight:400;color:var(--gray3);text-transform:none;letter-spacing:0;">(คลิกช่องเดือนเพื่อเพิ่มคอร์ส)</span></div>
+      <div class="bcard-title" style="margin-bottom:10px;">&#128197; à¸à¸à¸´à¸à¸´à¸à¹à¸à¸à¸à¸²à¸£à¹à¸£à¸µà¸¢à¸ 3 à¸à¸µ <span style="font-size:10px;font-weight:400;color:var(--gray3);text-transform:none;letter-spacing:0;">(à¸à¸¥à¸´à¸à¸à¹à¸­à¸à¹à¸à¸·à¸­à¸à¹à¸à¸·à¹à¸­à¹à¸à¸´à¹à¸¡à¸à¸­à¸£à¹à¸ª)</span></div>
       <div style="overflow-x:auto;">
         <table class="cal-table">
           <thead id="calHead"></thead>
@@ -434,12 +434,12 @@ header{background:var(--navy);padding:12px 20px;display:flex;align-items:center;
 
 <script>
 
-// ═══════════════════════════════════════════════════════════════
-// APPS SCRIPT BACKEND CONFIG — ใส่ URL ที่นี่หลัง Deploy
-// ═══════════════════════════════════════════════════════════════
-var APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxPLACEHOLDER/exec';
+// âââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââ
+// APPS SCRIPT BACKEND CONFIG â à¹à¸ªà¹ URL à¸à¸µà¹à¸à¸µà¹à¸«à¸¥à¸±à¸ Deploy
+// âââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââ
+var APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzFrNK0VMKqfEBvhv68ZqwoGYkaiacHsVWISwc-hwcynYVImew_ygIQA3MKnrgHuIqM7g/exec';
 
-// ─── GURU LIST (from Sheet เก็บข้อมูล NEW Ondy Only - column ชื่อผู้ดูแล) ───
+// âââ GURU LIST (from Sheet à¹à¸à¹à¸à¸à¹à¸­à¸¡à¸¹à¸¥ NEW Ondy Only - column à¸à¸·à¹à¸­à¸à¸¹à¹à¸à¸¹à¹à¸¥) âââ
 var GURU_LIST = [
   'CCOPHUENG','CPNTONG','CRINEEN','HYDKATAI','HYDYA',
   'KKNBELL','MBKMEEN','MBKPIA','NGWFilm','NRTKIT',
@@ -449,14 +449,14 @@ var GURU_LIST = [
 ];
 function loadGurus(){
   var sel = document.getElementById('stGuru');
-  sel.innerHTML = '<option value="">— เลือก Guru —</option>';
+  sel.innerHTML = '<option value="">â à¹à¸¥à¸·à¸­à¸ Guru â</option>';
   GURU_LIST.forEach(function(g){
     var opt = document.createElement('option');
     opt.value = g; opt.textContent = g;
     sel.appendChild(opt);
   });
   var ft = document.createElement('option');
-  ft.value = '__freetext__'; ft.textContent = 'อื่นๆ (พิมพ์เอง)';
+  ft.value = '__freetext__'; ft.textContent = 'à¸­à¸·à¹à¸à¹ (à¸à¸´à¸¡à¸à¹à¹à¸­à¸)';
   sel.appendChild(ft);
 }
 
@@ -472,7 +472,7 @@ function getGuruValue(){
   return sel.value;
 }
 
-// ─── TOAST ─────────────────────────────────────────────────────
+// âââ TOAST âââââââââââââââââââââââââââââââââââââââââââââââââââââ
 function showToast(msg, type, dur){
   var t = document.getElementById('toast');
   t.textContent = msg;
@@ -487,7 +487,7 @@ function setLoading(show, msg){
   if(msg) document.getElementById('loadingMsg').textContent = msg;
 }
 
-// ─── BUILD PAYLOAD ──────────────────────────────────────────────
+// âââ BUILD PAYLOAD ââââââââââââââââââââââââââââââââââââââââââââââ
 function buildPayload(){
   var placed = {}; var startRow = getStartRow();
   for(var li=startRow;li<3;li++) for(var mi=0;mi<12;mi++) cal[li][mi].forEach(function(id){ placed[id]=1; });
@@ -495,7 +495,7 @@ function buildPayload(){
   var totalHrs=0, totalPrice=0;
   pids.forEach(function(id){ var c=COURSES.find(function(x){return x.id===id;}); if(c){totalHrs+=c.hours;totalPrice+=c.price;} });
 
-  // Build months array (Jan-Dec) for ALL 3 rows (will flatten to "ปีX: ...")
+  // Build months array (Jan-Dec) for ALL 3 rows (will flatten to "à¸à¸µX: ...")
   var months = [];
   for(var mi=0;mi<12;mi++){
     var lines = [], val = 0;
@@ -520,7 +520,7 @@ function buildPayload(){
   return {
     branch:      (document.getElementById('stBranch')||{}).value || '',
     guru:        getGuruValue(),
-    status:      'นักเรียน',
+    status:      'à¸à¸±à¸à¹à¸£à¸µà¸¢à¸',
     firstName:   (document.getElementById('stName')||{}).value || '',
     lastName:    (document.getElementById('stLastName')||{}).value || '',
     school:      (document.getElementById('stSch')||{}).value || '',
@@ -542,18 +542,18 @@ function buildPayload(){
   };
 }
 
-// ─── SAVE TO SHEET (or localStorage fallback) ───────────────────
+// âââ SAVE TO SHEET (or localStorage fallback) âââââââââââââââââââ
 function savePlanToSheet(){
   var payload = buildPayload();
-  if(!payload.firstName){ showToast('กรุณากรอกชื่อนักเรียน','error'); return; }
-  if(!payload.phone){ showToast('กรุณากรอกเบอร์โทรศัพท์','error'); return; }
-  if(!payload.guru){ showToast('กรุณาเลือก Guru ผู้วางแผน','error'); return; }
+  if(!payload.firstName){ showToast('à¸à¸£à¸¸à¸à¸²à¸à¸£à¸­à¸à¸à¸·à¹à¸­à¸à¸±à¸à¹à¸£à¸µà¸¢à¸','error'); return; }
+  if(!payload.phone){ showToast('à¸à¸£à¸¸à¸à¸²à¸à¸£à¸­à¸à¹à¸à¸­à¸£à¹à¹à¸à¸£à¸¨à¸±à¸à¸à¹','error'); return; }
+  if(!payload.guru){ showToast('à¸à¸£à¸¸à¸à¸²à¹à¸¥à¸·à¸­à¸ Guru à¸à¸¹à¹à¸§à¸²à¸à¹à¸à¸','error'); return; }
   var hasCourse = payload.months.some(function(m){ return m.courses.trim(); });
-  if(!hasCourse){ showToast('ต้องมีอย่างน้อย 1 คอร์สในแผน','error'); return; }
+  if(!hasCourse){ showToast('à¸à¹à¸­à¸à¸¡à¸µà¸­à¸¢à¹à¸²à¸à¸à¹à¸­à¸¢ 1 à¸à¸­à¸£à¹à¸ªà¹à¸à¹à¸à¸','error'); return; }
 
-  // ถ้ามี Apps Script URL จริง — ส่งออนไลน์
+  // à¸à¹à¸²à¸¡à¸µ Apps Script URL à¸à¸£à¸´à¸ â à¸ªà¹à¸à¸­à¸­à¸à¹à¸¥à¸à¹
   if(APPS_SCRIPT_URL.indexOf('PLACEHOLDER') < 0){
-    setLoading(true, 'กำลังบันทึกแผนลง Google Sheets...');
+    setLoading(true, 'à¸à¸³à¸¥à¸±à¸à¸à¸±à¸à¸à¸¶à¸à¹à¸à¸à¸¥à¸ Google Sheets...');
     fetch(APPS_SCRIPT_URL, {
       method: 'POST',
       body: JSON.stringify(Object.assign({ action: 'save' }, payload))
@@ -562,19 +562,19 @@ function savePlanToSheet(){
     .then(function(data){
       setLoading(false);
       if(data.ok){
-        showToast('✅ บันทึกสำเร็จ! ID: ' + data.onDyId, 'success', 5000);
+        showToast('â à¸à¸±à¸à¸à¸¶à¸à¸ªà¸³à¹à¸£à¹à¸! ID: ' + data.onDyId, 'success', 5000);
       } else {
-        showToast('❌ ' + (data.error||'เกิดข้อผิดพลาด'), 'error');
+        showToast('â ' + (data.error||'à¹à¸à¸´à¸à¸à¹à¸­à¸à¸´à¸à¸à¸¥à¸²à¸'), 'error');
       }
     })
     .catch(function(err){
       setLoading(false);
-      showToast('❌ ไม่สามารถเชื่อมต่อ: ' + err.message, 'error');
+      showToast('â à¹à¸¡à¹à¸ªà¸²à¸¡à¸²à¸£à¸à¹à¸à¸·à¹à¸­à¸¡à¸à¹à¸­: ' + err.message, 'error');
     });
     return;
   }
 
-  // ─── fallback: บันทึกใน localStorage ───────────────────────────
+  // âââ fallback: à¸à¸±à¸à¸à¸¶à¸à¹à¸ localStorage âââââââââââââââââââââââââââ
   var ts = Date.now();
   var planId = 'ONDY-' + payload.branch.split(' ')[0] + '-' + ts.toString().slice(-6);
   payload.savedAt = new Date(ts).toLocaleString('th-TH');
@@ -584,17 +584,17 @@ function savePlanToSheet(){
     var existing = JSON.parse(localStorage.getItem('ondyPlans') || '[]');
     existing.push(payload);
     localStorage.setItem('ondyPlans', JSON.stringify(existing));
-    showToast('✅ บันทึกสำเร็จ (เครื่องนี้) | ID: ' + planId + '\n\nกด "ดาวน์โหลด CSV" เพื่อส่งข้อมูลให้ HQ', 'success', 7000);
+    showToast('â à¸à¸±à¸à¸à¸¶à¸à¸ªà¸³à¹à¸£à¹à¸ (à¹à¸à¸£à¸·à¹à¸­à¸à¸à¸µà¹) | ID: ' + planId + '\n\nà¸à¸ "à¸à¸²à¸§à¸à¹à¹à¸«à¸¥à¸ CSV" à¹à¸à¸·à¹à¸­à¸ªà¹à¸à¸à¹à¸­à¸¡à¸¹à¸¥à¹à¸«à¹ HQ', 'success', 7000);
   } catch(e){
-    showToast('❌ บันทึกไม่ได้: ' + e.message, 'error');
+    showToast('â à¸à¸±à¸à¸à¸¶à¸à¹à¸¡à¹à¹à¸à¹: ' + e.message, 'error');
   }
 }
 
-// ─── DOWNLOAD SAVED PLANS AS CSV ────────────────────────────────
+// âââ DOWNLOAD SAVED PLANS AS CSV ââââââââââââââââââââââââââââââââ
 function downloadSavedCSV(){
   var plans;
   try { plans = JSON.parse(localStorage.getItem('ondyPlans') || '[]'); } catch(e){ plans = []; }
-  if(!plans.length){ showToast('ยังไม่มีแผนที่บันทึกไว้','error'); return; }
+  if(!plans.length){ showToast('à¸¢à¸±à¸à¹à¸¡à¹à¸¡à¸µà¹à¸à¸à¸à¸µà¹à¸à¸±à¸à¸à¸¶à¸à¹à¸§à¹','error'); return; }
 
   var cols = ['planId','savedAt','branch','guru','firstName','lastName','school','grade',
               'phone','email','odmId','faculty','university','source',
@@ -607,27 +607,27 @@ function downloadSavedCSV(){
     }).join(',') + '\n';
   });
 
-  var blob = new Blob(['﻿'+csv], {type:'text/csv;charset=utf-8'});
+  var blob = new Blob(['ï»¿'+csv], {type:'text/csv;charset=utf-8'});
   var url  = URL.createObjectURL(blob);
   var a    = document.createElement('a');
   a.href   = url;
   a.download = 'ONDY_Plans_' + new Date().toISOString().slice(0,10) + '.csv';
   a.click();
   URL.revokeObjectURL(url);
-  showToast('✅ ดาวน์โหลด CSV สำเร็จ (' + plans.length + ' แผน)', 'success', 4000);
+  showToast('â à¸à¸²à¸§à¸à¹à¹à¸«à¸¥à¸ CSV à¸ªà¸³à¹à¸£à¹à¸ (' + plans.length + ' à¹à¸à¸)', 'success', 4000);
 }
 
-// ─── SEND EMAIL + PDF ───────────────────────────────────────────
+// âââ SEND EMAIL + PDF âââââââââââââââââââââââââââââââââââââââââââ
 function sendEmailPDF(){
   var emailEl = document.getElementById('stEmail');
   if(!emailEl || !emailEl.value){
-    showToast('กรุณากรอก Email นักเรียนก่อนส่ง','error'); return;
+    showToast('à¸à¸£à¸¸à¸à¸²à¸à¸£à¸­à¸ Email à¸à¸±à¸à¹à¸£à¸µà¸¢à¸à¸à¹à¸­à¸à¸ªà¹à¸','error'); return;
   }
   if(APPS_SCRIPT_URL.indexOf('PLACEHOLDER') >= 0){
-    showToast('⚠️ ยังไม่ได้ตั้งค่า APPS_SCRIPT_URL','error',6000); return;
+    showToast('â ï¸ à¸¢à¸±à¸à¹à¸¡à¹à¹à¸à¹à¸à¸±à¹à¸à¸à¹à¸² APPS_SCRIPT_URL','error',6000); return;
   }
 
-  setLoading(true, 'กำลังสร้าง PDF แผนการเรียน...');
+  setLoading(true, 'à¸à¸³à¸¥à¸±à¸à¸ªà¸£à¹à¸²à¸ PDF à¹à¸à¸à¸à¸²à¸£à¹à¸£à¸µà¸¢à¸...');
   populatePrintView();
 
   var pvEl = document.getElementById('pv');
@@ -645,11 +645,11 @@ function sendEmailPDF(){
   html2pdf().set(opt).from(pvEl.querySelector('.pvpage')).outputPdf('datauristring').then(function(dataUri){
     pvEl.style.cssText = pvWas;
     var base64 = dataUri.split(',')[1];
-    var studentName = document.getElementById('stName').value || 'นักเรียน';
+    var studentName = document.getElementById('stName').value || 'à¸à¸±à¸à¹à¸£à¸µà¸¢à¸';
     var guru = getGuruValue();
     var branch = document.getElementById('stBranch').value;
 
-    setLoading(true, 'กำลังส่ง Email พร้อม PDF...');
+    setLoading(true, 'à¸à¸³à¸¥à¸±à¸à¸ªà¹à¸ Email à¸à¸£à¹à¸­à¸¡ PDF...');
     return fetch(APPS_SCRIPT_URL, {
       method: 'POST',
       body: JSON.stringify({
@@ -669,101 +669,101 @@ function sendEmailPDF(){
     setLoading(false);
     pvEl.style.cssText = pvWas;
     if(data.ok){
-      showToast('✅ ส่ง Email พร้อม PDF เรียบร้อยแล้ว!', 'success', 5000);
+      showToast('â à¸ªà¹à¸ Email à¸à¸£à¹à¸­à¸¡ PDF à¹à¸£à¸µà¸¢à¸à¸£à¹à¸­à¸¢à¹à¸¥à¹à¸§!', 'success', 5000);
     } else {
-      showToast('❌ ' + (data.error||'เกิดข้อผิดพลาด'), 'error');
+      showToast('â ' + (data.error||'à¹à¸à¸´à¸à¸à¹à¸­à¸à¸´à¸à¸à¸¥à¸²à¸'), 'error');
     }
   })
   .catch(function(err){
     setLoading(false);
     pvEl.style.cssText = pvWas;
-    showToast('❌ ' + err.message, 'error');
+    showToast('â ' + err.message, 'error');
   });
 }
 
-var MONTHS = ['ม.ค.','ก.พ.','มี.ค.','เม.ย.','พ.ค.','มิ.ย.','ก.ค.','ส.ค.','ก.ย.','ต.ค.','พ.ย.','ธ.ค.'];
-var LEVELS = ['ม.4','ม.5','ม.6'];
+var MONTHS = ['à¸¡.à¸.','à¸.à¸.','à¸¡à¸µ.à¸.','à¹à¸¡.à¸¢.','à¸.à¸.','à¸¡à¸´.à¸¢.','à¸.à¸.','à¸ª.à¸.','à¸.à¸¢.','à¸.à¸.','à¸.à¸¢.','à¸.à¸.'];
+var LEVELS = ['à¸¡.4','à¸¡.5','à¸¡.6'];
 var COURSES = [
-  // ── 99B ปรับพื้นฐาน ──────────────────────────────────
-  {id:'b99-math',cat:'b99',name:'ปรับพื้นฐาน คณิตศาสตร์ ม.ปลาย',  hours:10,price:99},
-  {id:'b99-phy', cat:'b99',name:'ปรับพื้นฐาน ฟิสิกส์ ม.4',         hours:10,price:99},
-  {id:'b99-chem',cat:'b99',name:'ปรับพื้นฐาน เคมี',                 hours:10,price:99},
-  {id:'b99-bio', cat:'b99',name:'ปรับพื้นฐาน ชีววิทยา',             hours:10,price:99},
-  {id:'b99-eng', cat:'b99',name:'ปรับพื้นฐาน ภาษาอังกฤษ ม.ปลาย',  hours:10,price:99},
-  {id:'b99-tp1', cat:'b99',name:'ปรับพื้นฐาน TPAT1 ความถนัดแพทย์', hours:8, price:99},
-  {id:'b99-tp3', cat:'b99',name:'ปรับพื้นฐาน TPAT3 วิทย์-เทคโนโลยี',hours:8,price:99},
-  {id:'b99-3a',  cat:'b99',name:'Special Pack 99B คณิต+ชีวะ+เคมี',  hours:30,price:297},
-  {id:'b99-3b',  cat:'b99',name:'Special Pack 99B ฟิสิกส์+ชีวะ+เคมี',hours:30,price:297},
-  {id:'b99-3c',  cat:'b99',name:'Special Pack 99B ฟิสิกส์+คณิต+ชีวะ',hours:30,price:297},
-  {id:'b99-pmath',cat:'b99',name:'Special Pack ปรับพื้นฐาน คณิต TCAS',hours:10,price:99},
-  {id:'b99-pphy', cat:'b99',name:'Special Pack ปรับพื้นฐาน ฟิสิกส์ TCAS',hours:10,price:99},
-  {id:'b99-pbio', cat:'b99',name:'Special Pack ปรับพื้นฐาน ชีวะ TCAS',hours:10,price:99},
-  {id:'b99-peng', cat:'b99',name:'Special Pack ปรับพื้นฐาน อังกฤษ TCAS',hours:10,price:99},
-  {id:'b99-med',  cat:'b99',name:'Special Pack ปรับพื้นฐาน หมอ 6 วิชา',hours:60,price:594},
-  {id:'b99-eng2', cat:'b99',name:'Special Pack ปรับพื้นฐาน วิศวะ 5 วิชา',hours:50,price:495},
-  // ── Pack TCAS ─────────────────────────────────────────
-  {id:'pk-math',cat:'pack-tcas',name:'Pack TCAS คณิตศาสตร์',         hours:40,price:9500,hot:1},
-  {id:'pk-phy', cat:'pack-tcas',name:'Pack TCAS ฟิสิกส์',             hours:40,price:9500,hot:1},
-  {id:'pk-chem',cat:'pack-tcas',name:'Pack TCAS เคมี',                hours:38,price:9500},
-  {id:'pk-bio', cat:'pack-tcas',name:'Pack TCAS ชีววิทยา',            hours:36,price:9500},
-  {id:'pk-eng', cat:'pack-tcas',name:'Pack TCAS ภาษาอังกฤษ',          hours:32,price:8500},
-  // ── Pack TCAS + Upskill ───────────────────────────────
-  {id:'up-math',cat:'pack-upskill',name:'Pack TCAS + Upskill คณิตศาสตร์',hours:55,price:11900,hot:1},
-  {id:'up-phy', cat:'pack-upskill',name:'Pack TCAS + Upskill ฟิสิกส์',   hours:55,price:11900},
-  {id:'up-chem',cat:'pack-upskill',name:'Pack TCAS + Upskill เคมี',       hours:52,price:11900},
-  {id:'up-bio', cat:'pack-upskill',name:'Pack TCAS + Upskill ชีววิทยา',  hours:50,price:11900},
-  {id:'up-eng', cat:'pack-upskill',name:'Pack TCAS + Upskill ภาษาอังกฤษ',hours:45,price:11000},
-  {id:'up-4',   cat:'pack-upskill',name:'Pack Upskill TCAS 4 วิชา (ฟิสิกส์,เคมี,ชีวะ,คณิต)',hours:200,price:11900,hot:1},
-  // ── A-Level Upskill ───────────────────────────────────
-  {id:'al-math',cat:'alevel',name:'Upskill คณิตศาสตร์ประยุกต์ A-Level',hours:50,price:4000,hot:1},
-  {id:'al-phy', cat:'alevel',name:'Upskill ฟิสิกส์ A-Level',           hours:50,price:4000,hot:1},
-  {id:'al-chem',cat:'alevel',name:'Upskill เคมี A-Level',               hours:48,price:4000},
-  {id:'al-bio', cat:'alevel',name:'Upskill ชีววิทยา A-Level',           hours:50,price:4000},
-  {id:'al-eng', cat:'alevel',name:'A-Level ภาษาอังกฤษ',                 hours:40,price:4000},
-  // ── TGAT ──────────────────────────────────────────────
-  {id:'tgat1',cat:'tgat',name:'TGAT 1 การสื่อสารภาษาอังกฤษ',            hours:25,price:4900,hot:1},
-  {id:'tgat23',cat:'tgat',name:'TGAT 2 & 3 การคิดเชิงเหตุผล+สมรรถนะ',   hours:30,price:1890},
-  {id:'tgat2',cat:'tgat',name:'TGAT 2 การคิดอย่างมีเหตุผล',              hours:20,price:3900},
-  {id:'tgat3',cat:'tgat',name:'TGAT 3 สมรรถนะการทำงาน',                  hours:18,price:3500},
-  // ── TPAT ──────────────────────────────────────────────
-  {id:'tpat1',cat:'tpat',name:'TPAT 1 ความถนัดแพทย์',                    hours:30,price:5500,hot:1},
-  {id:'tpat2',cat:'tpat',name:'TPAT 2 ความถนัดศิลปะ',                    hours:24,price:4200},
-  {id:'tpat3',cat:'tpat',name:'TPAT 3 ความถนัดวิทยาศาสตร์-เทคโนโลยี',   hours:28,price:5200},
-  {id:'tpat4',cat:'tpat',name:'TPAT 4 ความถนัดสถาปัตยกรรม',              hours:26,price:4600},
-  {id:'tpat5',cat:'tpat',name:'TPAT 5 ความถนัดครุศาสตร์-ศึกษาศาสตร์',   hours:22,price:3900},
-  // ── Bundle ────────────────────────────────────────────
-  {id:'bnd-med',cat:'bundle',name:'Pack เข้าแพทย์ 6 วิชา',              hours:60,price:594,hot:1},
-  {id:'bnd-eng',cat:'bundle',name:'Pack วิศวะ 5 วิชา',                   hours:50,price:495},
-  // ── ม.ปลาย เนื้อหา ──────────────────────────────────
-  {id:'sr-phy1',cat:'sr',name:'ฟิสิกส์: บทนำและการวัด',                  hours:6, price:1100},
-  {id:'sr-phy2',cat:'sr',name:'ฟิสิกส์: การเคลื่อนที่แนวตรง',             hours:10,price:1800},
-  {id:'sr-phy3',cat:'sr',name:'ฟิสิกส์: กฎของนิวตัน',                     hours:8, price:1500},
-  {id:'sr-phy4',cat:'sr',name:'ฟิสิกส์: สมดุลกล',                         hours:8, price:1500},
-  {id:'sr-phy5',cat:'sr',name:'ฟิสิกส์: การเคลื่อนที่แบบหมุน',            hours:8, price:1400},
-  {id:'sr-phyp1',cat:'sr',name:'ฟิสิกส์ Pack: กลศาสตร์ 1 (4 บท)',        hours:30,price:4500},
-  {id:'sr-phy6',cat:'sr',name:'ฟิสิกส์: การเคลื่อนที่แบบฮาร์มอนิก',      hours:7, price:1300},
-  {id:'sr-phy7',cat:'sr',name:'ฟิสิกส์: คลื่น',                           hours:10,price:1900},
-  {id:'sr-phy8',cat:'sr',name:'ฟิสิกส์: แสงเชิงรังสีและเชิงคลื่น',        hours:12,price:2500},
-  {id:'sr-phyp2',cat:'sr',name:'ฟิสิกส์ Pack: คลื่น+ฮาร์มอนิก+แสง',     hours:30,price:5500},
-  {id:'sr-chem1',cat:'sr',name:'เคมี: สมดุลเคมี',                          hours:10,price:1900},
-  {id:'sr-bio1', cat:'sr',name:'ชีววิทยา: ธรรมชาติของสิ่งมีชีวิต',        hours:5, price:600},
-  {id:'sr-engp', cat:'sr',name:'อังกฤษ Pack: เสริมทักษะการอ่าน ม.ปลาย',  hours:40,price:7600},
-  // ── ม.ต้น เนื้อหา ───────────────────────────────────
-  {id:'jr-phy1',cat:'jr',name:'ฟิสิกส์ ม.ต้น: กลศาสตร์ 1',              hours:12,price:2200},
-  {id:'jr-phy2',cat:'jr',name:'ฟิสิกส์ ม.ต้น: กลศาสตร์ 2',              hours:9, price:1600},
-  {id:'jr-phy3',cat:'jr',name:'ฟิสิกส์ ม.ต้น: คลื่น',                    hours:9, price:1700},
-  {id:'jr-phy4',cat:'jr',name:'ฟิสิกส์ ม.ต้น: สมบัติสารและอุตุนิยมวิทยา',hours:9,price:1700},
-  {id:'jr-phy5',cat:'jr',name:'ฟิสิกส์ ม.ต้น: ไฟฟ้าและอิเล็กทรอนิกส์',   hours:9, price:1600},
-  {id:'jr-phyp',cat:'jr',name:'ฟิสิกส์ ม.ต้น Pack: กลศาสตร์ 1+2+สมบัติสาร',hours:30,price:4200},
-  {id:'jr-chem1',cat:'jr',name:'เคมี ม.ต้น: พื้นฐานเคมี สารรอบตัว',      hours:7, price:1300},
-  {id:'jr-math1',cat:'jr',name:'คณิต ม.ต้น: จำนวนและตัวเลข',              hours:12,price:2400},
-  {id:'jr-math2',cat:'jr',name:'คณิต ม.ต้น: พาราโบลา',                    hours:10,price:1900},
-  {id:'jr-math3',cat:'jr',name:'คณิต ม.ต้น: ทฤษฎีบทเส้นขนานและวงกลม',   hours:12,price:2200},
-  {id:'jr-eng1', cat:'jr',name:'อังกฤษ ม.ต้น: ปรับพื้นฐาน',               hours:15,price:2899},
-  {id:'jr-eng2', cat:'jr',name:'อังกฤษ ม.ต้น: Grammar 1',                  hours:15,price:2899},
-  {id:'jr-eng3', cat:'jr',name:'อังกฤษ ม.ต้น: Grammar 2',                  hours:15,price:2899},
-  {id:'jr-engp', cat:'jr',name:'อังกฤษ ม.ต้น Pack: Grammar 1+2',           hours:30,price:4999},
-  // ── IELTS / International ─────────────────────────────
+  // ââ 99B à¸à¸£à¸±à¸à¸à¸·à¹à¸à¸à¸²à¸ ââââââââââââââââââââââââââââââââââ
+  {id:'b99-math',cat:'b99',name:'à¸à¸£à¸±à¸à¸à¸·à¹à¸à¸à¸²à¸ à¸à¸à¸´à¸à¸¨à¸²à¸ªà¸à¸£à¹ à¸¡.à¸à¸¥à¸²à¸¢',  hours:10,price:99},
+  {id:'b99-phy', cat:'b99',name:'à¸à¸£à¸±à¸à¸à¸·à¹à¸à¸à¸²à¸ à¸à¸´à¸ªà¸´à¸à¸ªà¹ à¸¡.4',         hours:10,price:99},
+  {id:'b99-chem',cat:'b99',name:'à¸à¸£à¸±à¸à¸à¸·à¹à¸à¸à¸²à¸ à¹à¸à¸¡à¸µ',                 hours:10,price:99},
+  {id:'b99-bio', cat:'b99',name:'à¸à¸£à¸±à¸à¸à¸·à¹à¸à¸à¸²à¸ à¸à¸µà¸§à¸§à¸´à¸à¸¢à¸²',             hours:10,price:99},
+  {id:'b99-eng', cat:'b99',name:'à¸à¸£à¸±à¸à¸à¸·à¹à¸à¸à¸²à¸ à¸ à¸²à¸©à¸²à¸­à¸±à¸à¸à¸¤à¸© à¸¡.à¸à¸¥à¸²à¸¢',  hours:10,price:99},
+  {id:'b99-tp1', cat:'b99',name:'à¸à¸£à¸±à¸à¸à¸·à¹à¸à¸à¸²à¸ TPAT1 à¸à¸§à¸²à¸¡à¸à¸à¸±à¸à¹à¸à¸à¸¢à¹', hours:8, price:99},
+  {id:'b99-tp3', cat:'b99',name:'à¸à¸£à¸±à¸à¸à¸·à¹à¸à¸à¸²à¸ TPAT3 à¸§à¸´à¸à¸¢à¹-à¹à¸à¸à¹à¸à¹à¸¥à¸¢à¸µ',hours:8,price:99},
+  {id:'b99-3a',  cat:'b99',name:'Special Pack 99B à¸à¸à¸´à¸+à¸à¸µà¸§à¸°+à¹à¸à¸¡à¸µ',  hours:30,price:297},
+  {id:'b99-3b',  cat:'b99',name:'Special Pack 99B à¸à¸´à¸ªà¸´à¸à¸ªà¹+à¸à¸µà¸§à¸°+à¹à¸à¸¡à¸µ',hours:30,price:297},
+  {id:'b99-3c',  cat:'b99',name:'Special Pack 99B à¸à¸´à¸ªà¸´à¸à¸ªà¹+à¸à¸à¸´à¸+à¸à¸µà¸§à¸°',hours:30,price:297},
+  {id:'b99-pmath',cat:'b99',name:'Special Pack à¸à¸£à¸±à¸à¸à¸·à¹à¸à¸à¸²à¸ à¸à¸à¸´à¸ TCAS',hours:10,price:99},
+  {id:'b99-pphy', cat:'b99',name:'Special Pack à¸à¸£à¸±à¸à¸à¸·à¹à¸à¸à¸²à¸ à¸à¸´à¸ªà¸´à¸à¸ªà¹ TCAS',hours:10,price:99},
+  {id:'b99-pbio', cat:'b99',name:'Special Pack à¸à¸£à¸±à¸à¸à¸·à¹à¸à¸à¸²à¸ à¸à¸µà¸§à¸° TCAS',hours:10,price:99},
+  {id:'b99-peng', cat:'b99',name:'Special Pack à¸à¸£à¸±à¸à¸à¸·à¹à¸à¸à¸²à¸ à¸­à¸±à¸à¸à¸¤à¸© TCAS',hours:10,price:99},
+  {id:'b99-med',  cat:'b99',name:'Special Pack à¸à¸£à¸±à¸à¸à¸·à¹à¸à¸à¸²à¸ à¸«à¸¡à¸­ 6 à¸§à¸´à¸à¸²',hours:60,price:594},
+  {id:'b99-eng2', cat:'b99',name:'Special Pack à¸à¸£à¸±à¸à¸à¸·à¹à¸à¸à¸²à¸ à¸§à¸´à¸¨à¸§à¸° 5 à¸§à¸´à¸à¸²',hours:50,price:495},
+  // ââ Pack TCAS âââââââââââââââââââââââââââââââââââââââââ
+  {id:'pk-math',cat:'pack-tcas',name:'Pack TCAS à¸à¸à¸´à¸à¸¨à¸²à¸ªà¸à¸£à¹',         hours:40,price:9500,hot:1},
+  {id:'pk-phy', cat:'pack-tcas',name:'Pack TCAS à¸à¸´à¸ªà¸´à¸à¸ªà¹',             hours:40,price:9500,hot:1},
+  {id:'pk-chem',cat:'pack-tcas',name:'Pack TCAS à¹à¸à¸¡à¸µ',                hours:38,price:9500},
+  {id:'pk-bio', cat:'pack-tcas',name:'Pack TCAS à¸à¸µà¸§à¸§à¸´à¸à¸¢à¸²',            hours:36,price:9500},
+  {id:'pk-eng', cat:'pack-tcas',name:'Pack TCAS à¸ à¸²à¸©à¸²à¸­à¸±à¸à¸à¸¤à¸©',          hours:32,price:8500},
+  // ââ Pack TCAS + Upskill âââââââââââââââââââââââââââââââ
+  {id:'up-math',cat:'pack-upskill',name:'Pack TCAS + Upskill à¸à¸à¸´à¸à¸¨à¸²à¸ªà¸à¸£à¹',hours:55,price:11900,hot:1},
+  {id:'up-phy', cat:'pack-upskill',name:'Pack TCAS + Upskill à¸à¸´à¸ªà¸´à¸à¸ªà¹',   hours:55,price:11900},
+  {id:'up-chem',cat:'pack-upskill',name:'Pack TCAS + Upskill à¹à¸à¸¡à¸µ',       hours:52,price:11900},
+  {id:'up-bio', cat:'pack-upskill',name:'Pack TCAS + Upskill à¸à¸µà¸§à¸§à¸´à¸à¸¢à¸²',  hours:50,price:11900},
+  {id:'up-eng', cat:'pack-upskill',name:'Pack TCAS + Upskill à¸ à¸²à¸©à¸²à¸­à¸±à¸à¸à¸¤à¸©',hours:45,price:11000},
+  {id:'up-4',   cat:'pack-upskill',name:'Pack Upskill TCAS 4 à¸§à¸´à¸à¸² (à¸à¸´à¸ªà¸´à¸à¸ªà¹,à¹à¸à¸¡à¸µ,à¸à¸µà¸§à¸°,à¸à¸à¸´à¸)',hours:200,price:11900,hot:1},
+  // ââ A-Level Upskill âââââââââââââââââââââââââââââââââââ
+  {id:'al-math',cat:'alevel',name:'Upskill à¸à¸à¸´à¸à¸¨à¸²à¸ªà¸à¸£à¹à¸à¸£à¸°à¸¢à¸¸à¸à¸à¹ A-Level',hours:50,price:4000,hot:1},
+  {id:'al-phy', cat:'alevel',name:'Upskill à¸à¸´à¸ªà¸´à¸à¸ªà¹ A-Level',           hours:50,price:4000,hot:1},
+  {id:'al-chem',cat:'alevel',name:'Upskill à¹à¸à¸¡à¸µ A-Level',               hours:48,price:4000},
+  {id:'al-bio', cat:'alevel',name:'Upskill à¸à¸µà¸§à¸§à¸´à¸à¸¢à¸² A-Level',           hours:50,price:4000},
+  {id:'al-eng', cat:'alevel',name:'A-Level à¸ à¸²à¸©à¸²à¸­à¸±à¸à¸à¸¤à¸©',                 hours:40,price:4000},
+  // ââ TGAT ââââââââââââââââââââââââââââââââââââââââââââââ
+  {id:'tgat1',cat:'tgat',name:'TGAT 1 à¸à¸²à¸£à¸ªà¸·à¹à¸­à¸ªà¸²à¸£à¸ à¸²à¸©à¸²à¸­à¸±à¸à¸à¸¤à¸©',            hours:25,price:4900,hot:1},
+  {id:'tgat23',cat:'tgat',name:'TGAT 2 & 3 à¸à¸²à¸£à¸à¸´à¸à¹à¸à¸´à¸à¹à¸«à¸à¸¸à¸à¸¥+à¸ªà¸¡à¸£à¸£à¸à¸à¸°',   hours:30,price:1890},
+  {id:'tgat2',cat:'tgat',name:'TGAT 2 à¸à¸²à¸£à¸à¸´à¸à¸­à¸¢à¹à¸²à¸à¸¡à¸µà¹à¸«à¸à¸¸à¸à¸¥',              hours:20,price:3900},
+  {id:'tgat3',cat:'tgat',name:'TGAT 3 à¸ªà¸¡à¸£à¸£à¸à¸à¸°à¸à¸²à¸£à¸à¸³à¸à¸²à¸',                  hours:18,price:3500},
+  // ââ TPAT ââââââââââââââââââââââââââââââââââââââââââââââ
+  {id:'tpat1',cat:'tpat',name:'TPAT 1 à¸à¸§à¸²à¸¡à¸à¸à¸±à¸à¹à¸à¸à¸¢à¹',                    hours:30,price:5500,hot:1},
+  {id:'tpat2',cat:'tpat',name:'TPAT 2 à¸à¸§à¸²à¸¡à¸à¸à¸±à¸à¸¨à¸´à¸¥à¸à¸°',                    hours:24,price:4200},
+  {id:'tpat3',cat:'tpat',name:'TPAT 3 à¸à¸§à¸²à¸¡à¸à¸à¸±à¸à¸§à¸´à¸à¸¢à¸²à¸¨à¸²à¸ªà¸à¸£à¹-à¹à¸à¸à¹à¸à¹à¸¥à¸¢à¸µ',   hours:28,price:5200},
+  {id:'tpat4',cat:'tpat',name:'TPAT 4 à¸à¸§à¸²à¸¡à¸à¸à¸±à¸à¸ªà¸à¸²à¸à¸±à¸à¸¢à¸à¸£à¸£à¸¡',              hours:26,price:4600},
+  {id:'tpat5',cat:'tpat',name:'TPAT 5 à¸à¸§à¸²à¸¡à¸à¸à¸±à¸à¸à¸£à¸¸à¸¨à¸²à¸ªà¸à¸£à¹-à¸¨à¸¶à¸à¸©à¸²à¸¨à¸²à¸ªà¸à¸£à¹',   hours:22,price:3900},
+  // ââ Bundle ââââââââââââââââââââââââââââââââââââââââââââ
+  {id:'bnd-med',cat:'bundle',name:'Pack à¹à¸à¹à¸²à¹à¸à¸à¸¢à¹ 6 à¸§à¸´à¸à¸²',              hours:60,price:594,hot:1},
+  {id:'bnd-eng',cat:'bundle',name:'Pack à¸§à¸´à¸¨à¸§à¸° 5 à¸§à¸´à¸à¸²',                   hours:50,price:495},
+  // ââ à¸¡.à¸à¸¥à¸²à¸¢ à¹à¸à¸·à¹à¸­à¸«à¸² ââââââââââââââââââââââââââââââââââ
+  {id:'sr-phy1',cat:'sr',name:'à¸à¸´à¸ªà¸´à¸à¸ªà¹: à¸à¸à¸à¸³à¹à¸¥à¸°à¸à¸²à¸£à¸§à¸±à¸',                  hours:6, price:1100},
+  {id:'sr-phy2',cat:'sr',name:'à¸à¸´à¸ªà¸´à¸à¸ªà¹: à¸à¸²à¸£à¹à¸à¸¥à¸·à¹à¸­à¸à¸à¸µà¹à¹à¸à¸§à¸à¸£à¸',             hours:10,price:1800},
+  {id:'sr-phy3',cat:'sr',name:'à¸à¸´à¸ªà¸´à¸à¸ªà¹: à¸à¸à¸à¸­à¸à¸à¸´à¸§à¸à¸±à¸',                     hours:8, price:1500},
+  {id:'sr-phy4',cat:'sr',name:'à¸à¸´à¸ªà¸´à¸à¸ªà¹: à¸ªà¸¡à¸à¸¸à¸¥à¸à¸¥',                         hours:8, price:1500},
+  {id:'sr-phy5',cat:'sr',name:'à¸à¸´à¸ªà¸´à¸à¸ªà¹: à¸à¸²à¸£à¹à¸à¸¥à¸·à¹à¸­à¸à¸à¸µà¹à¹à¸à¸à¸«à¸¡à¸¸à¸',            hours:8, price:1400},
+  {id:'sr-phyp1',cat:'sr',name:'à¸à¸´à¸ªà¸´à¸à¸ªà¹ Pack: à¸à¸¥à¸¨à¸²à¸ªà¸à¸£à¹ 1 (4 à¸à¸)',        hours:30,price:4500},
+  {id:'sr-phy6',cat:'sr',name:'à¸à¸´à¸ªà¸´à¸à¸ªà¹: à¸à¸²à¸£à¹à¸à¸¥à¸·à¹à¸­à¸à¸à¸µà¹à¹à¸à¸à¸®à¸²à¸£à¹à¸¡à¸­à¸à¸´à¸',      hours:7, price:1300},
+  {id:'sr-phy7',cat:'sr',name:'à¸à¸´à¸ªà¸´à¸à¸ªà¹: à¸à¸¥à¸·à¹à¸',                           hours:10,price:1900},
+  {id:'sr-phy8',cat:'sr',name:'à¸à¸´à¸ªà¸´à¸à¸ªà¹: à¹à¸ªà¸à¹à¸à¸´à¸à¸£à¸±à¸à¸ªà¸µà¹à¸¥à¸°à¹à¸à¸´à¸à¸à¸¥à¸·à¹à¸',        hours:12,price:2500},
+  {id:'sr-phyp2',cat:'sr',name:'à¸à¸´à¸ªà¸´à¸à¸ªà¹ Pack: à¸à¸¥à¸·à¹à¸+à¸®à¸²à¸£à¹à¸¡à¸­à¸à¸´à¸+à¹à¸ªà¸',     hours:30,price:5500},
+  {id:'sr-chem1',cat:'sr',name:'à¹à¸à¸¡à¸µ: à¸ªà¸¡à¸à¸¸à¸¥à¹à¸à¸¡à¸µ',                          hours:10,price:1900},
+  {id:'sr-bio1', cat:'sr',name:'à¸à¸µà¸§à¸§à¸´à¸à¸¢à¸²: à¸à¸£à¸£à¸¡à¸à¸²à¸à¸´à¸à¸­à¸à¸ªà¸´à¹à¸à¸¡à¸µà¸à¸µà¸§à¸´à¸',        hours:5, price:600},
+  {id:'sr-engp', cat:'sr',name:'à¸­à¸±à¸à¸à¸¤à¸© Pack: à¹à¸ªà¸£à¸´à¸¡à¸à¸±à¸à¸©à¸°à¸à¸²à¸£à¸­à¹à¸²à¸ à¸¡.à¸à¸¥à¸²à¸¢',  hours:40,price:7600},
+  // ââ à¸¡.à¸à¹à¸ à¹à¸à¸·à¹à¸­à¸«à¸² âââââââââââââââââââââââââââââââââââ
+  {id:'jr-phy1',cat:'jr',name:'à¸à¸´à¸ªà¸´à¸à¸ªà¹ à¸¡.à¸à¹à¸: à¸à¸¥à¸¨à¸²à¸ªà¸à¸£à¹ 1',              hours:12,price:2200},
+  {id:'jr-phy2',cat:'jr',name:'à¸à¸´à¸ªà¸´à¸à¸ªà¹ à¸¡.à¸à¹à¸: à¸à¸¥à¸¨à¸²à¸ªà¸à¸£à¹ 2',              hours:9, price:1600},
+  {id:'jr-phy3',cat:'jr',name:'à¸à¸´à¸ªà¸´à¸à¸ªà¹ à¸¡.à¸à¹à¸: à¸à¸¥à¸·à¹à¸',                    hours:9, price:1700},
+  {id:'jr-phy4',cat:'jr',name:'à¸à¸´à¸ªà¸´à¸à¸ªà¹ à¸¡.à¸à¹à¸: à¸ªà¸¡à¸à¸±à¸à¸´à¸ªà¸²à¸£à¹à¸¥à¸°à¸­à¸¸à¸à¸¸à¸à¸´à¸¢à¸¡à¸§à¸´à¸à¸¢à¸²',hours:9,price:1700},
+  {id:'jr-phy5',cat:'jr',name:'à¸à¸´à¸ªà¸´à¸à¸ªà¹ à¸¡.à¸à¹à¸: à¹à¸à¸à¹à¸²à¹à¸¥à¸°à¸­à¸´à¹à¸¥à¹à¸à¸à¸£à¸­à¸à¸´à¸à¸ªà¹',   hours:9, price:1600},
+  {id:'jr-phyp',cat:'jr',name:'à¸à¸´à¸ªà¸´à¸à¸ªà¹ à¸¡.à¸à¹à¸ Pack: à¸à¸¥à¸¨à¸²à¸ªà¸à¸£à¹ 1+2+à¸ªà¸¡à¸à¸±à¸à¸´à¸ªà¸²à¸£',hours:30,price:4200},
+  {id:'jr-chem1',cat:'jr',name:'à¹à¸à¸¡à¸µ à¸¡.à¸à¹à¸: à¸à¸·à¹à¸à¸à¸²à¸à¹à¸à¸¡à¸µ à¸ªà¸²à¸£à¸£à¸­à¸à¸à¸±à¸§',      hours:7, price:1300},
+  {id:'jr-math1',cat:'jr',name:'à¸à¸à¸´à¸ à¸¡.à¸à¹à¸: à¸à¸³à¸à¸§à¸à¹à¸¥à¸°à¸à¸±à¸§à¹à¸¥à¸',              hours:12,price:2400},
+  {id:'jr-math2',cat:'jr',name:'à¸à¸à¸´à¸ à¸¡.à¸à¹à¸: à¸à¸²à¸£à¸²à¹à¸à¸¥à¸²',                    hours:10,price:1900},
+  {id:'jr-math3',cat:'jr',name:'à¸à¸à¸´à¸ à¸¡.à¸à¹à¸: à¸à¸¤à¸©à¸à¸µà¸à¸à¹à¸ªà¹à¸à¸à¸à¸²à¸à¹à¸¥à¸°à¸§à¸à¸à¸¥à¸¡',   hours:12,price:2200},
+  {id:'jr-eng1', cat:'jr',name:'à¸­à¸±à¸à¸à¸¤à¸© à¸¡.à¸à¹à¸: à¸à¸£à¸±à¸à¸à¸·à¹à¸à¸à¸²à¸',               hours:15,price:2899},
+  {id:'jr-eng2', cat:'jr',name:'à¸­à¸±à¸à¸à¸¤à¸© à¸¡.à¸à¹à¸: Grammar 1',                  hours:15,price:2899},
+  {id:'jr-eng3', cat:'jr',name:'à¸­à¸±à¸à¸à¸¤à¸© à¸¡.à¸à¹à¸: Grammar 2',                  hours:15,price:2899},
+  {id:'jr-engp', cat:'jr',name:'à¸­à¸±à¸à¸à¸¤à¸© à¸¡.à¸à¹à¸ Pack: Grammar 1+2',           hours:30,price:4999},
+  // ââ IELTS / International âââââââââââââââââââââââââââââ
   {id:'ielts',cat:'ielts',name:'IELTS Prep Course',                        hours:45,price:7500,hot:1},
   {id:'sat',  cat:'ielts',name:'SAT Math + English',                        hours:50,price:8500},
 ];
@@ -771,15 +771,15 @@ var COURSES = [
 function getColor(c){
   var id=c.id, nm=c.name, cat=c.cat;
   // Category-level color first
-  if(cat==='sr') return '#546E7A';      // ม.ปลาย = blue-grey
-  if(cat==='jr') return '#00695C';      // ม.ต้น = teal
+  if(cat==='sr') return '#546E7A';      // à¸¡.à¸à¸¥à¸²à¸¢ = blue-grey
+  if(cat==='jr') return '#00695C';      // à¸¡.à¸à¹à¸ = teal
   if(cat==='alevel') return '#1B5E20';  // A-Level = dark green
   if(cat==='ielts') return '#4527A0';   // IELTS/SAT = deep purple
   // Subject colors
-  if(id.indexOf('math')>=0||nm.indexOf('คณิต')>=0) return '#C62828';
-  if(id.indexOf('phy')>=0||nm.indexOf('ฟิสิกส์')>=0) return '#1565C0';
-  if(id.indexOf('chem')>=0||nm.indexOf('เคมี')>=0) return '#E65100';
-  if(id.indexOf('bio')>=0||nm.indexOf('ชีว')>=0) return '#2E7D32';
+  if(id.indexOf('math')>=0||nm.indexOf('à¸à¸à¸´à¸')>=0) return '#C62828';
+  if(id.indexOf('phy')>=0||nm.indexOf('à¸à¸´à¸ªà¸´à¸à¸ªà¹')>=0) return '#1565C0';
+  if(id.indexOf('chem')>=0||nm.indexOf('à¹à¸à¸¡à¸µ')>=0) return '#E65100';
+  if(id.indexOf('bio')>=0||nm.indexOf('à¸à¸µà¸§')>=0) return '#2E7D32';
   if(id.indexOf('eng')>=0||id.indexOf('ielts')>=0||id.indexOf('sat')>=0) return '#6A1B9A';
   if(id.indexOf('tgat')>=0) return '#00838F';
   if(id.indexOf('tpat1')>=0||id.indexOf('tp1')>=0||id.indexOf('med')>=0) return '#880E4F';
@@ -791,64 +791,64 @@ function getColor(c){
   return '#455A64';
 }
 
-// ── PERSONA PREFILL DATA (per level) ─────────────────────────────
+// ââ PERSONA PREFILL DATA (per level) âââââââââââââââââââââââââââââ
 // Structure: PERSONA_PLANS_BY_LEVEL[persona][level][rowIndex][monthIndex]
-// rowIndex: 0=ม.4 row, 1=ม.5 row, 2=ม.6 row
-// monthIndex: 2=มี.ค.(ซัมเมอร์), 4=พ.ค.(เทอม1), 9=ต.ค.(เทอม2)
+// rowIndex: 0=à¸¡.4 row, 1=à¸¡.5 row, 2=à¸¡.6 row
+// monthIndex: 2=à¸¡à¸µ.à¸.(à¸à¸±à¸¡à¹à¸¡à¸­à¸£à¹), 4=à¸.à¸.(à¹à¸à¸­à¸¡1), 9=à¸.à¸.(à¹à¸à¸­à¸¡2)
 var PERSONA_PLANS_BY_LEVEL = {
-  'แพทย์': {
-    'ม.4': { // 3 ปี — ค่อยๆ สะสม
+  'à¹à¸à¸à¸¢à¹': {
+    'à¸¡.4': { // 3 à¸à¸µ â à¸à¹à¸­à¸¢à¹ à¸ªà¸°à¸ªà¸¡
       0: { 4:['b99-med'],                       9:['pk-math','pk-phy'],          2:['pk-chem']            },
       1: { 4:['pk-bio','pk-eng'],               9:['tgat1','tgat23'],             2:['tpat1']              },
       2: { 4:['al-bio','al-chem','al-phy'],      9:['al-math','al-eng'],           2:[]                     }
     },
-    'ม.5': { // 2 ปี — เร่ง Pack ตั้งแต่ต้น
+    'à¸¡.5': { // 2 à¸à¸µ â à¹à¸£à¹à¸ Pack à¸à¸±à¹à¸à¹à¸à¹à¸à¹à¸
       1: { 4:['b99-med','pk-math','pk-phy'],     9:['pk-chem','pk-bio','pk-eng'],  2:['tgat1','tgat23']     },
       2: { 4:['al-bio','al-chem','al-phy'],      9:['al-math','al-eng'],           2:['tpat1']              }
     },
-    'ม.6': { // 1 ปี — เร่งด่วนทุกวิชา
+    'à¸¡.6': { // 1 à¸à¸µ â à¹à¸£à¹à¸à¸à¹à¸§à¸à¸à¸¸à¸à¸§à¸´à¸à¸²
       2: { 4:['pk-bio','pk-chem','tgat1','tgat23'], 9:['pk-math','pk-phy','al-bio','al-chem'], 2:['al-phy','al-math','al-eng','tpat1'] }
     }
   },
-  'วิศวะ': {
-    'ม.4': { // 3 ปี
+  'à¸§à¸´à¸¨à¸§à¸°': {
+    'à¸¡.4': { // 3 à¸à¸µ
       0: { 4:['b99-eng2'],                      9:['pk-math','pk-phy'],           2:['pk-chem']            },
       1: { 4:['pk-eng','tgat1'],                9:['tgat23','tpat3'],              2:['al-math']            },
       2: { 4:['al-phy','al-chem'],              9:['al-math','al-eng'],            2:[]                     }
     },
-    'ม.5': { // 2 ปี
+    'à¸¡.5': { // 2 à¸à¸µ
       1: { 4:['pk-math','pk-phy','pk-eng'],      9:['pk-chem','tgat1','tgat23'],   2:['al-math','tpat3']    },
       2: { 4:['al-phy','al-chem'],               9:['al-math','al-eng'],            2:[]                    }
     },
-    'ม.6': { // 1 ปี
+    'à¸¡.6': { // 1 à¸à¸µ
       2: { 4:['pk-math','pk-phy','tgat1','tgat23'], 9:['pk-chem','pk-eng','al-math','al-phy'], 2:['al-chem','al-eng','tpat3'] }
     }
   },
   'Business': {
-    'ม.4': { // 3 ปี
+    'à¸¡.4': { // 3 à¸à¸µ
       0: { 4:['b99-math','b99-eng'],             9:['pk-math','pk-eng'],           2:[]                     },
       1: { 4:['tgat1'],                          9:['tgat23'],                     2:['al-math']            },
       2: { 4:['al-eng'],                         9:['al-math'],                    2:[]                     }
     },
-    'ม.5': { // 2 ปี
+    'à¸¡.5': { // 2 à¸à¸µ
       1: { 4:['pk-math','pk-eng','tgat1'],        9:['tgat23'],                    2:['al-math']            },
       2: { 4:['al-eng'],                          9:['al-math'],                   2:[]                     }
     },
-    'ม.6': { // 1 ปี
+    'à¸¡.6': { // 1 à¸à¸µ
       2: { 4:['pk-math','pk-eng','tgat1','tgat23'], 9:['al-math','al-eng'],        2:[]                     }
     }
   },
-  'นิติศาสตร์': {
-    'ม.4': { // 3 ปี
+  'à¸à¸´à¸à¸´à¸¨à¸²à¸ªà¸à¸£à¹': {
+    'à¸¡.4': { // 3 à¸à¸µ
       0: { 4:['b99-eng','b99-math'],             9:['pk-eng'],                    2:['pk-math']             },
       1: { 4:['pk-math','tgat1'],                9:['tgat23'],                    2:['al-eng']              },
       2: { 4:['al-eng'],                         9:['al-math'],                   2:[]                      }
     },
-    'ม.5': { // 2 ปี
+    'à¸¡.5': { // 2 à¸à¸µ
       1: { 4:['pk-eng','pk-math','tgat1'],        9:['tgat23'],                   2:['al-eng']              },
       2: { 4:['al-eng'],                          9:['al-math'],                  2:[]                      }
     },
-    'ม.6': { // 1 ปี
+    'à¸¡.6': { // 1 à¸à¸µ
       2: { 4:['pk-eng','pk-math','tgat1','tgat23'], 9:['al-eng','al-math'],       2:[]                      }
     }
   }
@@ -858,7 +858,7 @@ function applyPersonaPrefill(){
   var persona = document.getElementById('stPersona') ? document.getElementById('stPersona').value : '';
   if(!persona) return;
   var lv = document.getElementById('stLevel').value;
-  var startRow = lv === 'ม.6' ? 2 : (lv === 'ม.5' ? 1 : 0);
+  var startRow = lv === 'à¸¡.6' ? 2 : (lv === 'à¸¡.5' ? 1 : 0);
   var personaPlans = PERSONA_PLANS_BY_LEVEL[persona];
   if(!personaPlans) return;
   var plan = personaPlans[lv];
@@ -896,13 +896,13 @@ var modalTemp = []; // temp selected IDs
 
 function getYears(){
   var lv = document.getElementById('stLevel').value;
-  var n = parseInt(lv.replace('ม.',''));
+  var n = parseInt(lv.replace('à¸¡.',''));
   var base = new Date().getFullYear() + 543 - (n - 4);
   return [base, base+1, base+2];
 }
 function getStartRow(){
   var lv = document.getElementById('stLevel').value;
-  return lv === 'ม.6' ? 2 : (lv === 'ม.5' ? 1 : 0);
+  return lv === 'à¸¡.6' ? 2 : (lv === 'à¸¡.5' ? 1 : 0);
 }
 
 function init(){ renderCal(); calcStats(); loadGurus(); }
@@ -910,19 +910,19 @@ function init(){ renderCal(); calcStats(); loadGurus(); }
 function toggleGuru(){
   guruMode = !guruMode;
   var btn = document.getElementById('guruBtn');
-  btn.textContent = guruMode ? '🔓 Guru (ON)' : '🔒 Guru View';
+  btn.textContent = guruMode ? 'ð Guru (ON)' : 'ð Guru View';
   btn.classList.toggle('active', guruMode);
   updateAll();
 }
 
-// ─── MODAL ───────────────────────────────────────────
+// âââ MODAL âââââââââââââââââââââââââââââââââââââââââââ
 function openModal(li, mi){
   modalLi = li; modalMi = mi;
   modalTemp = cal[li][mi].slice(); // copy current selections
   var lv = LEVELS[li];
   var mn = MONTHS[mi];
-  document.getElementById('modalTitle').textContent = 'เลือกคอร์ส — ' + lv + ' เดือน ' + mn;
-  document.getElementById('modalSub').textContent = 'คลิกเพื่อเลือก/ยกเลิก | กดยืนยันเพื่อบันทึก';
+  document.getElementById('modalTitle').textContent = 'à¹à¸¥à¸·à¸­à¸à¸à¸­à¸£à¹à¸ª â ' + lv + ' à¹à¸à¸·à¸­à¸ ' + mn;
+  document.getElementById('modalSub').textContent = 'à¸à¸¥à¸´à¸à¹à¸à¸·à¹à¸­à¹à¸¥à¸·à¸­à¸/à¸¢à¸à¹à¸¥à¸´à¸ | à¸à¸à¸¢à¸·à¸à¸¢à¸±à¸à¹à¸à¸·à¹à¸­à¸à¸±à¸à¸à¸¶à¸';
   modalCat = 'all';
   document.querySelectorAll('.mtab').forEach(function(t){ t.classList.remove('active'); });
   document.querySelector('.mtab').classList.add('active');
@@ -959,10 +959,10 @@ function renderModalList(){
     div.dataset.id = c.id;
     var pBlur = guruMode ? '' : ' blur';
     div.innerHTML = '<div class="mcdot" style="background:' + clr + '"></div>' +
-      '<span class="mcname">' + c.name + (c.hot ? ' 🔥' : '') + '</span>' +
-      '<span class="mchrs">' + c.hours + 'ชม.</span>' +
-      '<span class="mcprice' + pBlur + '">฿' + c.price.toLocaleString() + '</span>' +
-      '<div class="mcchk' + (isSel ? ' on' : '') + '">' + (isSel ? '✓' : '') + '</div>';
+      '<span class="mcname">' + c.name + (c.hot ? ' ð¥' : '') + '</span>' +
+      '<span class="mchrs">' + c.hours + 'à¸à¸¡.</span>' +
+      '<span class="mcprice' + pBlur + '">à¸¿' + c.price.toLocaleString() + '</span>' +
+      '<div class="mcchk' + (isSel ? ' on' : '') + '">' + (isSel ? 'â' : '') + '</div>';
     div.addEventListener('click', function(){
       var id = this.dataset.id;
       var idx = modalTemp.indexOf(id);
@@ -980,7 +980,7 @@ document.getElementById('modalOverlay').addEventListener('click', function(e){
   if(e.target === this) closeModal();
 });
 
-// ─── CALENDAR ────────────────────────────────────────
+// âââ CALENDAR ââââââââââââââââââââââââââââââââââââââââ
 function removeFromCell(li, mi, id, e){
   e.stopPropagation();
   var arr = cal[li][mi];
@@ -993,7 +993,7 @@ function renderCal(){
   var years = getYears();
   var startRow = getStartRow();
   document.getElementById('calHead').innerHTML =
-    '<tr><th style="width:68px;">ชั้น/ปี</th>' +
+    '<tr><th style="width:68px;">à¸à¸±à¹à¸/à¸à¸µ</th>' +
     MONTHS.map(function(m){ return '<th style="min-width:72px;">' + m + '</th>'; }).join('') + '</tr>';
 
   var body = document.getElementById('calBody');
@@ -1002,7 +1002,7 @@ function renderCal(){
     var tr = document.createElement('tr');
     var yrtd = document.createElement('td');
     yrtd.className = 'yrtd';
-    yrtd.innerHTML = '<div class="yr-main">' + LEVELS[li] + '</div><div class="yr-be">ปี ' + years[li] + '</div>';
+    yrtd.innerHTML = '<div class="yr-main">' + LEVELS[li] + '</div><div class="yr-be">à¸à¸µ ' + years[li] + '</div>';
     tr.appendChild(yrtd);
     for(var mi=0; mi<12; mi++){
       (function(li, mi){
@@ -1014,9 +1014,9 @@ function renderCal(){
           if(!c) return;
           inner += '<div class="chip"><div class="chipdot" style="background:' + getColor(c) + '"></div>' +
             '<span class="chipname">' + c.name + '</span>' +
-            '<span class="chipx" data-li="'+li+'" data-mi="'+mi+'" data-cid="'+cid+'">✕</span></div>';
+            '<span class="chipx" data-li="'+li+'" data-mi="'+mi+'" data-cid="'+cid+'">â</span></div>';
         });
-        inner += '<div class="cell-add"><span>+ เพิ่ม</span></div>';
+        inner += '<div class="cell-add"><span>+ à¹à¸à¸´à¹à¸¡</span></div>';
         td.innerHTML = inner;
         td.querySelectorAll('.chipx').forEach(function(x){
           x.addEventListener('click', function(e){
@@ -1050,14 +1050,14 @@ function calcStats(){
   var months = Object.keys(monthsSet).length;
   var pFilter = guruMode ? '' : 'filter:blur(6px);';
   document.getElementById('statsRow').innerHTML =
-    '<div class="scard"><div class="snum">'+ids.length+'</div><div class="slbl">จำนวนคอร์ส</div></div>' +
-    '<div class="scard"><div class="snum">'+totalHrs+'</div><div class="slbl">ชั่วโมงทั้งหมด</div></div>' +
-    '<div class="scard"><div class="snum">'+months+'</div><div class="slbl">เดือนที่มีคอร์ส</div></div>' +
-    '<div class="scard"><div class="snum" style="'+pFilter+'">฿'+totalPrice.toLocaleString()+'</div><div class="slbl">มูลค่ารวม</div></div>';
+    '<div class="scard"><div class="snum">'+ids.length+'</div><div class="slbl">à¸à¸³à¸à¸§à¸à¸à¸­à¸£à¹à¸ª</div></div>' +
+    '<div class="scard"><div class="snum">'+totalHrs+'</div><div class="slbl">à¸à¸±à¹à¸§à¹à¸¡à¸à¸à¸±à¹à¸à¸«à¸¡à¸</div></div>' +
+    '<div class="scard"><div class="snum">'+months+'</div><div class="slbl">à¹à¸à¸·à¸­à¸à¸à¸µà¹à¸¡à¸µà¸à¸­à¸£à¹à¸ª</div></div>' +
+    '<div class="scard"><div class="snum" style="'+pFilter+'">à¸¿'+totalPrice.toLocaleString()+'</div><div class="slbl">à¸¡à¸¹à¸¥à¸à¹à¸²à¸£à¸§à¸¡</div></div>';
 }
 
 function updateAll(){ calcStats(); }
-function gv(id){ return document.getElementById(id).value || '—'; }
+function gv(id){ return document.getElementById(id).value || 'â'; }
 
 function populatePrintView(){
   document.getElementById('pN').textContent = gv('stName');
@@ -1066,26 +1066,26 @@ function populatePrintView(){
   document.getElementById('pSCH').textContent = gv('stSch');
   document.getElementById('pCODE').textContent = gv('stCode');
   var gpa = document.getElementById('stGpa').value;
-  document.getElementById('pGPA').textContent = gpa ? 'GPA ' + gpa : '—';
-  var rm = {'1':'รอบ 1 — Portfolio','2':'รอบ 2 — Quota','3':'รอบ 3 — Admission','4':'รอบ 4 — Direct'};
+  document.getElementById('pGPA').textContent = gpa ? 'GPA ' + gpa : 'â';
+  var rm = {'1':'à¸£à¸­à¸ 1 â Portfolio','2':'à¸£à¸­à¸ 2 â Quota','3':'à¸£à¸­à¸ 3 â Admission','4':'à¸£à¸­à¸ 4 â Direct'};
   document.getElementById('pROUND').textContent = 'TCAS ' + rm[document.getElementById('stRound').value];
   var branch = document.getElementById('stBranch').value;
   var guru = document.getElementById('stGuru').value;
   var uni = document.getElementById('stUni').value;
   var fac = document.getElementById('stFac').value;
-  var lines = ['สาขา: ' + branch.split(' — ')[0]];
+  var lines = ['à¸ªà¸²à¸à¸²: ' + branch.split(' â ')[0]];
   if(guru) lines.push('Guru: ' + guru);
-  lines.push('GPA: ' + (gpa || '—'));
-  if(uni) lines.push('เป้า: ' + uni);
+  lines.push('GPA: ' + (gpa || 'â'));
+  if(uni) lines.push('à¹à¸à¹à¸²: ' + uni);
   if(fac) lines.push(fac);
   document.getElementById('pINFO').innerHTML = lines.join('<br>');
-  document.getElementById('pFOOTER').textContent = 'Guru: '+(guru||'—')+' | สาขา '+branch.split(' — ')[0]+' | รหัส: '+(document.getElementById('stCode').value||'—');
-  document.getElementById('pvQrLabel').innerHTML = 'แอด LINE<br><strong style="color:#fff;">สาขา '+branch+'</strong><br>รับโปร + แผนฟรี';
+  document.getElementById('pFOOTER').textContent = 'Guru: '+(guru||'â')+' | à¸ªà¸²à¸à¸² '+branch.split(' â ')[0]+' | à¸£à¸«à¸±à¸ª: '+(document.getElementById('stCode').value||'â');
+  document.getElementById('pvQrLabel').innerHTML = 'à¹à¸­à¸ LINE<br><strong style="color:#fff;">à¸ªà¸²à¸à¸² '+branch+'</strong><br>à¸£à¸±à¸à¹à¸à¸£ + à¹à¸à¸à¸à¸£à¸µ';
   _lastQrCode = ''; renderBranchQR();
 
   var years = getYears();
   document.getElementById('pvCalHead').innerHTML =
-    '<tr><th class="pvcyr">ชั้น/ปี</th>' +
+    '<tr><th class="pvcyr">à¸à¸±à¹à¸/à¸à¸µ</th>' +
     MONTHS.map(function(m){ return '<th>'+m+'</th>'; }).join('') + '</tr>';
 
   var body = document.getElementById('pvCalBody');
@@ -1095,7 +1095,7 @@ function populatePrintView(){
     var tr = document.createElement('tr');
     var yrtd = document.createElement('td');
     yrtd.className = 'pvyrtd';
-    yrtd.innerHTML = '<div class="pvyr-main">'+LEVELS[li]+'</div><div class="pvyr-be">ปี '+years[li]+'</div>';
+    yrtd.innerHTML = '<div class="pvyr-main">'+LEVELS[li]+'</div><div class="pvyr-be">à¸à¸µ '+years[li]+'</div>';
     tr.appendChild(yrtd);
     for(var mi=0; mi<12; mi++){
       var td = document.createElement('td');
@@ -1106,11 +1106,11 @@ function populatePrintView(){
           var c = COURSES.find(function(x){ return x.id===cid; });
           if(!c) return;
           var clr = getColor(c);
-          var priceStr = guruMode ? '฿'+c.price.toLocaleString() : '';
+          var priceStr = guruMode ? 'à¸¿'+c.price.toLocaleString() : '';
           html2 += '<div class="pvcard" style="background:'+clr+';">'+
             '<span class="pvcard-start">&#9654; START</span>'+
             '<div class="pvcard-name">'+c.name+'</div>'+
-            '<div class="pvcard-hrs">&#9202; '+c.hours+' ชม.</div>'+
+            '<div class="pvcard-hrs">&#9202; '+c.hours+' à¸à¸¡.</div>'+
             (priceStr ? '<div class="pvcard-price">'+priceStr+'</div>' : '')+
             '</div>';
         });
@@ -1127,7 +1127,7 @@ function populatePrintView(){
   var pids = Object.keys(placed);
   var legEl = document.getElementById('pvLegend');
   if(pids.length === 0){
-    legEl.innerHTML = '<div style="font-size:9px;color:#94A3B8;font-style:italic;">ยังไม่มีคอร์สในแผน</div>';
+    legEl.innerHTML = '<div style="font-size:9px;color:#94A3B8;font-style:italic;">à¸¢à¸±à¸à¹à¸¡à¹à¸¡à¸µà¸à¸­à¸£à¹à¸ªà¹à¸à¹à¸à¸</div>';
   } else {
     legEl.innerHTML = pids.map(function(id){
       var c = COURSES.find(function(x){ return x.id===id; });
@@ -1136,24 +1136,24 @@ function populatePrintView(){
     }).join('');
   }
 
-  var scoreFields=[['scTgat','TGAT'],['scMath','คณิตศาสตร์'],['scPhy','ฟิสิกส์'],['scChem','เคมี'],['scBio','ชีววิทยา'],['scEng','ภาษาอังกฤษ']];
+  var scoreFields=[['scTgat','TGAT'],['scMath','à¸à¸à¸´à¸à¸¨à¸²à¸ªà¸à¸£à¹'],['scPhy','à¸à¸´à¸ªà¸´à¸à¸ªà¹'],['scChem','à¹à¸à¸¡à¸µ'],['scBio','à¸à¸µà¸§à¸§à¸´à¸à¸¢à¸²'],['scEng','à¸ à¸²à¸©à¸²à¸­à¸±à¸à¸à¸¤à¸©']];
   var scHtml='', uni2=document.getElementById('stUni').value, fac2=document.getElementById('stFac').value;
-  if(uni2||fac2) scHtml+='<div class="pvsc-row"><span class="pvsc-lbl">เป้าหมาย</span><span class="pvsc-val">'+(uni2||'')+(fac2?' / '+fac2:'')+'</span></div>';
+  if(uni2||fac2) scHtml+='<div class="pvsc-row"><span class="pvsc-lbl">à¹à¸à¹à¸²à¸«à¸¡à¸²à¸¢</span><span class="pvsc-val">'+(uni2||'')+(fac2?' / '+fac2:'')+'</span></div>';
   scoreFields.forEach(function(sf){
     var v=document.getElementById(sf[0]).value;
     if(v) scHtml+='<div class="pvsc-row"><span class="pvsc-lbl">+ '+sf[1]+'</span><span class="pvsc-val">'+v+'%</span></div>';
   });
-  if(!scHtml) scHtml='<div style="font-size:8px;color:#94A3B8;font-style:italic;">กรอกข้อมูลด้านซ้ายเพื่อแสดง</div>';
+  if(!scHtml) scHtml='<div style="font-size:8px;color:#94A3B8;font-style:italic;">à¸à¸£à¸­à¸à¸à¹à¸­à¸¡à¸¹à¸¥à¸à¹à¸²à¸à¸à¹à¸²à¸¢à¹à¸à¸·à¹à¸­à¹à¸ªà¸à¸</div>';
   document.getElementById('pvScores').innerHTML = scHtml;
 
   var totalHrs2=0, totalPrice2=0, monthsSet2={};
   pids.forEach(function(id){ var c=COURSES.find(function(x){return x.id===id;}); if(c){totalHrs2+=c.hours;totalPrice2+=c.price;} });
   for(var li3=0;li3<3;li3++) for(var mi3=0;mi3<12;mi3++) if(cal[li3][mi3].length>0) monthsSet2[li3+'_'+mi3]=1;
   document.getElementById('pvStats').innerHTML=
-    '<div class="pvstat-box"><div class="pvstat-num">'+Object.keys(monthsSet2).length+'</div><div class="pvstat-lbl">เดือนที่มีคอร์ส</div></div>'+
-    '<div class="pvstat-box"><div class="pvstat-num">'+(guruMode?'฿'+totalPrice2.toLocaleString():'—')+'</div><div class="pvstat-lbl">มูลค่ารวม</div></div>'+
-    '<div class="pvstat-box"><div class="pvstat-num">'+totalHrs2+'</div><div class="pvstat-lbl">ชม.รวม</div></div>'+
-    '<div class="pvstat-box"><div class="pvstat-num">'+pids.length+'</div><div class="pvstat-lbl">คอร์สทั้งหมด</div></div>';
+    '<div class="pvstat-box"><div class="pvstat-num">'+Object.keys(monthsSet2).length+'</div><div class="pvstat-lbl">à¹à¸à¸·à¸­à¸à¸à¸µà¹à¸¡à¸µà¸à¸­à¸£à¹à¸ª</div></div>'+
+    '<div class="pvstat-box"><div class="pvstat-num">'+(guruMode?'à¸¿'+totalPrice2.toLocaleString():'â')+'</div><div class="pvstat-lbl">à¸¡à¸¹à¸¥à¸à¹à¸²à¸£à¸§à¸¡</div></div>'+
+    '<div class="pvstat-box"><div class="pvstat-num">'+totalHrs2+'</div><div class="pvstat-lbl">à¸à¸¡.à¸£à¸§à¸¡</div></div>'+
+    '<div class="pvstat-box"><div class="pvstat-num">'+pids.length+'</div><div class="pvstat-lbl">à¸à¸­à¸£à¹à¸ªà¸à¸±à¹à¸à¸«à¸¡à¸</div></div>';
 }
 
 function togglePreview(){
@@ -1163,11 +1163,11 @@ function togglePreview(){
   if(prevOpen){
     populatePrintView();
     pv.style.cssText = 'display:block;position:fixed;inset:0;z-index:9999;overflow-y:auto;';
-    btn.textContent = '✕ ปิด Preview';
+    btn.textContent = 'â à¸à¸´à¸ Preview';
     btn.classList.add('red');
   } else {
     pv.style.cssText = 'display:none;';
-    btn.textContent = '👁 Preview';
+    btn.textContent = 'ð Preview';
     btn.classList.remove('red');
   }
 }
@@ -1245,7 +1245,7 @@ window.addEventListener('load', init);
 <div id="loadingOverlay">
   <div class="loading-box">
     <div class="loading-spinner"></div>
-    <div class="loading-msg" id="loadingMsg">กำลังบันทึก...</div>
+    <div class="loading-msg" id="loadingMsg">à¸à¸³à¸¥à¸±à¸à¸à¸±à¸à¸à¸¶à¸...</div>
   </div>
 </div>
 <!-- TOAST -->
