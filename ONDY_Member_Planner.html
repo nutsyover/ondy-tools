@@ -262,7 +262,7 @@ header{background:var(--navy);padding:12px 20px;display:flex;align-items:center;
       <div class="mf-info"><button class="mf-cancel" onclick="closeEmailModal()">ยกเลิก</button></div>
       <div class="mf-btns">
         <button class="mf-cancel" onclick="printPlan();closeEmailModal();" style="background:#059669;color:#fff;border:none;padding:8px 16px;border-radius:7px;cursor:pointer;font-weight:600;">🖨 ดาวน์โหลด PDF</button>
-        <button class="mf-cancel" onclick="sendViaMailto()" style="background:#1B2A4A;color:#fff;border:none;padding:8px 16px;border-radius:7px;cursor:pointer;font-weight:600;">📧 เปิด Email Client</button>
+        <button class="mf-cancel" onclick="sendViaMailto()" style="background:#1B2A4A;color:#fff;border:none;padding:8px 16px;border-radius:7px;cursor:pointer;font-weight:600;">📧 ส่ง Email</button>
       </div>
     </div>
   </div>
@@ -620,6 +620,7 @@ function savePlanToSheet(){
     setLoading(true, 'กำลังบันทึกแผนลง Google Sheets...');
     fetch(APPS_SCRIPT_URL, {
       method: 'POST',
+      headers: {'Content-Type': 'text/plain;charset=utf-8'},
       body: JSON.stringify(Object.assign({ action: 'save' }, payload))
     })
     .then(function(r){ return r.json(); })
@@ -719,6 +720,38 @@ function sendViaMailto(){
   var bcc = document.getElementById('emailBcc').value.trim();
   var subject = document.getElementById('emailSubject').value.trim();
   var body = document.getElementById('emailBody').value;
+  var branch = (document.getElementById('stBranch')||{}).value || '';
+
+  // ─── ส่งผ่าน Apps Script (ส่ง Email จริง) ─────────────────────
+  if(APPS_SCRIPT_URL.indexOf('PLACEHOLDER') < 0){
+    closeEmailModal();
+    setLoading(true, 'กำลังส่งอีเมล...');
+    fetch(APPS_SCRIPT_URL, {
+      method: 'POST',
+      headers: {'Content-Type': 'text/plain;charset=utf-8'},
+      body: JSON.stringify({
+        action: 'sendEmail',
+        to: to, cc: cc, bcc: bcc,
+        subject: subject, body: body,
+        from: from,
+        fromName: 'ONDY สาขา' + branch,
+        replyTo: from
+      })
+    })
+    .then(function(r){ return r.json(); })
+    .then(function(data){
+      setLoading(false);
+      if(data.ok){ showToast('✅ ส่งอีเมลสำเร็จ! → ' + to, 'success', 6000); }
+      else { showToast('❌ ส่งอีเมลไม่สำเร็จ: ' + (data.error||'เกิดข้อผิดพลาด'), 'error'); }
+    })
+    .catch(function(err){
+      setLoading(false);
+      showToast('❌ เชื่อมต่อไม่ได้: ' + err.message, 'error');
+    });
+    return;
+  }
+
+  // ─── Fallback: mailto: ─────────────────────────────────────────
   var uri = 'mailto:' + encodeURIComponent(to) + '?';
   if(cc) uri += 'cc=' + encodeURIComponent(cc) + '&';
   if(bcc) uri += 'bcc=' + encodeURIComponent(bcc) + '&';
