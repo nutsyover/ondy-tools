@@ -1165,4 +1165,29 @@ function populatePrintView(){
     var yrtd = document.createElement('td');
     yrtd.className = 'pvyrtd';
     yrtd.innerHTML = '<div class="pvyr-main">'+getCurrentLevels()[li]+'</div><div class="pvyr-be">ปี '+years[li]+'</div>';
-    tr.a
+    tr.appendChild(yrtd);
+    for(var mi=0; mi<12; mi++){
+      var pvtd = document.createElement('td');
+      var pvCourses = getActiveCal()[li][mi];
+      if(pvCourses.length){
+        pvtd.innerHTML = pvCourses.map(function(cid){
+          var c = COURSES.find(function(x){ return x.id===cid; });
+          if(!c) return '';
+          return '<div class="pvcard" style="background:'+getColor(c)+';">' +
+            '<span class="pvcard-start">เริ่ม</span>' +
+            '<div class="pvcard-name">'+c.name+'</div>' +
+            (c.hours ? '<div class="pvcard-hrs">'+c.hours+' ชม.</div>' : '') +
+            '<div class="pvcard-price">฿'+c.price.toLocaleString()+'</div>' +
+            '</div>';
+        }).join('');
+      }
+      tr.appendChild(pvtd);
+    }
+    body.appendChild(tr);
+  }
+}
+
+window.addEventListener('DOMContentLoaded', init);
+</script>
+</body>
+</html>
