@@ -203,9 +203,10 @@ header{background:var(--navy);padding:12px 20px;display:flex;align-items:center;
       <div class="mclist" id="mclist"></div>
       <div style="margin-top:12px;padding:10px;background:#F0FDF4;border:1.5px solid #86EFAC;border-radius:8px;">
         <div style="font-size:11px;font-weight:700;color:#166534;margin-bottom:8px;">✏️ เพิ่มคอร์สเอง (Freetext)</div>
-        <div style="display:grid;grid-template-columns:1fr 110px auto;gap:6px;align-items:center;">
+        <div style="display:grid;grid-template-columns:1fr 90px 80px auto;gap:6px;align-items:center;">
           <input class="finput" id="customCourseName" type="text" placeholder="ชื่อคอร์ส (พิมพ์เอง)" style="font-size:11px;padding:5px 8px;">
           <input class="finput" id="customCoursePrice" type="number" placeholder="ราคา ฿" min="0" style="font-size:11px;padding:5px 8px;">
+          <input class="finput" id="customCourseHours" type="number" placeholder="ชม." min="0" style="font-size:11px;padding:5px 8px;">
           <button onclick="addCustomCourse()" style="background:#166534;color:#fff;border:none;padding:6px 12px;border-radius:6px;font-size:11px;cursor:pointer;white-space:nowrap;">+ เพิ่ม</button>
         </div>
       </div>
@@ -1034,12 +1035,14 @@ function renderModalList(){
 function addCustomCourse(){
   var nm = (document.getElementById('customCourseName')||{}).value.trim();
   var pr = parseInt((document.getElementById('customCoursePrice')||{}).value)||0;
+  var hr = parseInt((document.getElementById('customCourseHours')||{}).value)||0;
   if(!nm){ showToast('กรุณากรอกชื่อคอร์ส','error'); return; }
   var id = 'custom-' + Date.now();
-  COURSES.push({id:id, cat:'custom', name:nm, hours:0, price:pr});
+  COURSES.push({id:id, cat:'custom', name:nm, hours:hr, price:pr});
   modalTemp.push(id);
   document.getElementById('customCourseName').value = '';
   document.getElementById('customCoursePrice').value = '';
+  document.getElementById('customCourseHours').value = '';
   renderModalList();
   showToast('✅ เพิ่ม "' + nm + '" แล้ว','success',2000);
 }
