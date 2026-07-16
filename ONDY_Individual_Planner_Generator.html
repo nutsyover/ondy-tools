@@ -114,7 +114,13 @@ table.plan-table td.subj-cell .sub-tech{font-size:10px;font-weight:400;color:var
 .rec-item .rec-act{font-size:12px;font-weight:600;color:var(--navy);line-height:1.5;}
 @media print{body{background:#fff;}#formPage{display:none!important;}#plannerPage{display:block!important;padding:0;max-width:100%;}.no-print{display:none!important;}.grid-wrap{overflow:visible;}.pcell,.plan-table th,.plan-table td{-webkit-print-color-adjust:exact;print-color-adjust:exact;}}
 @media(max-width:700px){.fgrid,.track-grid,.subject-grid,.score-grid,.stats-row{grid-template-columns:1fr 1fr;}.rec-grid{grid-template-columns:1fr;}}
+.btn-save{background:#1B5E20;color:#fff;}
+.btn-save:hover{background:#145214;transform:translateY(-1px);box-shadow:0 4px 12px rgba(27,94,32,.35);}
+.btn-email{background:#0D47A1;color:#fff;}
+.btn-email:hover{background:#083378;transform:translateY(-1px);box-shadow:0 4px 12px rgba(13,71,161,.35);}
+.btn-save:disabled,.btn-email:disabled{opacity:.65;cursor:not-allowed;transform:none;}
 </style>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
 </head>
 <body>
 <header>
@@ -274,7 +280,9 @@ table.plan-table td.subj-cell .sub-tech{font-size:10px;font-weight:400;color:var
       <div class="plan-header-title">&#128203; ONDY Individual Study Planner</div>
       <div class="plan-header-sub">&#xe41;&#xe1c;&#xe19;&#xe01;&#xe32;&#xe23;&#xe40;&#xe23;&#xe35;&#xe22;&#xe19;&#xe23;&#xe32;&#xe22;&#xe1a;&#xe38;&#xe04;&#xe04;&#xe25; &#x2014; &#xe2a;&#xe23;&#xe49;&#xe32;&#xe07;&#xe42;&#xe14;&#xe22; ONDY System</div>
     </div>
-    <div style="display:flex;gap:10px" class="no-print">
+    <div style="display:flex;gap:10px;flex-wrap:wrap" class="no-print">
+      <button class="btn btn-save" style="font-size:12px" id="btnSave" onclick="saveToSheet(this)">&#128190; &#xe1a;&#xe31;&#xe19;&#xe17;&#xe36;&#xe01;&#xe02;&#xe49;&#xe2d;&#xe21;&#xe39;&#xe25;</button>
+      <button class="btn btn-email" style="font-size:12px" id="btnEmail" onclick="sendEmailWithPDF(this)">&#128231; &#xe2a;&#xe48;&#xe07; Email + PDF</button>
       <button class="btn btn-outline" style="border-color:rgba(255,255,255,.5);color:#fff;font-size:12px" onclick="window.print()">&#128438; Print / &#xe1a;&#xe31;&#xe19;&#xe17;&#xe36;&#xe01; PDF</button>
       <button class="btn btn-outline" style="border-color:rgba(255,255,255,.5);color:#fff;font-size:12px" onclick="backForm()">&#9999; &#xe41;&#xe01;&#xe49;&#xe44;&#xe02;&#xe02;&#xe49;&#xe2d;&#xe21;&#xe39;&#xe25;</button>
     </div>
@@ -295,6 +303,8 @@ table.plan-table td.subj-cell .sub-tech{font-size:10px;font-weight:400;color:var
 </div>
 
 <script>
+const APPS_SCRIPT_URL='https://script.google.com/macros/s/AKfycbzZuBmuMlXpNhx0bQoJa1xy-2wMs0KYmjhQi1e7tJI96zpQSvmD3TLBZKutDYyVG-mxQg/exec';
+let planData=null;
 const TRACKS={medical:{name:'\u0e2a\u0e32\u0e22\u0e41\u0e1e\u0e17\u0e22\u0e4c',subjs:['PHY','CHEM','BIO','MATH1','ENG','TGAT','TPAT1']},engineering:{name:'\u0e2a\u0e32\u0e22\u0e27\u0e34\u0e28\u0e27\u0e30/IT',subjs:['PHY','CHEM','MATH1','ENG','TGAT','TPAT3']},business:{name:'\u0e2a\u0e32\u0e22\u0e1a\u0e23\u0e34\u0e2b\u0e32\u0e23',subjs:['MATH1','MATH2','ENG','SOC','TGAT']},science:{name:'\u0e27\u0e34\u0e17\u0e22\u0e4c\u0e17\u0e31\u0e48\u0e27\u0e44\u0e1b',subjs:['PHY','CHEM','BIO','MATH1','ENG','TGAT']},arts:{name:'\u0e2a\u0e32\u0e22\u0e28\u0e34\u0e25\u0e1b\u0e4c',subjs:['ENG','THAI','SOC','MATH2','TGAT']},custom:{name:'Custom',subjs:[]}};
 const SUBJ={PHY:{n:'\u0e1f\u0e34\u0e2a\u0e34\u0e01\u0e2a\u0e4c',e:'\u26a1',col:'#2471A3',tech:'SUPER MAP',codes:['SM-PHY-1','SM-PHY-2','SM-PHY-3']},CHEM:{n:'\u0e40\u0e04\u0e21\u0e35',e:'\U0001f9ea',col:'#8E44AD',tech:'K-TIPS',codes:['KT-CHEM-1','KT-CHEM-2','KT-CHEM-3']},BIO:{n:'\u0e0a\u0e35\u0e27\u0e27\u0e34\u0e17\u0e22\u0e32',e:'\U0001f9ec',col:'#1E8449',tech:'BIO MAP',codes:['BM-BIO-1','BM-BIO-2','BM-BIO-3']},MATH1:{n:'\u0e04\u0e13\u0e34\u0e15\u0e28\u0e32\u0e2a\u0e15\u0e23\u0e4c 1',e:'\U0001f4d0',col:'#C0392B',tech:'A-Point',codes:['AP-M1-1','AP-M1-2','AP-M1-3']},MATH2:{n:'\u0e04\u0e13\u0e34\u0e15\u0e28\u0e32\u0e2a\u0e15\u0e23\u0e4c 2',e:'\U0001f4cf',col:'#D35400',tech:'A-Point',codes:['AP-M2-1','AP-M2-2']},ENG:{n:'\u0e20\u0e32\u0e29\u0e32\u0e2d\u0e31\u0e07\u0e01\u0e24\u0e29',e:'\U0001f524',col:'#148F77',tech:'Premier Tips',codes:['PT-ENG-1','PT-ENG-2','PT-ENG-3']},THAI:{n:'\u0e20\u0e32\u0e29\u0e32\u0e44\u0e17\u0e22',e:'\U0001f4dc',col:'#935116',tech:'',codes:['THAI-1','THAI-2']},SOC:{n:'\u0e2a\u0e31\u0e07\u0e04\u0e21\u0e28\u0e36\u0e01\u0e29\u0e32',e:'\U0001f30f',col:'#717D7E',tech:'',codes:['SOC-1','SOC-2']},TGAT:{n:'TGAT',e:'\U0001f9e0',col:'#1B2A4A',tech:'',codes:['TGAT-1','TGAT-2','TGAT-3']},TPAT1:{n:'TPAT1 (\u0e41\u0e1e\u0e17\u0e22\u0e4c)',e:'\U0001f3e5',col:'#7D0039',tech:'',codes:['TPAT1-1','TPAT1-2']},TPAT3:{n:'TPAT3 (\u0e27\u0e34\u0e28\u0e27\u0e30)',e:'\u2699\ufe0f',col:'#117A65',tech:'',codes:['TPAT3-1','TPAT3-2']}};
 const TH_MONTHS=['\u0e21.\u0e04.','\u0e01.\u0e1e.','\u0e21\u0e35.\u0e04.','\u0e40\u0e21.\u0e22.','\u0e1e.\u0e04.','\u0e21\u0e34.\u0e22.','\u0e01.\u0e04.','\u0e2a.\u0e04.','\u0e01.\u0e22.','\u0e15.\u0e04.','\u0e1e.\u0e22.','\u0e18.\u0e04.'];
@@ -343,11 +353,118 @@ function genPlanner(){
   recs.push({when:'\U0001f3c6 \u0e40\u0e1b;\u0e49\u0e32\u0e2b\u0e21\u0e32\u0e22',act:facDisplay||trackName?`${facDisplay||trackName} \u2014 OnDemand \u0e08\u0e30\u0e2d\u0e22\u0e39;\u0e48\u0e40\u0e04\u0e35\u0e22\u0e07\u0e02;\u0e49\u0e32\u0e07\u0e19;\u0e49\u0e2d\u0e07\u0e15\u0e25\u0e2d\u0e14\u0e40\u0e2a;\u0e49\u0e19\u0e17\u0e32\u0e07 \U0001f4aa`:'OnDemand \u0e1e\u0e23;\u0e49\u0e2d\u0e21\u0e14\u0e39\u0e41\u0e25\u0e19;\u0e49\u0e2d\u0e07\u0e17\u0e38\u0e01\u0e01;\u0e49\u0e32\u0e27 \U0001f4aa'});
   document.getElementById('recsBox').innerHTML=`<div class="recs-title">\U0001f4a1 \u0e04\u0e33\u0e41\u0e19\u0e30\u0e19\u0e33\u0e2a\u0e48\u0e27\u0e19\u0e15\u0e31\u0e27\u0e2a\u0e33\u0e2b\u0e23\u0e31\u0e1a ${name||'\u0e19;\u0e49\u0e2d\u0e07'} (${trackName})</div><div class="rec-grid">${recs.map(r=>`<div class="rec-item"><div class="rec-when">${r.when}</div><div class="rec-act">${r.act}</div></div>`).join('')}</div>`;
   document.getElementById('planGenDate').textContent='Generated: '+new Date().toLocaleDateString('th-TH',{year:'numeric',month:'long',day:'numeric'});
+  // Capture plan data for save/email
+  const monthSheetData=new Array(12).fill('');
+  months.forEach(function(m){
+    const calMo=m.mo;
+    const cc=selSubjs.map(function(code){
+      const ph=getPhase(code,m.i,exams);
+      const c=courseCode(code,ph);
+      return(ph!=='done'&&ph!=='exam'&&c&&c!=='✅')?c:'';
+    }).filter(Boolean).join(', ');
+    if(cc)monthSheetData[calMo]=monthSheetData[calMo]?monthSheetData[calMo]+'\n'+cc:cc;
+  });
+  const nameParts=(name||'').trim().split(/\s+/);
+  planData={
+    branch:brnch,guru:sale,enrollDate:enrollD,planValue:planValNum,
+    firstName:nameParts[0]||name,lastName:nameParts.slice(1).join(' ')||'',
+    school:school,gradeRaw:grade,gradeLabel:gL,
+    phone:document.getElementById('sPhone').value,
+    email:document.getElementById('sEmail').value,
+    faculty:facDisplay,
+    track:trackName,
+    planMonthsLabel:nMo+' เดือน',
+    monthSheetData:monthSheetData,
+    totalHours:totalH,
+    nMonths:nMo
+  };
   document.getElementById('formPage').style.display='none';
   document.getElementById('plannerPage').style.display='block';
   window.scrollTo(0,0);
 }
 function backForm(){document.getElementById('formPage').style.display='block';document.getElementById('plannerPage').style.display='none';}
+
+function saveToSheet(btn){
+  if(!planData){alert('กรุณาสร้างแผนก่อนบันทึก');return;}
+  btn.disabled=true;
+  btn.textContent='⏳ กำลังบันทึก...';
+  const months12=planData.monthSheetData.map(function(c){return{courses:c,value:''};});
+  const payload={
+    action:'savePlannerForm',
+    branch:planData.branch,
+    guru:planData.guru,
+    enrollDate:planData.enrollDate,
+    status:'นักเรียน',
+    firstName:planData.firstName,
+    lastName:planData.lastName,
+    school:planData.school,
+    grade:planData.gradeLabel,
+    email:planData.email,
+    phone:planData.phone,
+    faculty:planData.faculty,
+    planMonths:planData.planMonthsLabel,
+    months:months12,
+    totalValue:planData.planValue,
+    totalHours:planData.totalHours,
+    source:''
+  };
+  fetch(APPS_SCRIPT_URL,{method:'POST',body:JSON.stringify(payload)})
+    .then(function(r){return r.json();})
+    .then(function(d){
+      if(d.ok){btn.textContent='✅ บันทึกแล้ว!';setTimeout(function(){btn.disabled=false;btn.textContent='💾 บันทึกข้อมูล';},3000);}
+      else{throw new Error(d.error||'เกิดข้อผิดพลาด');}
+    })
+    .catch(function(err){alert('❌ '+err.message);btn.disabled=false;btn.textContent='💾 บันทึกข้อมูล';});
+}
+
+function sendEmailWithPDF(btn){
+  if(!planData){alert('กรุณาสร้างแผนก่อนส่ง Email');return;}
+  const toEmail=(planData.email||'').trim();
+  if(!toEmail){alert('กรุณากรอก Email นักเรียนในขั้นตอนที่ 1 ก่อนส่ง');return;}
+  btn.disabled=true;
+  btn.textContent='⏳ กำลังสร้าง PDF...';
+  const element=document.getElementById('plannerPage');
+  const opt={
+    margin:[10,8],
+    filename:'ONDY_Plan_'+planData.firstName+'.pdf',
+    image:{type:'jpeg',quality:0.95},
+    html2canvas:{scale:1.5,useCORS:true,logging:false},
+    jsPDF:{unit:'mm',format:'a3',orientation:'landscape'}
+  };
+  html2pdf().set(opt).from(element).outputPdf('datauristring')
+    .then(function(dataUri){
+      const b64=dataUri.split(',')[1];
+      btn.textContent='⏳ กำลังส่ง Email...';
+      const body='เรียน '+planData.firstName+(planData.lastName?' '+planData.lastName:'')+'\n\n'
+        +'แนบแผนการเรียน ONDY ส่วนตัวของน้องมาในอีเมลนี้ค่ะ\n\n'
+        +'รายละเอียด:\n'
+        +'- สาขา: '+planData.branch+'\n'
+        +'- Sale/Guru: '+planData.guru+'\n'
+        +'- ระดับชั้น: '+planData.gradeLabel+'\n'
+        +'- สาย: '+planData.track+'\n'
+        +(planData.planValue?'- มูลค่าแผน: ฿'+planData.planValue.toLocaleString()+'\n':'')
+        +'\nหากมีข้อสงสัย ติดต่อ Sale ของน้องได้เลยค่ะ 😊\n\nOnDemand Education';
+      return fetch(APPS_SCRIPT_URL,{
+        method:'POST',
+        body:JSON.stringify({
+          action:'sendEmailWithAttachment',
+          to:toEmail,
+          bcc:'nutdanai.som@ondemand.in.th',
+          subject:'แผนการเรียน ONDY Member — '+planData.firstName+(planData.lastName?' '+planData.lastName:''),
+          body:body,
+          filename:'ONDY_Plan_'+planData.firstName+'.pdf',
+          pdfBase64:b64
+        })
+      });
+    })
+    .then(function(r){return r.json();})
+    .then(function(d){
+      if(d.ok){btn.textContent='✅ ส่งแล้ว!';setTimeout(function(){btn.disabled=false;btn.textContent='📧 ส่ง Email + PDF';},4000);}
+      else{throw new Error(d.error||'เกิดข้อผิดพลาด');}
+    })
+    .catch(function(err){alert('❌ '+err.message);btn.disabled=false;btn.textContent='📧 ส่ง Email + PDF';});
+}
+
 document.addEventListener('DOMContentLoaded',()=>{document.getElementById('sDate').value=new Date().toISOString().split('T')[0];});
 </script>
 </body>
