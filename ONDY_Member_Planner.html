@@ -1223,6 +1223,27 @@ function populatePrintView(){
   }
 }
 
+function togglePreview(){
+  var pv = document.getElementById('pv');
+  var btn = document.getElementById('prevBtn');
+  if(pv.style.display === 'block'){
+    pv.style.display = 'none';
+    if(btn) btn.textContent = '👁 Preview';
+  } else {
+    populatePrintView();
+    pv.style.display = 'block';
+    if(btn) btn.textContent = '✖ ปิด Preview';
+    pv.scrollIntoView({behavior:'smooth'});
+  }
+}
+
+function printPlan(){
+  populatePrintView();
+  var pv = document.getElementById('pv');
+  pv.style.display = 'block';
+  setTimeout(function(){ window.print(); }, 200);
+}
+
 window.addEventListener('DOMContentLoaded', init);
 </script>
 </body>
