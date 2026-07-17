@@ -1290,6 +1290,14 @@ function renderBranchQR(){
   box.innerHTML = '';
   try {
     new QRCode(box,{text:url,width:120,height:120,correctLevel:QRCode.CorrectLevel.L});
+    // canvas ไม่ print — แปลงเป็น <img> data URL ทันทีหลัง render
+    setTimeout(function(){
+      var canvas = box.querySelector('canvas');
+      if(canvas){
+        var dataUrl = canvas.toDataURL('image/png');
+        box.innerHTML = '<img src="'+dataUrl+'" width="120" height="120" style="display:block;" />';
+      }
+    }, 150);
   } catch(e){
     box.innerHTML = '<div style="font-size:8px;color:#555;text-align:center;padding:15px;">QR LINE<br>'+branch+'</div>';
   }
@@ -1299,7 +1307,7 @@ function printPlan(){
   populatePrintView();
   var pv = document.getElementById('pv');
   pv.style.display = 'block';
-  setTimeout(function(){ window.print(); }, 800);
+  setTimeout(function(){ window.print(); }, 1200);
 }
 
 window.addEventListener('DOMContentLoaded', init);
