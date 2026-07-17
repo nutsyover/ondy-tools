@@ -338,6 +338,7 @@ header{background:var(--navy);padding:12px 20px;display:flex;align-items:center;
     <button class="hbtn" id="prevBtn" onclick="togglePreview()">&#128065; Preview</button>
     <button class="hbtn" onclick="printPlan()">&#128424; Print / PDF</button>
     <button class="hbtn save" onclick="savePlanToSheet()">&#128190; บันทึกแผน</button>
+    <button class="hbtn" style="background:#1a7a3a;color:#fff;border-color:#1a7a3a;" onclick="window.open('https://docs.google.com/spreadsheets/d/1Se0f3cXbhKmIXc3jm0fqIk9exXEMwiL-DaKCwjl5ZCs/edit?gid=1898985820#gid=1898985820','_blank')">&#128202; ดูข้อมูล Sheet</button>
     <button class="hbtn" style="background:#1a7a3a;color:#fff;" onclick="downloadSavedCSV()">&#128229; ดาวน์โหลด CSV</button>
     <button class="hbtn email-btn" onclick="sendEmailPDF()">&#128140; ส่ง Email+PDF</button>
   </div>
@@ -1237,11 +1238,68 @@ function togglePreview(){
   }
 }
 
+// ─── BRANCH LINE QR ──────────────────────────────────────────────
+var _lastQrCode = '';
+var BRANCH_LINE_URL = {
+  'MBK':'https://line.me/R/ti/p/@ondemand.mbk',
+  'PKL':'https://line.me/R/ti/p/@ondemand.pkl',
+  'SNR':'https://line.me/R/ti/p/@ondemand.snr',
+  'WST':'https://line.me/R/ti/p/@ondemand.wst',
+  'NGW':'https://line.me/R/ti/p/@ondemand.ngw',
+  'VVY':'https://line.me/R/ti/p/@ondemand.vvy',
+  'NPT':'https://line.me/R/ti/p/@ondemand.npt',
+  'PKS':'https://line.me/R/ti/p/@ondemand.pks',
+  'RST':'https://line.me/R/ti/p/@ondemand.rst',
+  'HYD':'https://line.me/R/ti/p/@ondemand.hyd',
+  'SNI':'https://line.me/R/ti/p/@ondemand.sni',
+  'NRT':'https://line.me/R/ti/p/@ondemand.nrt',
+  'TRG':'https://line.me/R/ti/p/@ondemand.trg',
+  'CPN':'https://line.me/R/ti/p/@ondemand.cpn',
+  'PKT':'https://line.me/R/ti/p/@ondemand.pkt',
+  'RBR':'https://line.me/R/ti/p/@ondemand.rbr',
+  'SPB':'https://line.me/R/ti/p/@ondemand.spb',
+  'PBI':'https://line.me/R/ti/p/@ondemand.pbi',
+  'NSN':'https://line.me/R/ti/p/@ondemand.nsn',
+  'LRI':'https://line.me/R/ti/p/@ondemand.lri',
+  'SRI':'https://line.me/R/ti/p/@ondemand.sri',
+  'AYA':'https://line.me/R/ti/p/@ondemand.aya',
+  'CMI':'https://line.me/R/ti/p/@ondemand.cmi',
+  'CRI':'https://line.me/R/ti/p/@ondemand.cri',
+  'LPG':'https://line.me/R/ti/p/@ondemand.lpg',
+  'PLK':'https://line.me/R/ti/p/@ondemand.plk',
+  'UBN':'https://line.me/R/ti/p/@ondemand.ubn',
+  'NMA':'https://line.me/R/ti/p/@ondemand.nma',
+  'BRM':'https://line.me/R/ti/p/@ondemand.brm',
+  'UDN':'https://line.me/R/ti/p/@ondemand.udn',
+  'KKN':'https://line.me/R/ti/p/@ondemand.kkn',
+  'RET':'https://line.me/R/ti/p/@ondemand.ret',
+  'CBI':'https://line.me/R/ti/p/@ondemand.cbi',
+  'RYG':'https://line.me/R/ti/p/@ondemand.ryg',
+  'COO':'https://line.me/R/ti/p/@ondemand.coo',
+  'Online':'https://line.me/R/ti/p/@ondemandth'
+};
+
+function renderBranchQR(){
+  var branch = (document.getElementById('stBranch').value||'').split(' — ')[0].trim();
+  var code = branch.replace(/\s.*/,'').toUpperCase();
+  var url = BRANCH_LINE_URL[code] || BRANCH_LINE_URL[branch] || 'https://line.me/R/ti/p/@ondemandth';
+  var box = document.getElementById('pvQrBox');
+  if(!box) return;
+  if(url === _lastQrCode && box.innerHTML) return;
+  _lastQrCode = url;
+  box.innerHTML = '';
+  try {
+    new QRCode(box,{text:url,width:120,height:120,correctLevel:QRCode.CorrectLevel.L});
+  } catch(e){
+    box.innerHTML = '<div style="font-size:8px;color:#555;text-align:center;padding:15px;">QR LINE<br>'+branch+'</div>';
+  }
+}
+
 function printPlan(){
   populatePrintView();
   var pv = document.getElementById('pv');
   pv.style.display = 'block';
-  setTimeout(function(){ window.print(); }, 200);
+  setTimeout(function(){ window.print(); }, 800);
 }
 
 window.addEventListener('DOMContentLoaded', init);
