@@ -616,27 +616,18 @@ function savePlanToSheet(){
   var hasCourse = payload.months.some(function(m){ return m.courses.trim(); });
   if(!hasCourse){ showToast('ต้องมีอย่างน้อย 1 คอร์สในแผน','error'); return; }
 
-  // ถ้ามี Apps Script URL จริง — ส่งออนไลน์
+  // ถ้ามี Apps Script URL จริง — ส่งผ่าน iframe (bypass CORS/302)
   if(APPS_SCRIPT_URL.indexOf('PLACEHOLDER') < 0){
     setLoading(true, 'กำลังบันทึกแผนลง Google Sheets...');
-    fetch(APPS_SCRIPT_URL, {
-      method: 'POST',
-      headers: {'Content-Type': 'text/plain;charset=utf-8'},
-      body: JSON.stringify(Object.assign({ action: 'save' }, payload))
-    })
-    .then(function(r){ return r.json(); })
-    .then(function(data){
+    // timeout fallback 20s กรณี Apps Script ไม่ตอบกลับ
+    window._saveTimeoutRef = setTimeout(function(){
       setLoading(false);
-      if(data.ok){
-        showToast('✅ บันทึกสำเร็จ! ID: ' + data.onDyId, 'success', 5000);
-      } else {
-        showToast('❌ ' + (data.error||'เกิดข้อผิดพลาด'), 'error');
-      }
-    })
-    .catch(function(err){
-      setLoading(false);
-      showToast('❌ ไม่สามารถเชื่อมต่อ: ' + err.message, 'error');
-    });
+      showToast('⚠️ ไม่ได้รับการตอบกลับจากเซิร์ฟเวอร์ กรุณาลองใหม่', 'error');
+    }, 20000);
+    // inject JSON payload into hidden form field แล้ว submit ผ่าน iframe
+    document.getElementById('formPayload').value = JSON.stringify(Object.assign({ action: 'save' }, payload));
+    document.getElementById('appsScriptForm').action = APPS_SCRIPT_URL;
+    document.getElementById('appsScriptForm').submit();
     return;
   }
 
@@ -1312,7 +1303,27 @@ function printPlan(){
   setTimeout(function(){ window.print(); }, 1200);
 }
 
+// ─── รับผลลัพธ์จาก Apps Script ผ่าน postMessage ────────────────
+window.addEventListener('message', function(ev){
+  var data;
+  try { data = typeof ev.data === 'string' ? JSON.parse(ev.data) : ev.data; } catch(e){ return; }
+  if(!data || data.__source !== 'ondyApps') return;
+  clearTimeout(window._saveTimeoutRef);
+  setLoading(false);
+  if(data.ok){
+    showToast('✅ บันทึกสำเร็จ! ID: ' + (data.onDyId||''), 'success', 6000);
+  } else {
+    showToast('❌ ' + (data.error||'เกิดข้อผิดพลาด'), 'error');
+  }
+});
+
 window.addEventListener('DOMContentLoaded', init);
 </script>
+
+<!-- Hidden iframe + form สำหรับ Apps Script POST (bypass CORS) -->
+<iframe id="appsScriptFrame" name="appsScriptFrame" style="display:none" title="save"></iframe>
+<form id="appsScriptForm" method="POST" target="appsScriptFrame" style="display:none">
+  <input type="hidden" name="payload" id="formPayload">
+</form>
 </body>
 </html>
