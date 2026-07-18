@@ -1320,6 +1320,17 @@ window.addEventListener('message', function(ev){
 window.addEventListener('DOMContentLoaded', init);
 </script>
 
+<!-- Loading Overlay -->
+<div id="loadingOverlay">
+  <div class="loading-box">
+    <div style="font-size:28px;margin-bottom:10px">⏳</div>
+    <div id="loadingMsg">กำลังโหลด...</div>
+  </div>
+</div>
+
+<!-- Toast Notification -->
+<div id="toast"></div>
+
 <!-- Hidden iframe + form สำหรับ Apps Script POST (bypass CORS) -->
 <iframe id="appsScriptFrame" name="appsScriptFrame" style="display:none" title="save"></iframe>
 <form id="appsScriptForm" method="POST" target="appsScriptFrame" style="display:none">
