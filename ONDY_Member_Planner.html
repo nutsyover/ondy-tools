@@ -616,18 +616,23 @@ function savePlanToSheet(){
   var hasCourse = payload.months.some(function(m){ return m.courses.trim(); });
   if(!hasCourse){ showToast('ต้องมีอย่างน้อย 1 คอร์สในแผน','error'); return; }
 
-  // ถ้ามี Apps Script URL จริง — ส่งผ่าน iframe (bypass CORS/302)
+  // ถ้ามี Apps Script URL จริง — ส่งด้วย no-cors fetch (ไม่มี CORS preflight)
   if(APPS_SCRIPT_URL.indexOf('PLACEHOLDER') < 0){
     setLoading(true, 'กำลังบันทึกแผนลง Google Sheets...');
-    // timeout fallback 20s กรณี Apps Script ไม่ตอบกลับ
-    window._saveTimeoutRef = setTimeout(function(){
+    fetch(APPS_SCRIPT_URL, {
+      method: 'POST',
+      mode: 'no-cors',
+      headers: { 'Content-Type': 'text/plain' },
+      body: JSON.stringify(Object.assign({ action: 'save' }, payload))
+    })
+    .then(function(){
       setLoading(false);
-      showToast('⚠️ ไม่ได้รับการตอบกลับจากเซิร์ฟเวอร์ กรุณาลองใหม่', 'error');
-    }, 20000);
-    // inject JSON payload into hidden form field แล้ว submit ผ่าน iframe
-    document.getElementById('formPayload').value = JSON.stringify(Object.assign({ action: 'save' }, payload));
-    document.getElementById('appsScriptForm').action = APPS_SCRIPT_URL;
-    document.getElementById('appsScriptForm').submit();
+      showToast('✅ บันทึกแผนสำเร็จ! ตรวจสอบข้อมูลใน Google Sheets ได้เลย', 'success', 6000);
+    })
+    .catch(function(err){
+      setLoading(false);
+      showToast('❌ เกิดข้อผิดพลาด กรุณาลองใหม่', 'error');
+    });
     return;
   }
 
