@@ -65,11 +65,21 @@ header{background:var(--navy);padding:12px 20px;display:flex;align-items:center;
 .modal-head-sub{color:#90B8D8;font-size:10px;margin-top:2px;}
 .modal-close{background:rgba(255,255,255,.15);border:none;color:#fff;width:26px;height:26px;border-radius:50%;cursor:pointer;font-size:16px;display:flex;align-items:center;justify-content:center;}
 .modal-body{padding:12px 14px;overflow-y:auto;flex:1;}
+.msearch{display:flex;align-items:center;gap:7px;margin-bottom:8px;}
+.msearch-box{position:relative;flex:1;}
+.msearch-icon{position:absolute;left:10px;top:50%;transform:translateY(-50%);font-size:13px;pointer-events:none;}
+.msearch-input{width:100%;padding:9px 34px 9px 32px;border:1.5px solid var(--gray2);border-radius:8px;font-size:12px;color:var(--dark);background:#fff;}
+.msearch-input:focus{outline:none;border-color:var(--navy);box-shadow:0 0 0 3px rgba(27,42,74,.08);}
+.msearch-clear{border:1.5px solid var(--gray2);background:#fff;color:var(--gray4);border-radius:8px;padding:8px 10px;font-size:11px;cursor:pointer;}
+.msearch-clear:hover{border-color:var(--navy);color:var(--navy);}
+.msearch-meta{display:flex;align-items:center;justify-content:space-between;margin:0 1px 8px;font-size:10px;color:var(--gray3);}
+.mcustom-grid{display:grid;grid-template-columns:1fr 90px 80px auto;gap:6px;align-items:center;}
 .mtabs{display:flex;gap:5px;flex-wrap:wrap;margin-bottom:10px;}
 .mtab{padding:4px 9px;border-radius:20px;font-size:11px;font-weight:600;border:1.5px solid var(--gray2);background:var(--white);cursor:pointer;color:var(--gray4);transition:all .13s;}
 .mtab:hover{border-color:var(--navy);color:var(--navy);}
 .mtab.active{background:var(--navy);color:#fff;border-color:var(--navy);}
 .mclist{display:flex;flex-direction:column;gap:5px;}
+.mnoresults{display:none;padding:18px 12px;text-align:center;border:1.5px dashed var(--gray2);border-radius:8px;background:var(--gray0);color:var(--gray4);font-size:11px;line-height:1.5;}
 .mcitem{display:flex;align-items:center;gap:8px;padding:8px 10px;border-radius:8px;border:2px solid var(--gray2);cursor:pointer;background:var(--white);transition:all .13s;}
 .mcitem:hover{border-color:var(--navy);}
 .mcitem.sel{border-color:var(--orange);background:#FFF4EE;}
@@ -163,6 +173,12 @@ header{background:var(--navy);padding:12px 20px;display:flex;align-items:center;
 /* ── GURU SELECT ── */
 #guruFreeRow{display:none;margin-top:6px;}
 
+@media(max-width:600px){
+  .mcustom-grid{grid-template-columns:1fr 1fr;}
+  .mcustom-grid #customCourseName{grid-column:1/-1;}
+  .mcustom-grid button{width:100%;}
+}
+
 @media print{
   *{-webkit-print-color-adjust:exact!important;print-color-adjust:exact!important;}
   @page{size:A4 landscape;margin:0;}
@@ -187,6 +203,14 @@ header{background:var(--navy);padding:12px 20px;display:flex;align-items:center;
       <button class="modal-close" onclick="closeModal()">&#x2715;</button>
     </div>
     <div class="modal-body">
+      <div class="msearch">
+        <div class="msearch-box">
+          <span class="msearch-icon">🔎</span>
+          <input class="msearch-input" id="courseSearch" type="search" placeholder="ค้นหาชื่อคอร์ส วิชา หรือรหัสคอร์ส" oninput="onCourseSearch(this.value)" autocomplete="off">
+        </div>
+        <button class="msearch-clear" type="button" onclick="clearCourseSearch()">ล้าง</button>
+      </div>
+      <div class="msearch-meta"><span>ค้นหาและเลือกจากรายการด้านล่าง</span><strong id="mResultCount"></strong></div>
       <div class="mtabs" id="mtabs">
         <div class="mtab active" onclick="mFilterCat('all',this)">ทั้งหมด</div>
         <div class="mtab" onclick="mFilterCat('b99',this)">99B ปรับพื้นฐาน</div>
@@ -200,16 +224,18 @@ header{background:var(--navy);padding:12px 20px;display:flex;align-items:center;
         <div class="mtab" onclick="mFilterCat('jr',this)">ม.ต้น เนื้อหา</div>
         <div class="mtab" onclick="mFilterCat('ielts',this)">IELTS/SAT</div>
       </div>
-      <div class="mclist" id="mclist"></div>
-      <div style="margin-top:12px;padding:10px;background:#F0FDF4;border:1.5px solid #86EFAC;border-radius:8px;">
-        <div style="font-size:11px;font-weight:700;color:#166534;margin-bottom:8px;">✏️ เพิ่มคอร์สเอง (Freetext)</div>
-        <div style="display:grid;grid-template-columns:1fr 90px 80px auto;gap:6px;align-items:center;">
+      <div style="margin-bottom:12px;padding:10px;background:#F0FDF4;border:1.5px solid #86EFAC;border-radius:8px;">
+        <div style="font-size:11px;font-weight:700;color:#166534;margin-bottom:3px;">✏️ หาไม่เจอ? เพิ่มคอร์สเอง</div>
+        <div style="font-size:9.5px;color:#4B7A5A;margin-bottom:8px;">กรอกชื่อ ราคา และจำนวนชั่วโมง แล้วกดเพิ่ม</div>
+        <div class="mcustom-grid">
           <input class="finput" id="customCourseName" type="text" placeholder="ชื่อคอร์ส (พิมพ์เอง)" style="font-size:11px;padding:5px 8px;">
           <input class="finput" id="customCoursePrice" type="number" placeholder="ราคา ฿" min="0" style="font-size:11px;padding:5px 8px;">
           <input class="finput" id="customCourseHours" type="number" placeholder="ชม." min="0" style="font-size:11px;padding:5px 8px;">
           <button onclick="addCustomCourse()" style="background:#166534;color:#fff;border:none;padding:6px 12px;border-radius:6px;font-size:11px;cursor:pointer;white-space:nowrap;">+ เพิ่ม</button>
         </div>
       </div>
+      <div class="mclist" id="mclist"></div>
+      <div class="mnoresults" id="mNoResults">ไม่พบคอร์สที่ค้นหา<br>กรอกข้อมูลใน “เพิ่มคอร์สเอง” ด้านบนได้ทันที</div>
     </div>
     <div class="modal-foot">
       <div class="mf-info">เลือกแล้ว: <strong id="mSelCount">0</strong> คอร์ส</div>
@@ -231,7 +257,7 @@ header{background:var(--navy);padding:12px 20px;display:flex;align-items:center;
     </div>
     <div class="modal-body" style="display:flex;flex-direction:column;gap:10px;padding:16px;">
       <div>
-        <label class="flbl">From (Sender) — Email สาขา <span style="color:#EF4444">*</span></label>
+        <label class="flbl">Reply-to — Email สาขา <span style="color:#EF4444">*</span></label>
         <input class="finput" id="emailFrom" type="email" placeholder="branch@email.com" style="width:100%">
       </div>
       <div>
@@ -255,7 +281,7 @@ header{background:var(--navy);padding:12px 20px;display:flex;align-items:center;
         <textarea class="finput" id="emailBody" rows="7" style="width:100%;resize:vertical;font-size:11px;font-family:inherit;line-height:1.5;"></textarea>
       </div>
       <div style="background:#FFFBEB;border:1px solid #FCD34D;border-radius:8px;padding:10px;font-size:11px;color:#92400E;">
-        หมายเหตุ: Email จะเปิดใน app ที่ท่านใช้ (Gmail/Outlook) และส่งจาก email สาขาที่ท่าน login ไว้
+        หมายเหตุ: ระบบส่งจากบัญชีเจ้าของ Apps Script และตั้ง Email สาขาเป็น Reply-to เพื่อให้นักเรียนตอบกลับสาขาได้
       </div>
     </div>
     <div class="modal-foot">
@@ -477,7 +503,7 @@ header{background:var(--navy);padding:12px 20px;display:flex;align-items:center;
   <div class="rpanel">
     <div class="hint-bar">&#128161; <strong>วิธีใช้:</strong> คลิกช่องเดือนในปฏิทินเพื่อเปิดหน้าต่างเลือกคอร์ส | คลิก ✕ บนชิปเพื่อลบ</div>
     <div class="cal-wrap">
-      <div class="bcard-title" style="margin-bottom:10px;">&#128197; ปฏิทินแผนการเรียน 3 ปี <span style="font-size:10px;font-weight:400;color:var(--gray3);text-transform:none;letter-spacing:0;">(คลิกช่องเดือนเพื่อเพิ่มคอร์ส)</span></div>
+      <div class="bcard-title" style="margin-bottom:10px;">&#128197; ปฏิทินแผนการเรียนถึง ม.6 <span style="font-size:10px;font-weight:400;color:var(--gray3);text-transform:none;letter-spacing:0;">(คลิกช่องเดือนเพื่อเพิ่มคอร์ส)</span></div>
       <div style="overflow-x:auto;">
         <table class="cal-table">
           <thead id="calHead"></thead>
@@ -494,7 +520,7 @@ header{background:var(--navy);padding:12px 20px;display:flex;align-items:center;
 // ═══════════════════════════════════════════════════════════════
 // APPS SCRIPT BACKEND CONFIG — ใส่ URL ที่นี่หลัง Deploy
 // ═══════════════════════════════════════════════════════════════
-var APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzZuBmuMlXpNhx0bQoJa1xy-2wMs0KYmjhQi1e7tJI96zpQSvmD3TLBZKutDYyVG-mxQg/exec';
+var APPS_SCRIPT_URL = 'https://script.google.com/a/macros/ondemand.in.th/s/AKfycbwbfsspdkjOqNolhb0pHejAo64wLtb1N5Q2lKsOsNzxWyv18gfyO1FSRpYa9hotqIMh/exec';
 
 // ─── GURU LIST (from Sheet เก็บข้อมูล NEW Ondy Only - column ชื่อผู้ดูแล) ───
 var GURU_LIST = [
@@ -538,51 +564,167 @@ function showToast(msg, type, dur){
   t._timer = setTimeout(function(){ t.className = ''; }, dur || 4000);
 }
 
+function escapeHtml(value){
+  return String(value === null || value === undefined ? '' : value).replace(/[&<>"']/g, function(char){
+    return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[char];
+  });
+}
+
 function setLoading(show, msg){
   var ol = document.getElementById('loadingOverlay');
   ol.classList.toggle('open', show);
   if(msg) document.getElementById('loadingMsg').textContent = msg;
 }
 
+function handleAppsResponse(data){
+  if(!data || !window._pendingAppsAction || data.action !== window._pendingAppsAction) return;
+  clearTimeout(window._saveTimeoutRef);
+  setLoading(false);
+  window._pendingAppsAction = '';
+  if(data.ok){
+    if(data.action === 'sendEmail'){
+      showToast('✅ ส่งอีเมลสำเร็จ! → ' + (data.sentTo||''), 'success', 6000);
+    } else {
+      showToast('✅ บันทึกสำเร็จ! ID: ' + (data.onDyId||'') + ' (' + (data.rowsWritten||0) + ' แถว)', 'success', 6000);
+    }
+  } else {
+    showToast('❌ ' + (data.error||'เกิดข้อผิดพลาด'), 'error');
+  }
+}
+
+function submitAppsRequest(request, loadingText){
+  clearTimeout(window._saveTimeoutRef);
+  window._pendingAppsAction = request.action || '';
+  setLoading(true, loadingText);
+  window._saveTimeoutRef = setTimeout(function(){
+    window._pendingAppsAction = '';
+    setLoading(false);
+    showToast('⚠️ ไม่ได้รับการตอบกลับจากเซิร์ฟเวอร์ กรุณาลองใหม่', 'error');
+  }, 30000);
+
+  // When hosted by Apps Script, call the server directly. This avoids the
+  // extra form/iframe redirect and Workspace sign-in round trip.
+  if(typeof google !== 'undefined' && google.script && google.script.run){
+    var runner = google.script.run
+      .withSuccessHandler(function(data){ handleAppsResponse(data); })
+      .withFailureHandler(function(error){
+        handleAppsResponse({
+          ok: false,
+          action: request.action || '',
+          error: error && error.message ? error.message : String(error || 'Server error')
+        });
+      });
+    if(request.action === 'save') runner.savePlanFromClient(request);
+    else if(request.action === 'sendEmail') runner.sendEmailFromClient(request);
+    else handleAppsResponse({ok:false, action:request.action||'', error:'ไม่รู้จัก action'});
+    return;
+  }
+
+  // Standalone-file fallback.
+  document.getElementById('formPayload').value = JSON.stringify(request);
+  document.getElementById('appsScriptForm').action = APPS_SCRIPT_URL;
+  document.getElementById('appsScriptForm').submit();
+}
+
+function formatLocalYmd(date){
+  function pad(value){ return String(value).padStart(2, '0'); }
+  return date.getFullYear() + '-' + pad(date.getMonth()+1) + '-' + pad(date.getDate());
+}
+
+function buildTakeNote(){
+  var lines = [];
+  var nickname = (document.getElementById('stNick')||{}).value || '';
+  var gpa = (document.getElementById('stGpa')||{}).value || '';
+  var roundSelect = document.getElementById('stRound');
+  var persona = (document.getElementById('stPersona')||{}).value || '';
+  if(nickname) lines.push('ชื่อเล่น: ' + nickname);
+  if(gpa) lines.push('GPA: ' + gpa);
+  if(roundSelect && roundSelect.value){
+    lines.push('TCAS Round: ' + roundSelect.options[roundSelect.selectedIndex].text);
+  }
+  if(persona) lines.push('ONDY Persona: ' + persona);
+
+  var scoreFields = [
+    ['TGAT','scTgat'], ['ฟิสิกส์','scPhy'], ['คณิตศาสตร์','scMath'],
+    ['เคมี','scChem'], ['ชีววิทยา','scBio'], ['ภาษาอังกฤษ','scEng']
+  ];
+  var scores = scoreFields.map(function(item){
+    var value = (document.getElementById(item[1])||{}).value || '';
+    return value ? item[0] + ' ' + value + '%' : '';
+  }).filter(Boolean);
+  if(scores.length) lines.push('คะแนนเป้าหมาย: ' + scores.join(', '));
+  return lines.join('\n');
+}
+
 // ─── BUILD PAYLOAD ──────────────────────────────────────────────
 function buildPayload(){
   var activeCal = getActiveCal();
   var curLevels = getCurrentLevels();
-  var placed = {}; var startRow = getStartRow();
-  for(var li=startRow;li<3;li++) for(var mi=0;mi<12;mi++) activeCal[li][mi].forEach(function(id){ placed[id]=1; });
-  var pids = Object.keys(placed);
-  var totalHrs=0, totalPrice=0;
-  pids.forEach(function(id){ var c=COURSES.find(function(x){return x.id===id;}); if(c){totalHrs+=c.hours;totalPrice+=c.price;} });
+  var today = new Date();
+  var startRow = getStartRow();
+  var yrs = getYears(today);
+  var years = [];
+  var totalHrs = 0;
+  var totalPrice = 0;
 
-  var months = [], monthCourses = [], monthValues = [];
-  for(var mi=0;mi<12;mi++){
-    var lines = [], val = 0;
-    for(var li2=0;li2<3;li2++){
-      if(activeCal[li2][mi].length){
-        var yr = curLevels[li2];
-        activeCal[li2][mi].forEach(function(cid){
-          var c = COURSES.find(function(x){return x.id===cid;});
-          if(c){ lines.push(yr+': '+c.name); val += c.price; }
-        });
-      }
+  for(var li=startRow; li<curLevels.length; li++){
+    var yearPlaced = {};
+    var yearMonths = [];
+    for(var mi=0; mi<12; mi++){
+      var lines = [];
+      var monthValue = 0;
+      activeCal[li][mi].forEach(function(cid){
+        var c = COURSES.find(function(x){ return x.id===cid; });
+        if(c){
+          lines.push(c.name);
+          monthValue += c.price;
+          yearPlaced[cid] = 1;
+        }
+      });
+      yearMonths.push({ courses: lines.join('\n'), value: monthValue });
     }
-    months.push({ courses: lines.join('\n'), value: val });
-    monthCourses.push(lines.join(', '));
-    monthValues.push(val);
+
+    var yearHours = 0;
+    var yearValue = 0;
+    Object.keys(yearPlaced).forEach(function(cid){
+      var c = COURSES.find(function(x){ return x.id===cid; });
+      if(c){ yearHours += c.hours; yearValue += c.price; }
+    });
+    // Do not create a database row for a grade-year with no planned course.
+    if(!Object.keys(yearPlaced).length) continue;
+    var yearEndDate = new Date(yrs[li]-543, 11, 31);
+    var yearPlanDays = yearEndDate > today ? Math.ceil((yearEndDate-today)/(1000*60*60*24)) : 0;
+    years.push({
+      grade: curLevels[li],
+      year: yrs[li],
+      months: yearMonths,
+      totalValue: yearValue,
+      totalHours: yearHours,
+      hoursPerDay: yearHours > 0 ? Math.round(yearHours / Math.max(yearPlanDays, 1) * 10) / 10 : 0,
+      planDays: yearPlanDays
+    });
+    totalHrs += yearHours;
+    totalPrice += yearValue;
   }
 
-  var planDays = 0;
-  var yrs = getYears();
-  var endDate = new Date(yrs[2]-543, 11, 31);
-  var today = new Date();
-  if(endDate > today) planDays = Math.ceil((endDate - today)/(1000*60*60*24));
-  var planMonthNames = months.map(function(m,i){ return m.courses ? MONTHS[i] : null; }).filter(Boolean).join(', ');
+  // Aggregate copy retained for email preview, CSV fallback, and summary cards.
+  var months = MONTHS.map(function(_month, mi){
+    var lines = [];
+    var value = 0;
+    years.forEach(function(y){
+      var entry = y.months[mi];
+      if(entry.courses){ lines.push(y.grade + ': ' + entry.courses.replace(/\n/g, ' | ')); value += entry.value; }
+    });
+    return { courses: lines.join('\n'), value: value };
+  });
+  var planMonths = months.map(function(m,i){ return m.courses ? MONTHS[i] : null; }).filter(Boolean).join(', ');
+  var finalPlanDays = years.length ? years[years.length-1].planDays : 0;
 
   return {
     branch:        (document.getElementById('stBranch')||{}).value || '',
     guru:          getGuruValue(),
     odmMember:     (document.getElementById('stCode')||{}).value || '',
-    planDate:      today.toISOString().slice(0,10),
+    planDate:      formatLocalYmd(today),
     status:        'นักเรียน',
     firstName:     (document.getElementById('stName')||{}).value || '',
     lastName:      (document.getElementById('stLastName')||{}).value || '',
@@ -594,16 +736,15 @@ function buildPayload(){
     odmId:         (document.getElementById('stCode')||{}).value || '',
     faculty:       (document.getElementById('stFac')||{}).value || '',
     university:    (document.getElementById('stUni')||{}).value || '',
-    planMonths:    planMonthNames,
+    planMonths:    planMonths,
     months:        months,
-    monthCourses:  monthCourses,
-    monthValues:   monthValues,
+    years:         years,
     totalValue:    totalPrice,
     totalHours:    totalHrs,
-    hoursPerDay:   totalHrs > 0 ? Math.round(totalHrs / Math.max(planDays, 1) * 10) / 10 : 0,
-    planDays:      planDays,
+    hoursPerDay:   totalHrs > 0 ? Math.round(totalHrs / Math.max(finalPlanDays, 1) * 10) / 10 : 0,
+    planDays:      finalPlanDays,
     source:        (document.getElementById('stSource')||{}).value || '',
-    note:          '',
+    note:          buildTakeNote(),
   };
 }
 
@@ -612,27 +753,14 @@ function savePlanToSheet(){
   var payload = buildPayload();
   if(!payload.firstName){ showToast('กรุณากรอกชื่อนักเรียน','error'); return; }
   if(!payload.phone){ showToast('กรุณากรอกเบอร์โทรศัพท์','error'); return; }
+  if(!payload.email){ showToast('กรุณากรอก Email นักเรียน','error'); return; }
   if(!payload.guru){ showToast('กรุณาเลือก Guru ผู้วางแผน','error'); return; }
-  var hasCourse = payload.months.some(function(m){ return m.courses.trim(); });
+  var hasCourse = payload.years.some(function(y){ return y.months.some(function(m){ return m.courses.trim(); }); });
   if(!hasCourse){ showToast('ต้องมีอย่างน้อย 1 คอร์สในแผน','error'); return; }
 
-  // ถ้ามี Apps Script URL จริง — ส่งด้วย no-cors fetch (ไม่มี CORS preflight)
+  // ถ้ามี Apps Script URL จริง — ส่งผ่าน iframe (bypass CORS/302)
   if(APPS_SCRIPT_URL.indexOf('PLACEHOLDER') < 0){
-    setLoading(true, 'กำลังบันทึกแผนลง Google Sheets...');
-    fetch(APPS_SCRIPT_URL, {
-      method: 'POST',
-      mode: 'no-cors',
-      headers: { 'Content-Type': 'text/plain' },
-      body: JSON.stringify(Object.assign({ action: 'save' }, payload))
-    })
-    .then(function(){
-      setLoading(false);
-      showToast('✅ บันทึกแผนสำเร็จ! ตรวจสอบข้อมูลใน Google Sheets ได้เลย', 'success', 6000);
-    })
-    .catch(function(err){
-      setLoading(false);
-      showToast('❌ เกิดข้อผิดพลาด กรุณาลองใหม่', 'error');
-    });
+    submitAppsRequest(Object.assign({ action: 'save' }, payload), 'กำลังบันทึกแผนลง Google Sheets...');
     return;
   }
 
@@ -710,7 +838,7 @@ function sendEmailPDF(){
 function closeEmailModal(){ document.getElementById('emailOverlay').classList.remove('open'); }
 function sendViaMailto(){
   var from = document.getElementById('emailFrom').value.trim();
-  if(!from){ showToast('กรุณากรอก Email สาขา (From)','error'); return; }
+  if(!from){ showToast('กรุณากรอก Email สาขา (Reply-to)','error'); return; }
   var to = document.getElementById('emailTo').value.trim();
   if(!to){ showToast('กรุณากรอก Email นักเรียนในหน้าหลักก่อน','error'); return; }
   var cc = document.getElementById('emailCc').value.trim();
@@ -719,31 +847,45 @@ function sendViaMailto(){
   var body = document.getElementById('emailBody').value;
   var branch = (document.getElementById('stBranch')||{}).value || '';
 
-  // ─── ส่งผ่าน Apps Script (ส่ง Email จริง) ─────────────────────
+  // ─── ส่งผ่าน Apps Script (ส่ง Email จริง + แนบ PDF) ──────────
   if(APPS_SCRIPT_URL.indexOf('PLACEHOLDER') < 0){
     closeEmailModal();
-    setLoading(true, 'กำลังส่งอีเมล...');
-    fetch(APPS_SCRIPT_URL, {
-      method: 'POST',
-      headers: {'Content-Type': 'text/plain;charset=utf-8'},
-      body: JSON.stringify({
-        action: 'sendEmail',
-        to: to, cc: cc, bcc: bcc,
-        subject: subject, body: body,
-        from: from,
-        fromName: 'ONDY สาขา' + branch,
-        replyTo: from
-      })
-    })
-    .then(function(r){ return r.json(); })
-    .then(function(data){
+    var payload = buildPayload();
+    var stFirst = (payload.firstName||'').replace(/[^ก-๙a-zA-Z0-9]/g,'_').slice(0,20) || 'นักเรียน';
+    var stLast  = (payload.lastName||'').replace(/[^ก-๙a-zA-Z0-9]/g,'_').slice(0,20);
+    var fname = 'ONDY_' + stFirst + (stLast?'_'+stLast:'') + '_' + new Date().toISOString().slice(0,10);
+    setLoading(true, 'กำลังสร้าง PDF...');
+    populatePrintView();
+    var pvEl = document.getElementById('pv');
+    pvEl.style.display = 'block';
+    var html2pdfOpt = {
+      margin: 0,
+      filename: fname + '.pdf',
+      image: {type:'jpeg', quality:0.88},
+      html2canvas: {scale:2, useCORS:true, logging:false},
+      jsPDF: {unit:'mm', format:'a4', orientation:'landscape'}
+    };
+    html2pdf().from(pvEl).set(html2pdfOpt).outputPdf('blob').then(function(blob){
+      pvEl.style.display = 'none';
+      var reader = new FileReader();
+      reader.onloadend = function(){
+        var base64 = reader.result.split(',')[1];
+        submitAppsRequest({
+          action: 'sendEmail',
+          to: to, cc: cc, bcc: bcc,
+          subject: subject, body: body,
+          from: from,
+          fromName: 'ONDY สาขา' + branch,
+          replyTo: from,
+          pdfBase64: base64,
+          pdfFilename: fname
+        }, 'กำลังส่งอีเมลพร้อมแนบ PDF...');
+      };
+      reader.readAsDataURL(blob);
+    }).catch(function(err){
+      pvEl.style.display = 'none';
       setLoading(false);
-      if(data.ok){ showToast('✅ ส่งอีเมลสำเร็จ! → ' + to, 'success', 6000); }
-      else { showToast('❌ ส่งอีเมลไม่สำเร็จ: ' + (data.error||'เกิดข้อผิดพลาด'), 'error'); }
-    })
-    .catch(function(err){
-      setLoading(false);
-      showToast('❌ เชื่อมต่อไม่ได้: ' + err.message, 'error');
+      showToast('❌ สร้าง PDF ไม่สำเร็จ: ' + (err&&err.message||err), 'error');
     });
     return;
   }
@@ -760,12 +902,9 @@ function sendViaMailto(){
 }
 
 var MONTHS = ['ม.ค.','ก.พ.','มี.ค.','เม.ย.','พ.ค.','มิ.ย.','ก.ค.','ส.ค.','ก.ย.','ต.ค.','พ.ย.','ธ.ค.'];
-var LEVELS_SR = ['ม.4','ม.5','ม.6'];
-var LEVELS_JR = ['ม.1','ม.2','ม.3'];
-var LEVELS = LEVELS_SR;
-function isJunior(){ var lv = (document.getElementById('stLevel')||{}).value||''; return lv==='ม.1'||lv==='ม.2'||lv==='ม.3'; }
-function getCurrentLevels(){ return isJunior() ? LEVELS_JR : LEVELS_SR; }
-function getActiveCal(){ return isJunior() ? calJr : cal; }
+var LEVELS = ['ม.1','ม.2','ม.3','ม.4','ม.5','ม.6'];
+function getCurrentLevels(){ return LEVELS; }
+function getActiveCal(){ return cal; }
 var COURSES = [
   // ── 99B ปรับพื้นฐาน ──────────────────────────────────
   {id:'b99-math',cat:'b99',name:'ปรับพื้นฐาน คณิตศาสตร์ ม.ปลาย',  hours:10,price:99},
@@ -876,8 +1015,8 @@ function getColor(c){
 }
 
 // ── PERSONA PREFILL DATA (per level) ─────────────────────────────
-// Structure: PERSONA_PLANS_BY_LEVEL[persona][level][rowIndex][monthIndex]
-// rowIndex: 0=ม.4 row, 1=ม.5 row, 2=ม.6 row
+// Structure: PERSONA_PLANS_BY_LEVEL[persona][level][highSchoolRowIndex][monthIndex]
+// highSchoolRowIndex: 0=ม.4, 1=ม.5, 2=ม.6 (mapped to calendar rows 3-5)
 // monthIndex: 2=มี.ค.(ซัมเมอร์), 4=พ.ค.(เทอม1), 9=ต.ค.(เทอม2)
 var PERSONA_PLANS_BY_LEVEL = {
   'แพทย์': {
@@ -942,18 +1081,18 @@ function applyPersonaPrefill(){
   var persona = document.getElementById('stPersona') ? document.getElementById('stPersona').value : '';
   if(!persona) return;
   var lv = document.getElementById('stLevel').value;
-  var startRow = lv === 'ม.6' ? 2 : (lv === 'ม.5' ? 1 : 0);
+  var startRow = getStartRow();
   var personaPlans = PERSONA_PLANS_BY_LEVEL[persona];
   if(!personaPlans) return;
   var plan = personaPlans[lv];
   if(!plan) return;
   // Clear current and future rows
-  for(var li = startRow; li < 3; li++){
+  for(var li = startRow; li < LEVELS.length; li++){
     for(var mi = 0; mi < 12; mi++) getActiveCal()[li][mi] = [];
   }
   // Fill rows from level-specific plan
-  for(var row = startRow; row < 3; row++){
-    var rowPlan = plan[row];
+  for(var row = startRow; row < LEVELS.length; row++){
+    var rowPlan = plan[row - 3];
     if(!rowPlan) continue;
     [2, 4, 9].forEach(function(month){
       if(rowPlan[month] && rowPlan[month].length){
@@ -964,12 +1103,9 @@ function applyPersonaPrefill(){
   renderCal(); calcStats();
 }
 
-var cal = [
-  Array.from({length:12},function(){return [];}),
-  Array.from({length:12},function(){return [];}),
-  Array.from({length:12},function(){return [];})
-];
-var calJr = [[],[],[],[]].slice(0,3).map(function(){ return Array(12).fill(null).map(function(){ return []; }); });
+var cal = Array.from({length:6}, function(){
+  return Array.from({length:12}, function(){ return []; });
+});
 var guruMode = false;
 var prevOpen = false;
 
@@ -977,19 +1113,18 @@ var prevOpen = false;
 var modalLi = -1;
 var modalMi = -1;
 var modalCat = 'all';
+var modalSearch = '';
 var modalTemp = []; // temp selected IDs
 
-function getYears(){
-  var lv = (document.getElementById('stLevel')||{}).value||'ม.4';
-  var n = parseInt(lv.replace('ม.',''));
-  var base = new Date().getFullYear() + 543 - (n - (isJunior()?1:4));
-  return [base, base+1, base+2];
+function getYears(referenceDate){
+  var currentBE = (referenceDate || new Date()).getFullYear() + 543;
+  var startRow = getStartRow();
+  return LEVELS.map(function(_level, index){ return currentBE + (index - startRow); });
 }
 function getStartRow(){
-  var lv = (document.getElementById('stLevel')||{}).value||'';
-  if(lv==='ม.6'||lv==='ม.3') return 2;
-  if(lv==='ม.5'||lv==='ม.2') return 1;
-  return 0;
+  var lv = (document.getElementById('stLevel')||{}).value||'ม.1';
+  var index = LEVELS.indexOf(lv);
+  return index >= 0 ? index : 0;
 }
 
 function init(){ renderCal(); calcStats(); loadGurus(); }
@@ -1011,6 +1146,8 @@ function openModal(li, mi){
   document.getElementById('modalTitle').textContent = 'เลือกคอร์ส — ' + lv + ' เดือน ' + mn;
   document.getElementById('modalSub').textContent = 'คลิกเพื่อเลือก/ยกเลิก | กดยืนยันเพื่อบันทึก';
   modalCat = 'all';
+  modalSearch = '';
+  document.getElementById('courseSearch').value = '';
   document.querySelectorAll('.mtab').forEach(function(t){ t.classList.remove('active'); });
   document.querySelector('.mtab').classList.add('active');
   renderModalList();
@@ -1022,9 +1159,25 @@ function closeModal(){
 }
 
 function confirmModal(){
+  var activeCal = getActiveCal();
+  var movedCount = 0;
+  modalTemp.forEach(function(courseId){
+    for(var row=0; row<activeCal.length; row++){
+      for(var month=0; month<12; month++){
+        if(row===modalLi && month===modalMi) continue;
+        var existingIndex = activeCal[row][month].indexOf(courseId);
+        while(existingIndex >= 0){
+          activeCal[row][month].splice(existingIndex, 1);
+          movedCount += 1;
+          existingIndex = activeCal[row][month].indexOf(courseId);
+        }
+      }
+    }
+  });
   getActiveCal()[modalLi][modalMi] = modalTemp.slice();
   renderCal(); calcStats();
   closeModal();
+  if(movedCount){ showToast('ย้ายคอร์สมาเดือนนี้แล้ว ' + movedCount + ' รายการ', 'success', 2500); }
 }
 
 function mFilterCat(cat, el){
@@ -1034,10 +1187,36 @@ function mFilterCat(cat, el){
   renderModalList();
 }
 
+function onCourseSearch(value){
+  modalSearch = String(value || '').trim().toLocaleLowerCase('th-TH');
+  renderModalList();
+}
+
+function clearCourseSearch(){
+  modalSearch = '';
+  document.getElementById('courseSearch').value = '';
+  renderModalList();
+  document.getElementById('courseSearch').focus();
+}
+
 function renderModalList(){
   var list = modalCat === 'all' ? COURSES : COURSES.filter(function(c){ return c.cat === modalCat; });
+  if(modalSearch){
+    list = list.filter(function(c){
+      var categoryText = {
+        'b99':'ปรับพื้นฐาน','pack-tcas':'pack tcas','pack-upskill':'tcas upskill',
+        'alevel':'a-level','tgat':'tgat','tpat':'tpat','bundle':'bundle',
+        'sr':'ม.ปลาย','jr':'ม.ต้น','ielts':'ielts sat','custom':'คอร์สเพิ่มเอง'
+      }[c.cat] || c.cat;
+      var searchable = [c.name, c.id, c.cat, categoryText].join(' ').toLocaleLowerCase('th-TH');
+      return searchable.indexOf(modalSearch) >= 0;
+    });
+  }
   var el = document.getElementById('mclist');
+  var empty = document.getElementById('mNoResults');
   el.innerHTML = '';
+  empty.style.display = list.length ? 'none' : 'block';
+  document.getElementById('mResultCount').textContent = 'พบ ' + list.length + ' คอร์ส';
   list.forEach(function(c){
     var isSel = modalTemp.indexOf(c.id) >= 0;
     var clr = getColor(c);
@@ -1046,7 +1225,7 @@ function renderModalList(){
     div.dataset.id = c.id;
     var pBlur = guruMode ? '' : ' blur';
     div.innerHTML = '<div class="mcdot" style="background:' + clr + '"></div>' +
-      '<span class="mcname">' + c.name + (c.hot ? ' 🔥' : '') + '</span>' +
+      '<span class="mcname">' + escapeHtml(c.name) + (c.hot ? ' 🔥' : '') + '</span>' +
       '<span class="mchrs">' + c.hours + 'ชม.</span>' +
       '<span class="mcprice' + pBlur + '">฿' + c.price.toLocaleString() + '</span>' +
       '<div class="mcchk' + (isSel ? ' on' : '') + '">' + (isSel ? '✓' : '') + '</div>';
@@ -1070,6 +1249,11 @@ function addCustomCourse(){
   var id = 'custom-' + Date.now();
   COURSES.push({id:id, cat:'custom', name:nm, hours:hr, price:pr});
   modalTemp.push(id);
+  modalCat = 'all';
+  modalSearch = '';
+  document.querySelectorAll('.mtab').forEach(function(t){ t.classList.remove('active'); });
+  document.querySelector('.mtab').classList.add('active');
+  document.getElementById('courseSearch').value = '';
   document.getElementById('customCourseName').value = '';
   document.getElementById('customCoursePrice').value = '';
   document.getElementById('customCourseHours').value = '';
@@ -1100,7 +1284,7 @@ function renderCal(){
 
   var body = document.getElementById('calBody');
   body.innerHTML = '';
-  for(var li=startRow; li<3; li++){
+  for(var li=startRow; li<LEVELS.length; li++){
     var tr = document.createElement('tr');
     var yrtd = document.createElement('td');
     yrtd.className = 'yrtd';
@@ -1115,7 +1299,7 @@ function renderCal(){
           var c = COURSES.find(function(x){ return x.id === cid; });
           if(!c) return;
           inner += '<div class="chip"><div class="chipdot" style="background:' + getColor(c) + '"></div>' +
-            '<span class="chipname">' + c.name + '</span>' +
+            '<span class="chipname">' + escapeHtml(c.name) + '</span>' +
             '<span class="chipx" data-li="'+li+'" data-mi="'+mi+'" data-cid="'+cid+'">✕</span></div>';
         });
         inner += '<div class="cell-add"><span>+ เพิ่ม</span></div>';
@@ -1137,7 +1321,7 @@ function calcStats(){
   var placed = {};
   var monthsSet = {};
   var startRow = getStartRow();
-  for(var li=startRow; li<3; li++){
+  for(var li=startRow; li<LEVELS.length; li++){
     for(var mi=0; mi<12; mi++){
       if(getActiveCal()[li][mi].length > 0) monthsSet[li+'_'+mi] = 1;
       getActiveCal()[li][mi].forEach(function(id){ placed[id]=1; });
@@ -1175,14 +1359,14 @@ function populatePrintView(){
   var guru = document.getElementById('stGuru').value;
   var uni = document.getElementById('stUni').value;
   var fac = document.getElementById('stFac').value;
-  var lines = ['สาขา: ' + branch.split(' — ')[0]];
-  if(guru) lines.push('Guru: ' + guru);
-  lines.push('GPA: ' + (gpa || '—'));
-  if(uni) lines.push('เป้า: ' + uni);
-  if(fac) lines.push(fac);
+  var lines = ['สาขา: ' + escapeHtml(branch.split(' — ')[0])];
+  if(guru) lines.push('Guru: ' + escapeHtml(guru));
+  lines.push('GPA: ' + escapeHtml(gpa || '—'));
+  if(uni) lines.push('เป้า: ' + escapeHtml(uni));
+  if(fac) lines.push(escapeHtml(fac));
   document.getElementById('pINFO').innerHTML = lines.join('<br>');
   document.getElementById('pFOOTER').textContent = 'Guru: '+(guru||'—')+' | สาขา '+branch.split(' — ')[0]+' | รหัส: '+(document.getElementById('stCode').value||'—');
-  document.getElementById('pvQrLabel').innerHTML = 'แอด LINE<br><strong style="color:#fff;">สาขา '+branch+'</strong><br>รับโปร + แผนฟรี';
+  document.getElementById('pvQrLabel').innerHTML = 'แอด LINE<br><strong style="color:#fff;">สาขา '+escapeHtml(branch)+'</strong><br>รับโปร + แผนฟรี';
   _lastQrCode = ''; renderBranchQR();
 
   var years = getYears();
@@ -1193,7 +1377,7 @@ function populatePrintView(){
   var body = document.getElementById('pvCalBody');
   body.innerHTML = '';
   var pvStartRow = getStartRow();
-  for(var li=pvStartRow; li<3; li++){
+  for(var li=pvStartRow; li<LEVELS.length; li++){
     var tr = document.createElement('tr');
     var yrtd = document.createElement('td');
     yrtd.className = 'pvyrtd';
@@ -1208,7 +1392,7 @@ function populatePrintView(){
           if(!c) return '';
           return '<div class="pvcard" style="background:'+getColor(c)+';">' +
             '<span class="pvcard-start">เริ่ม</span>' +
-            '<div class="pvcard-name">'+c.name+'</div>' +
+            '<div class="pvcard-name">'+escapeHtml(c.name)+'</div>' +
             (c.hours ? '<div class="pvcard-hrs">'+c.hours+' ชม.</div>' : '') +
             '<div class="pvcard-price">฿'+c.price.toLocaleString()+'</div>' +
             '</div>';
@@ -1297,7 +1481,7 @@ function renderBranchQR(){
       }
     }, 150);
   } catch(e){
-    box.innerHTML = '<div style="font-size:8px;color:#555;text-align:center;padding:15px;">QR LINE<br>'+branch+'</div>';
+    box.innerHTML = '<div style="font-size:8px;color:#555;text-align:center;padding:15px;">QR LINE<br>'+escapeHtml(branch)+'</div>';
   }
 }
 
@@ -1310,16 +1494,12 @@ function printPlan(){
 
 // ─── รับผลลัพธ์จาก Apps Script ผ่าน postMessage ────────────────
 window.addEventListener('message', function(ev){
+  var frame = document.getElementById('appsScriptFrame');
+  if(!frame || ev.source !== frame.contentWindow) return;
   var data;
   try { data = typeof ev.data === 'string' ? JSON.parse(ev.data) : ev.data; } catch(e){ return; }
   if(!data || data.__source !== 'ondyApps') return;
-  clearTimeout(window._saveTimeoutRef);
-  setLoading(false);
-  if(data.ok){
-    showToast('✅ บันทึกสำเร็จ! ID: ' + (data.onDyId||''), 'success', 6000);
-  } else {
-    showToast('❌ ' + (data.error||'เกิดข้อผิดพลาด'), 'error');
-  }
+  handleAppsResponse(data);
 });
 
 window.addEventListener('DOMContentLoaded', init);
