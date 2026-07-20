@@ -452,6 +452,9 @@ header{background:var(--navy);padding:12px 20px;display:flex;align-items:center;
             <optgroup label="── ออนไลน์ ──">
               <option>Online</option>
             </optgroup>
+            <optgroup label="── Call Center ──">
+              <option>CC</option>
+            </optgroup>
           </select></div>
       </div>
     </div>
@@ -524,6 +527,7 @@ var APPS_SCRIPT_URL = 'https://script.google.com/a/macros/ondemand.in.th/s/AKfyc
 
 // ─── GURU LIST (from Sheet เก็บข้อมูล NEW Ondy Only - column ชื่อผู้ดูแล) ───
 var GURU_LIST = [
+  'CC',
   'CCOPHUENG','CPNTONG','CRINEEN','HYDKATAI','HYDYA',
   'KKNBELL','MBKMEEN','MBKPIA','NGWFilm','NRTKIT',
   'NSNGIB','NSNMILD','PBIMON','PKLBOY','PKTZEERO',
@@ -829,7 +833,7 @@ function sendEmailPDF(){
   // Pre-fill email modal
   document.getElementById('emailTo').value = studentEmail;
   document.getElementById('emailSubject').value = 'แผนการเรียน ONDY — ' + studentName + ' — สาขา' + branch;
-  document.getElementById('emailFrom').value = '';
+  document.getElementById('emailFrom').value = 'thanawit.jut@ondemand.in.th';
   document.getElementById('emailCc').value = '';
   document.getElementById('emailBcc').value = '';
   document.getElementById('emailBody').value = body;
@@ -858,6 +862,12 @@ function sendViaMailto(){
     populatePrintView();
     var pvEl = document.getElementById('pv');
     pvEl.style.display = 'block';
+    if(typeof html2pdf === 'undefined'){
+      pvEl.style.display = 'none';
+      setLoading(false);
+      showToast('❌ โหลด html2pdf ไม่ได้ กรุณาตรวจสอบการเชื่อมต่อ', 'error');
+      return;
+    }
     var html2pdfOpt = {
       margin: 0,
       filename: fname + '.pdf',
@@ -865,28 +875,38 @@ function sendViaMailto(){
       html2canvas: {scale:2, useCORS:true, logging:false},
       jsPDF: {unit:'mm', format:'a4', orientation:'landscape'}
     };
-    html2pdf().from(pvEl).set(html2pdfOpt).outputPdf('blob').then(function(blob){
-      pvEl.style.display = 'none';
-      var reader = new FileReader();
-      reader.onloadend = function(){
-        var base64 = reader.result.split(',')[1];
-        submitAppsRequest({
-          action: 'sendEmail',
-          to: to, cc: cc, bcc: bcc,
-          subject: subject, body: body,
-          from: from,
-          fromName: 'ONDY สาขา' + branch,
-          replyTo: from,
-          pdfBase64: base64,
-          pdfFilename: fname
-        }, 'กำลังส่งอีเมลพร้อมแนบ PDF...');
-      };
-      reader.readAsDataURL(blob);
-    }).catch(function(err){
-      pvEl.style.display = 'none';
-      setLoading(false);
-      showToast('❌ สร้าง PDF ไม่สำเร็จ: ' + (err&&err.message||err), 'error');
-    });
+    setTimeout(function(){
+      html2pdf().from(pvEl).set(html2pdfOpt).outputPdf('arraybuffer').then(function(buffer){
+        pvEl.style.display = 'none';
+        try {
+          var bytes = new Uint8Array(buffer);
+          if(bytes.byteLength < 100){ setLoading(false); showToast('❌ สร้าง PDF ไม่สำเร็จ (ไฟล์ว่าง)', 'error'); return; }
+          var binary = '';
+          var CHUNK = 8192;
+          for(var i = 0; i < bytes.byteLength; i += CHUNK){
+            binary += String.fromCharCode.apply(null, bytes.subarray(i, Math.min(i + CHUNK, bytes.byteLength)));
+          }
+          var base64 = window.btoa(binary);
+          submitAppsRequest({
+            action: 'sendEmail',
+            to: to, cc: cc, bcc: bcc,
+            subject: subject, body: body,
+            from: from,
+            fromName: 'ONDY สาขา' + branch,
+            replyTo: from,
+            pdfBase64: base64,
+            pdfFilename: fname
+          }, 'กำลังส่งอีเมลพร้อมแนบ PDF...');
+        } catch(e){
+          setLoading(false);
+          showToast('❌ แปลง PDF ไม่สำเร็จ: ' + (e.message||e), 'error');
+        }
+      }).catch(function(err){
+        pvEl.style.display = 'none';
+        setLoading(false);
+        showToast('❌ สร้าง PDF ไม่สำเร็จ: ' + (err&&err.message||err), 'error');
+      });
+    }, 400);
     return;
   }
 
@@ -1458,7 +1478,8 @@ var BRANCH_LINE_URL = {
   'RYG':'https://lin.ee/ozFrlWj',
   'MDH':'https://lin.ee/bEr35X5',
   'COO':'https://lin.ee/lBLlzvv',
-  'Online':'https://lin.ee/lBLlzvv'
+  'Online':'https://lin.ee/lBLlzvv',
+  'CC':'https://lin.ee/lBLlzvv'
 };
 
 function renderBranchQR(){
