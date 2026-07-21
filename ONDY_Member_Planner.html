@@ -871,12 +871,14 @@ function sendViaMailto(){
     var html2pdfOpt = {
       margin: 0,
       filename: fname + '.pdf',
-      image: {type:'jpeg', quality:0.88},
-      html2canvas: {scale:2, useCORS:true, logging:false},
+      image: {type:'jpeg', quality:0.92},
+      html2canvas: {scale:1.5, useCORS:true, allowTaint:true, logging:false,
+                    scrollX:0, scrollY:0, windowWidth:1300},
       jsPDF: {unit:'mm', format:'a4', orientation:'landscape'}
     };
     setTimeout(function(){
-      html2pdf().from(pvEl).set(html2pdfOpt).outputPdf('arraybuffer').then(function(buffer){
+      var captureEl = pvEl.querySelector('.pvpage') || pvEl;
+      html2pdf().from(captureEl).set(html2pdfOpt).outputPdf('arraybuffer').then(function(buffer){
         pvEl.style.display = 'none';
         try {
           var bytes = new Uint8Array(buffer);
@@ -906,7 +908,7 @@ function sendViaMailto(){
         setLoading(false);
         showToast('❌ สร้าง PDF ไม่สำเร็จ: ' + (err&&err.message||err), 'error');
       });
-    }, 400);
+    }, 1500);
     return;
   }
 
