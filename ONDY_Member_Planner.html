@@ -120,7 +120,7 @@ header{background:var(--navy);padding:12px 20px;display:flex;align-items:center;
 #pv .pvsubtitle{font-size:12px;color:var(--pink-border);text-align:right;margin-top:3px;margin-bottom:8px;}
 #pv .pvinfo{font-size:9px;color:var(--pink-border);text-align:right;line-height:1.6;}
 #pv .pvcal{margin:0 10px 10px;}
-#pv .pvct{border-collapse:collapse;width:100%;}
+#pv .pvct{border-collapse:collapse;width:100%;table-layout:fixed;}
 #pv .pvct th{background:var(--maroon);color:#fff;font-size:9px;font-weight:700;padding:6px 3px;text-align:center;border:1px solid rgba(255,255,255,.15);}
 #pv .pvct th.pvcyr{width:58px;}
 #pv .pvct td{border:1px solid var(--pink-border);vertical-align:top;padding:2px;background:var(--pink-light);}
@@ -871,14 +871,19 @@ function sendViaMailto(){
     var html2pdfOpt = {
       margin: 0,
       filename: fname + '.pdf',
-      image: {type:'jpeg', quality:0.92},
-      html2canvas: {scale:1.5, useCORS:true, allowTaint:true, logging:false,
-                    scrollX:0, scrollY:0, windowWidth:1300},
+      image: {type:'jpeg', quality:0.95},
+      html2canvas: {scale:1, useCORS:true, allowTaint:true, logging:false,
+                    scrollX:0, scrollY:0, windowWidth:1200},
       jsPDF: {unit:'mm', format:'a4', orientation:'landscape'}
     };
     setTimeout(function(){
       var captureEl = pvEl.querySelector('.pvpage') || pvEl;
+      // Force exact A4-landscape pixel width so html2pdf maps 1:1 to 297mm
+      captureEl.style.width = '1122px';
+      captureEl.style.boxSizing = 'border-box';
       html2pdf().from(captureEl).set(html2pdfOpt).outputPdf('arraybuffer').then(function(buffer){
+        captureEl.style.width = '';
+        captureEl.style.boxSizing = '';
         pvEl.style.display = 'none';
         try {
           var bytes = new Uint8Array(buffer);
@@ -904,11 +909,13 @@ function sendViaMailto(){
           showToast('❌ แปลง PDF ไม่สำเร็จ: ' + (e.message||e), 'error');
         }
       }).catch(function(err){
+        captureEl.style.width = '';
+        captureEl.style.boxSizing = '';
         pvEl.style.display = 'none';
         setLoading(false);
         showToast('❌ สร้าง PDF ไม่สำเร็จ: ' + (err&&err.message||err), 'error');
       });
-    }, 1500);
+    }, 2000);
     return;
   }
 
