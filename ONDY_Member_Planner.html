@@ -287,7 +287,7 @@ header{background:var(--navy);padding:12px 20px;display:flex;align-items:center;
     <div class="modal-foot">
       <div class="mf-info"><button class="mf-cancel" onclick="closeEmailModal()">ยกเลิก</button></div>
       <div class="mf-btns">
-        <button class="mf-cancel" onclick="printPlan();closeEmailModal();" style="background:#059669;color:#fff;border:none;padding:8px 16px;border-radius:7px;cursor:pointer;font-weight:600;">🖨 ดาวน์โหลด PDF</button>
+        <button class="mf-cancel" onclick="closeEmailModal();downloadPlanPdf();" style="background:#059669;color:#fff;border:none;padding:8px 16px;border-radius:7px;cursor:pointer;font-weight:600;">🖨 ดาวน์โหลด PDF (ไฟล์เดียวกับที่แนบ Email)</button>
         <button class="mf-cancel" onclick="sendViaMailto()" style="background:#1B2A4A;color:#fff;border:none;padding:8px 16px;border-radius:7px;cursor:pointer;font-weight:600;">📧 ส่ง Email</button>
       </div>
     </div>
@@ -858,64 +858,28 @@ function sendViaMailto(){
     var stFirst = (payload.firstName||'').replace(/[^ก-๙a-zA-Z0-9]/g,'_').slice(0,20) || 'นักเรียน';
     var stLast  = (payload.lastName||'').replace(/[^ก-๙a-zA-Z0-9]/g,'_').slice(0,20);
     var fname = 'ONDY_' + stFirst + (stLast?'_'+stLast:'') + '_' + new Date().toISOString().slice(0,10);
-    setLoading(true, 'กำลังสร้าง PDF...');
-    populatePrintView();
-    var pvEl = document.getElementById('pv');
-    pvEl.style.display = 'block';
+
     if(typeof html2pdf === 'undefined'){
-      pvEl.style.display = 'none';
-      setLoading(false);
       showToast('❌ โหลด html2pdf ไม่ได้ กรุณาตรวจสอบการเชื่อมต่อ', 'error');
       return;
     }
-    var html2pdfOpt = {
-      margin: 0,
-      filename: fname + '.pdf',
-      image: {type:'jpeg', quality:0.95},
-      html2canvas: {scale:1, useCORS:true, allowTaint:true, logging:false,
-                    scrollX:0, scrollY:0, windowWidth:1200},
-      jsPDF: {unit:'mm', format:'a4', orientation:'landscape'}
-    };
-    setTimeout(function(){
-      var captureEl = pvEl.querySelector('.pvpage') || pvEl;
-      // Force exact A4-landscape pixel width so html2pdf maps 1:1 to 297mm
-      captureEl.style.width = '1122px';
-      captureEl.style.boxSizing = 'border-box';
-      html2pdf().from(captureEl).set(html2pdfOpt).outputPdf('arraybuffer').then(function(buffer){
-        captureEl.style.width = '';
-        captureEl.style.boxSizing = '';
-        pvEl.style.display = 'none';
-        try {
-          var bytes = new Uint8Array(buffer);
-          if(bytes.byteLength < 100){ setLoading(false); showToast('❌ สร้าง PDF ไม่สำเร็จ (ไฟล์ว่าง)', 'error'); return; }
-          var binary = '';
-          var CHUNK = 8192;
-          for(var i = 0; i < bytes.byteLength; i += CHUNK){
-            binary += String.fromCharCode.apply(null, bytes.subarray(i, Math.min(i + CHUNK, bytes.byteLength)));
-          }
-          var base64 = window.btoa(binary);
-          submitAppsRequest({
-            action: 'sendEmail',
-            to: to, cc: cc, bcc: bcc,
-            subject: subject, body: body,
-            from: from,
-            fromName: 'ONDY สาขา' + branch,
-            replyTo: from,
-            pdfBase64: base64,
-            pdfFilename: fname
-          }, 'กำลังส่งอีเมลพร้อมแนบ PDF...');
-        } catch(e){
-          setLoading(false);
-          showToast('❌ แปลง PDF ไม่สำเร็จ: ' + (e.message||e), 'error');
-        }
-      }).catch(function(err){
-        captureEl.style.width = '';
-        captureEl.style.boxSizing = '';
-        pvEl.style.display = 'none';
-        setLoading(false);
-        showToast('❌ สร้าง PDF ไม่สำเร็จ: ' + (err&&err.message||err), 'error');
-      });
-    }, 2000);
+    setLoading(true, 'กำลังสร้าง PDF...');
+
+    buildPlanPdf(fname).then(function(base64){
+      submitAppsRequest({
+        action: 'sendEmail',
+        to: to, cc: cc, bcc: bcc,
+        subject: subject, body: body,
+        from: from,
+        fromName: 'ONDY สาขา' + branch,
+        replyTo: from,
+        pdfBase64: base64,
+        pdfFilename: fname
+      }, 'กำลังส่งอีเมลพร้อมแนบ PDF...');
+    }).catch(function(err){
+      setLoading(false);
+      showToast('❌ สร้าง PDF ไม่สำเร็จ: ' + ((err && err.message) || err), 'error');
+    });
     return;
   }
 
@@ -1515,11 +1479,150 @@ function renderBranchQR(){
   }
 }
 
+// ═══════════════════════════════════════════════════════════════
+//  PRINT / PDF — shared pipeline
+//  Print (window.print) และ Email PDF (html2pdf) ใช้ DOM ชุดเดียวกัน
+//  เพื่อให้ผลลัพธ์ออกมาเหมือนกันทุกครั้ง
+// ═══════════════════════════════════════════════════════════════
+var PV_MM_PER_PX = 25.4 / 96;   // 1px @96dpi -> mm
+var PV_PAGE_W_MM = 297;         // A4 landscape width
+var PV_PAGE_H_MM = 210;         // A4 landscape height
+var _pvStash = [];
+
+// ซ่อน UI ทั้งหมด แสดงเฉพาะ #pv (เลียนแบบ @media print ตอนอยู่บนหน้าจอ)
+function enterPrintMode(){
+  populatePrintView();
+  _pvStash = [];
+  ['header', '.builder', '#pv .pvbar'].forEach(function(sel){
+    Array.prototype.forEach.call(document.querySelectorAll(sel), function(el){
+      _pvStash.push([el, el.style.display]);
+      el.style.display = 'none';
+    });
+  });
+  var pv = document.getElementById('pv');
+  _pvStash.push([pv, pv.style.display]);
+  pv.style.display = 'block';
+  window.scrollTo(0, 0);
+  return pv;
+}
+function exitPrintMode(){
+  for(var i = _pvStash.length - 1; i >= 0; i--){ _pvStash[i][0].style.display = _pvStash[i][1]; }
+  _pvStash = [];
+  document.getElementById('pv').style.display = 'none';
+}
+
+// รอให้รูป (QR LINE ฯลฯ) โหลดครบก่อน capture — กัน PDF ออกมาเป็นช่องว่าง
+function waitForPvAssets(root){
+  var imgs = Array.prototype.slice.call(root.querySelectorAll('img'));
+  var jobs = imgs.map(function(img){
+    if(img.complete && img.naturalWidth > 0) return Promise.resolve();
+    return new Promise(function(res){
+      var done = function(){ res(); };
+      img.addEventListener('load', done, {once:true});
+      img.addEventListener('error', done, {once:true});
+      setTimeout(done, 3000);
+    });
+  });
+  if(document.fonts && document.fonts.ready) jobs.push(document.fonts.ready.catch(function(){}));
+  return Promise.all(jobs).then(function(){
+    // ให้ browser reflow/repaint รอบสุดท้าย
+    return new Promise(function(res){ requestAnimationFrame(function(){ setTimeout(res, 350); }); });
+  });
+}
+
+// สร้าง PDF จาก .pvpage — คืนค่าเป็น base64 string
+// ขนาดหน้ากระดาษคำนวณจากความสูงจริงของเนื้อหา => ไม่มีการตัดกลางการ์ด/ตาราง
+function buildPlanPdf(fname){
+  var pvEl = enterPrintMode();
+  var captureEl = pvEl.querySelector('.pvpage') || pvEl;
+  var prevW = captureEl.style.width, prevMg = captureEl.style.margin, prevBS = captureEl.style.boxSizing;
+
+  // ล็อกความกว้างให้ตรง A4 landscape เป๊ะ ๆ เหมือนตอน print
+  captureEl.style.width = PV_PAGE_W_MM + 'mm';
+  captureEl.style.margin = '0';
+  captureEl.style.boxSizing = 'border-box';
+
+  var restore = function(){
+    captureEl.style.width = prevW;
+    captureEl.style.margin = prevMg;
+    captureEl.style.boxSizing = prevBS;
+    exitPrintMode();
+  };
+
+  return waitForPvAssets(captureEl).then(function(){
+    var wPx = captureEl.offsetWidth || (PV_PAGE_W_MM / PV_MM_PER_PX);
+    var hPx = Math.max(captureEl.scrollHeight, captureEl.offsetHeight);
+    // แปลงสัดส่วนจริงเป็น mm แล้วใช้เป็นขนาดหน้า => ได้ PDF หน้าเดียว ไม่โดนตัด
+    var pageH = Math.max(PV_PAGE_H_MM, Math.ceil((hPx / wPx) * PV_PAGE_W_MM));
+
+    var opt = {
+      margin: 0,
+      filename: (fname || 'ONDY_Plan') + '.pdf',
+      image: {type:'jpeg', quality:0.94},
+      html2canvas: {
+        scale: 2,                    // คมพอสำหรับตัวอักษรไทย 7-9px
+        useCORS: true,
+        allowTaint: true,
+        logging: false,
+        backgroundColor: '#FFFFFF',
+        scrollX: 0,
+        scrollY: 0,
+        windowWidth: Math.ceil(wPx) + 40
+      },
+      jsPDF: {
+        unit: 'mm',
+        format: [PV_PAGE_W_MM, pageH],
+        orientation: PV_PAGE_W_MM >= pageH ? 'landscape' : 'portrait',
+        compress: true
+      },
+      pagebreak: {mode:'avoid-all'}
+    };
+    return html2pdf().from(captureEl).set(opt).outputPdf('arraybuffer');
+  }).then(function(buffer){
+    restore();
+    var bytes = new Uint8Array(buffer);
+    if(bytes.byteLength < 100) throw new Error('ไฟล์ PDF ว่าง');
+    var binary = '', CHUNK = 8192;
+    for(var i = 0; i < bytes.byteLength; i += CHUNK){
+      binary += String.fromCharCode.apply(null, bytes.subarray(i, Math.min(i + CHUNK, bytes.byteLength)));
+    }
+    return window.btoa(binary);
+  }).catch(function(err){
+    restore();
+    throw err;
+  });
+}
+
+// ดาวน์โหลด PDF ตรง ๆ (ใช้ engine เดียวกับที่แนบไป Email)
+function downloadPlanPdf(){
+  if(typeof html2pdf === 'undefined'){ printPlan(); return; }
+  var p = buildPayload();
+  var f1 = (p.firstName||'').replace(/[^ก-๙a-zA-Z0-9]/g,'_').slice(0,20) || 'นักเรียน';
+  var f2 = (p.lastName||'').replace(/[^ก-๙a-zA-Z0-9]/g,'_').slice(0,20);
+  var fname = 'ONDY_' + f1 + (f2?'_'+f2:'') + '_' + new Date().toISOString().slice(0,10);
+  setLoading(true, 'กำลังสร้าง PDF...');
+  buildPlanPdf(fname).then(function(b64){
+    setLoading(false);
+    var bin = window.atob(b64), arr = new Uint8Array(bin.length);
+    for(var i=0;i<bin.length;i++) arr[i] = bin.charCodeAt(i);
+    var url = URL.createObjectURL(new Blob([arr], {type:'application/pdf'}));
+    var a = document.createElement('a');
+    a.href = url; a.download = fname + '.pdf';
+    document.body.appendChild(a); a.click(); document.body.removeChild(a);
+    setTimeout(function(){ URL.revokeObjectURL(url); }, 3000);
+    showToast('✅ ดาวน์โหลด PDF แล้ว', 'success');
+  }).catch(function(err){
+    setLoading(false);
+    showToast('❌ สร้าง PDF ไม่สำเร็จ: ' + ((err&&err.message)||err), 'error');
+  });
+}
+
 function printPlan(){
   populatePrintView();
   var pv = document.getElementById('pv');
   pv.style.display = 'block';
-  setTimeout(function(){ window.print(); }, 1200);
+  var imgsReady = waitForPvAssets(pv);
+  imgsReady.then(function(){ window.print(); });
 }
 
 // ─── รับผลลัพธ์จาก Apps Script ผ่าน postMessage ────────────────
