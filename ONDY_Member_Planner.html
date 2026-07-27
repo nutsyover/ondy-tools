@@ -132,6 +132,8 @@ header{background:var(--navy);padding:12px 20px;display:flex;align-items:center;
 #pv .pvcard-name{font-size:8px;font-weight:700;color:#fff;line-height:1.2;flex:1;}
 #pv .pvcard-hrs{font-size:7px;color:rgba(255,255,255,.75);margin-top:1px;}
 #pv .pvcard-price{font-size:7.5px;color:var(--gold);font-weight:700;margin-top:2px;}
+.mccode{font-size:9.5px;color:#5B6B7A;font-family:'Consolas',monospace;background:#EEF2F6;border:1px solid #D8E0E8;padding:1px 5px;border-radius:3px;flex-shrink:0;letter-spacing:.4px;min-width:44px;text-align:center;}
+.mcitem.sel .mccode{background:#fff;}
 #pv .pvbottom{display:grid;grid-template-columns:1fr auto auto;gap:10px;margin:0 10px 10px;align-items:start;}
 #pv .pvlegend{background:#fff;border:1.5px solid var(--pink-border);border-radius:8px;padding:9px 11px;}
 #pv .pvleg-title{font-size:8px;font-weight:700;color:var(--maroon);text-transform:uppercase;letter-spacing:.7px;margin-bottom:7px;}
@@ -206,23 +208,18 @@ header{background:var(--navy);padding:12px 20px;display:flex;align-items:center;
       <div class="msearch">
         <div class="msearch-box">
           <span class="msearch-icon">🔎</span>
-          <input class="msearch-input" id="courseSearch" type="search" placeholder="ค้นหาชื่อคอร์ส วิชา หรือรหัสคอร์ส" oninput="onCourseSearch(this.value)" autocomplete="off">
+          <input class="msearch-input" id="courseSearch" type="search" placeholder="ค้นหาด้วย รหัสวิชา (เช่น 3121) / ชื่อคอร์ส / วิชา" oninput="onCourseSearch(this.value)" autocomplete="off">
         </div>
         <button class="msearch-clear" type="button" onclick="clearCourseSearch()">ล้าง</button>
       </div>
       <div class="msearch-meta"><span>ค้นหาและเลือกจากรายการด้านล่าง</span><strong id="mResultCount"></strong></div>
       <div class="mtabs" id="mtabs">
         <div class="mtab active" onclick="mFilterCat('all',this)">ทั้งหมด</div>
-        <div class="mtab" onclick="mFilterCat('b99',this)">99B ปรับพื้นฐาน</div>
-        <div class="mtab" onclick="mFilterCat('pack-tcas',this)">Pack TCAS</div>
-        <div class="mtab" onclick="mFilterCat('pack-upskill',this)">TCAS + Upskill</div>
-        <div class="mtab" onclick="mFilterCat('alevel',this)">A-Level</div>
-        <div class="mtab" onclick="mFilterCat('tgat',this)">TGAT</div>
-        <div class="mtab" onclick="mFilterCat('tpat',this)">TPAT</div>
-        <div class="mtab" onclick="mFilterCat('bundle',this)">Bundle</div>
-        <div class="mtab" onclick="mFilterCat('sr',this)">ม.ปลาย เนื้อหา</div>
-        <div class="mtab" onclick="mFilterCat('jr',this)">ม.ต้น เนื้อหา</div>
-        <div class="mtab" onclick="mFilterCat('ielts',this)">IELTS/SAT</div>
+        <div class="mtab" onclick="mFilterCat('jr-cont',this)">1. ม.ต้น เนื้อหา</div>
+        <div class="mtab" onclick="mFilterCat('jr-comp',this)">2. ม.ต้น แข่งขัน 🏆</div>
+        <div class="mtab" onclick="mFilterCat('sr-cont',this)">3. ม.ปลาย เนื้อหา</div>
+        <div class="mtab" onclick="mFilterCat('sr-comp',this)">4. ม.ปลาย แข่งขัน 🏆</div>
+        <div class="mtab" onclick="mFilterCat('other',this)">อื่นๆ (99B / Bundle / IELTS)</div>
       </div>
       <div style="margin-bottom:12px;padding:10px;background:#F0FDF4;border:1.5px solid #86EFAC;border-radius:8px;">
         <div style="font-size:11px;font-weight:700;color:#166534;margin-bottom:3px;">✏️ หาไม่เจอ? เพิ่มคอร์สเอง</div>
@@ -494,12 +491,29 @@ header{background:var(--navy);padding:12px 20px;display:flex;align-items:center;
     <div class="bcard">
       <div class="bcard-title">&#128200; เกณฑ์คะแนนที่ต้องการ</div>
       <div class="fgrid">
-        <div><label class="flbl">TGAT</label><input class="finput" id="scTgat" type="number" placeholder="%" oninput="updateAll()"></div>
-        <div><label class="flbl">ฟิสิกส์</label><input class="finput" id="scPhy" type="number" placeholder="%" oninput="updateAll()"></div>
-        <div><label class="flbl">คณิตศาสตร์</label><input class="finput" id="scMath" type="number" placeholder="%" oninput="updateAll()"></div>
-        <div><label class="flbl">เคมี</label><input class="finput" id="scChem" type="number" placeholder="%" oninput="updateAll()"></div>
-        <div><label class="flbl">ชีววิทยา</label><input class="finput" id="scBio" type="number" placeholder="%" oninput="updateAll()"></div>
-        <div><label class="flbl">ภาษาอังกฤษ</label><input class="finput" id="scEng" type="number" placeholder="%" oninput="updateAll()"></div>
+        <div style="grid-column:1/-1;font-size:10px;font-weight:800;color:#00838F;margin:2px 0 -2px;">TGAT — ความถนัดทั่วไป</div>
+        <div><label class="flbl">TGAT1 สื่อสารอังกฤษ</label><input class="finput" id="scTgat1" type="number" placeholder="คะแนน" oninput="updateAll()"></div>
+        <div><label class="flbl">TGAT2 คิดเชิงเหตุผล</label><input class="finput" id="scTgat2" type="number" placeholder="คะแนน" oninput="updateAll()"></div>
+        <div><label class="flbl">TGAT3 สมรรถนะทำงาน</label><input class="finput" id="scTgat3" type="number" placeholder="คะแนน" oninput="updateAll()"></div>
+
+        <div style="grid-column:1/-1;font-size:10px;font-weight:800;color:#880E4F;margin:6px 0 -2px;">TPAT — ความถนัดวิชาชีพ</div>
+        <div><label class="flbl">TPAT1 ถนัดแพทย์</label><input class="finput" id="scTpat1" type="number" placeholder="คะแนน" oninput="updateAll()"></div>
+        <div><label class="flbl">TPAT2 ถนัดศิลปกรรม</label><input class="finput" id="scTpat2" type="number" placeholder="คะแนน" oninput="updateAll()"></div>
+        <div><label class="flbl">TPAT3 ถนัดวิทย์-เทคโน</label><input class="finput" id="scTpat3" type="number" placeholder="คะแนน" oninput="updateAll()"></div>
+        <div><label class="flbl">TPAT4 ถนัดสถาปัตย์</label><input class="finput" id="scTpat4" type="number" placeholder="คะแนน" oninput="updateAll()"></div>
+        <div><label class="flbl">TPAT5 ถนัดครุศาสตร์</label><input class="finput" id="scTpat5" type="number" placeholder="คะแนน" oninput="updateAll()"></div>
+
+        <div style="grid-column:1/-1;font-size:10px;font-weight:800;color:#1B5E20;margin:6px 0 -2px;">A-Level — วิชาเฉพาะ</div>
+        <div><label class="flbl">A-Level คณิต 1 (ประยุกต์)</label><input class="finput" id="scMath1" type="number" placeholder="คะแนน" oninput="updateAll()"></div>
+        <div><label class="flbl">A-Level คณิต 2 (พื้นฐาน)</label><input class="finput" id="scMath2" type="number" placeholder="คะแนน" oninput="updateAll()"></div>
+        <div><label class="flbl">A-Level วิทยาศาสตร์ประยุกต์</label><input class="finput" id="scSci" type="number" placeholder="คะแนน" oninput="updateAll()"></div>
+        <div><label class="flbl">A-Level ฟิสิกส์</label><input class="finput" id="scPhy" type="number" placeholder="คะแนน" oninput="updateAll()"></div>
+        <div><label class="flbl">A-Level เคมี</label><input class="finput" id="scChem" type="number" placeholder="คะแนน" oninput="updateAll()"></div>
+        <div><label class="flbl">A-Level ชีววิทยา</label><input class="finput" id="scBio" type="number" placeholder="คะแนน" oninput="updateAll()"></div>
+        <div><label class="flbl">A-Level สังคมศึกษา</label><input class="finput" id="scSoc" type="number" placeholder="คะแนน" oninput="updateAll()"></div>
+        <div><label class="flbl">A-Level ภาษาไทย</label><input class="finput" id="scThai" type="number" placeholder="คะแนน" oninput="updateAll()"></div>
+        <div><label class="flbl">A-Level ภาษาอังกฤษ</label><input class="finput" id="scEng" type="number" placeholder="คะแนน" oninput="updateAll()"></div>
+        <div><label class="flbl">A-Level ภาษาต่างประเทศอื่น</label><input class="finput" id="scLang" type="number" placeholder="คะแนน" oninput="updateAll()"></div>
       </div>
     </div>
   </div>
@@ -648,14 +662,7 @@ function buildTakeNote(){
   }
   if(persona) lines.push('ONDY Persona: ' + persona);
 
-  var scoreFields = [
-    ['TGAT','scTgat'], ['ฟิสิกส์','scPhy'], ['คณิตศาสตร์','scMath'],
-    ['เคมี','scChem'], ['ชีววิทยา','scBio'], ['ภาษาอังกฤษ','scEng']
-  ];
-  var scores = scoreFields.map(function(item){
-    var value = (document.getElementById(item[1])||{}).value || '';
-    return value ? item[0] + ' ' + value + '%' : '';
-  }).filter(Boolean);
+  var scores = getFilledScores().map(function(s){ return s.label + ' ' + s.value; });
   if(scores.length) lines.push('คะแนนเป้าหมาย: ' + scores.join(', '));
   return lines.join('\n');
 }
@@ -894,116 +901,434 @@ function sendViaMailto(){
   showToast('เปิด Email Client แล้ว — กด Send ในโปรแกรม Email ของคุณ', 'success', 6000);
 }
 
+// ─── เกณฑ์คะแนนเป้าหมาย : วิชาสอบ TCAS ทั้งหมด ────────────────────
+// [ชื่อที่แสดง, id ของ input, กลุ่มสนามสอบ]
+var SCORE_FIELDS = [
+  ['TGAT1 สื่อสารอังกฤษ','scTgat1','TGAT'],
+  ['TGAT2 คิดเชิงเหตุผล','scTgat2','TGAT'],
+  ['TGAT3 สมรรถนะทำงาน','scTgat3','TGAT'],
+  ['TPAT1 ถนัดแพทย์','scTpat1','TPAT'],
+  ['TPAT2 ถนัดศิลปกรรม','scTpat2','TPAT'],
+  ['TPAT3 ถนัดวิทย์-เทคโน','scTpat3','TPAT'],
+  ['TPAT4 ถนัดสถาปัตย์','scTpat4','TPAT'],
+  ['TPAT5 ถนัดครุศาสตร์','scTpat5','TPAT'],
+  ['A-Level คณิต 1','scMath1','A-Level'],
+  ['A-Level คณิต 2','scMath2','A-Level'],
+  ['A-Level วิทย์ประยุกต์','scSci','A-Level'],
+  ['A-Level ฟิสิกส์','scPhy','A-Level'],
+  ['A-Level เคมี','scChem','A-Level'],
+  ['A-Level ชีววิทยา','scBio','A-Level'],
+  ['A-Level สังคมศึกษา','scSoc','A-Level'],
+  ['A-Level ภาษาไทย','scThai','A-Level'],
+  ['A-Level ภาษาอังกฤษ','scEng','A-Level'],
+  ['A-Level ภาษาต่างประเทศอื่น','scLang','A-Level']
+];
+function getFilledScores(){
+  return SCORE_FIELDS.map(function(f){
+    var v = (document.getElementById(f[1])||{}).value;
+    return (v !== undefined && String(v).trim() !== '') ? {label:f[0], value:String(v).trim(), group:f[2]} : null;
+  }).filter(Boolean);
+}
+
 var MONTHS = ['ม.ค.','ก.พ.','มี.ค.','เม.ย.','พ.ค.','มิ.ย.','ก.ค.','ส.ค.','ก.ย.','ต.ค.','พ.ย.','ธ.ค.'];
 var LEVELS = ['ม.1','ม.2','ม.3','ม.4','ม.5','ม.6'];
 function getCurrentLevels(){ return LEVELS; }
 function getActiveCal(){ return cal; }
 var COURSES = [
-  // ── 99B ปรับพื้นฐาน ──────────────────────────────────
-  {id:'b99-math',cat:'b99',name:'ปรับพื้นฐาน คณิตศาสตร์ ม.ปลาย',  hours:10,price:99},
-  {id:'b99-phy', cat:'b99',name:'ปรับพื้นฐาน ฟิสิกส์ ม.4',         hours:10,price:99},
-  {id:'b99-chem',cat:'b99',name:'ปรับพื้นฐาน เคมี',                 hours:10,price:99},
-  {id:'b99-bio', cat:'b99',name:'ปรับพื้นฐาน ชีววิทยา',             hours:10,price:99},
-  {id:'b99-eng', cat:'b99',name:'ปรับพื้นฐาน ภาษาอังกฤษ ม.ปลาย',  hours:10,price:99},
-  {id:'b99-tp1', cat:'b99',name:'ปรับพื้นฐาน TPAT1 ความถนัดแพทย์', hours:8, price:99},
-  {id:'b99-tp3', cat:'b99',name:'ปรับพื้นฐาน TPAT3 วิทย์-เทคโนโลยี',hours:8,price:99},
-  {id:'b99-3a',  cat:'b99',name:'Special Pack 99B คณิต+ชีวะ+เคมี',  hours:30,price:297},
-  {id:'b99-3b',  cat:'b99',name:'Special Pack 99B ฟิสิกส์+ชีวะ+เคมี',hours:30,price:297},
-  {id:'b99-3c',  cat:'b99',name:'Special Pack 99B ฟิสิกส์+คณิต+ชีวะ',hours:30,price:297},
-  {id:'b99-pmath',cat:'b99',name:'Special Pack ปรับพื้นฐาน คณิต TCAS',hours:10,price:99},
-  {id:'b99-pphy', cat:'b99',name:'Special Pack ปรับพื้นฐาน ฟิสิกส์ TCAS',hours:10,price:99},
-  {id:'b99-pbio', cat:'b99',name:'Special Pack ปรับพื้นฐาน ชีวะ TCAS',hours:10,price:99},
-  {id:'b99-peng', cat:'b99',name:'Special Pack ปรับพื้นฐาน อังกฤษ TCAS',hours:10,price:99},
-  {id:'b99-med',  cat:'b99',name:'Special Pack ปรับพื้นฐาน หมอ 6 วิชา',hours:60,price:594},
-  {id:'b99-eng2', cat:'b99',name:'Special Pack ปรับพื้นฐาน วิศวะ 5 วิชา',hours:50,price:495},
-  // ── Pack TCAS ─────────────────────────────────────────
-  {id:'pk-math',cat:'pack-tcas',name:'Pack TCAS คณิตศาสตร์',         hours:40,price:9500,hot:1},
-  {id:'pk-phy', cat:'pack-tcas',name:'Pack TCAS ฟิสิกส์',             hours:40,price:9500,hot:1},
-  {id:'pk-chem',cat:'pack-tcas',name:'Pack TCAS เคมี',                hours:38,price:9500},
-  {id:'pk-bio', cat:'pack-tcas',name:'Pack TCAS ชีววิทยา',            hours:36,price:9500},
-  {id:'pk-eng', cat:'pack-tcas',name:'Pack TCAS ภาษาอังกฤษ',          hours:32,price:8500},
-  // ── Pack TCAS + Upskill ───────────────────────────────
-  {id:'up-math',cat:'pack-upskill',name:'Pack TCAS + Upskill คณิตศาสตร์',hours:55,price:11900,hot:1},
-  {id:'up-phy', cat:'pack-upskill',name:'Pack TCAS + Upskill ฟิสิกส์',   hours:55,price:11900},
-  {id:'up-chem',cat:'pack-upskill',name:'Pack TCAS + Upskill เคมี',       hours:52,price:11900},
-  {id:'up-bio', cat:'pack-upskill',name:'Pack TCAS + Upskill ชีววิทยา',  hours:50,price:11900},
-  {id:'up-eng', cat:'pack-upskill',name:'Pack TCAS + Upskill ภาษาอังกฤษ',hours:45,price:11000},
-  {id:'up-4',   cat:'pack-upskill',name:'Pack Upskill TCAS 4 วิชา (ฟิสิกส์,เคมี,ชีวะ,คณิต)',hours:200,price:11900,hot:1},
-  // ── A-Level Upskill ───────────────────────────────────
-  {id:'al-math',cat:'alevel',name:'Upskill คณิตศาสตร์ประยุกต์ A-Level',hours:50,price:4000,hot:1},
-  {id:'al-phy', cat:'alevel',name:'Upskill ฟิสิกส์ A-Level',           hours:50,price:4000,hot:1},
-  {id:'al-chem',cat:'alevel',name:'Upskill เคมี A-Level',               hours:48,price:4000},
-  {id:'al-bio', cat:'alevel',name:'Upskill ชีววิทยา A-Level',           hours:50,price:4000},
-  {id:'al-eng', cat:'alevel',name:'A-Level ภาษาอังกฤษ',                 hours:40,price:4000},
-  // ── TGAT ──────────────────────────────────────────────
-  {id:'tgat1',cat:'tgat',name:'TGAT 1 การสื่อสารภาษาอังกฤษ',            hours:25,price:4900,hot:1},
-  {id:'tgat23',cat:'tgat',name:'TGAT 2 & 3 การคิดเชิงเหตุผล+สมรรถนะ',   hours:30,price:1890},
-  {id:'tgat2',cat:'tgat',name:'TGAT 2 การคิดอย่างมีเหตุผล',              hours:20,price:3900},
-  {id:'tgat3',cat:'tgat',name:'TGAT 3 สมรรถนะการทำงาน',                  hours:18,price:3500},
-  // ── TPAT ──────────────────────────────────────────────
-  {id:'tpat1',cat:'tpat',name:'TPAT 1 ความถนัดแพทย์',                    hours:30,price:5500,hot:1},
-  {id:'tpat2',cat:'tpat',name:'TPAT 2 ความถนัดศิลปะ',                    hours:24,price:4200},
-  {id:'tpat3',cat:'tpat',name:'TPAT 3 ความถนัดวิทยาศาสตร์-เทคโนโลยี',   hours:28,price:5200},
-  {id:'tpat4',cat:'tpat',name:'TPAT 4 ความถนัดสถาปัตยกรรม',              hours:26,price:4600},
-  {id:'tpat5',cat:'tpat',name:'TPAT 5 ความถนัดครุศาสตร์-ศึกษาศาสตร์',   hours:22,price:3900},
-  // ── Bundle ────────────────────────────────────────────
-  {id:'bnd-med',cat:'bundle',name:'Pack เข้าแพทย์ 6 วิชา',              hours:60,price:594,hot:1},
-  {id:'bnd-eng',cat:'bundle',name:'Pack วิศวะ 5 วิชา',                   hours:50,price:495},
-  // ── ม.ปลาย เนื้อหา ──────────────────────────────────
-  {id:'sr-phy1',cat:'sr',name:'ฟิสิกส์: บทนำและการวัด',                  hours:6, price:1100},
-  {id:'sr-phy2',cat:'sr',name:'ฟิสิกส์: การเคลื่อนที่แนวตรง',             hours:10,price:1800},
-  {id:'sr-phy3',cat:'sr',name:'ฟิสิกส์: กฎของนิวตัน',                     hours:8, price:1500},
-  {id:'sr-phy4',cat:'sr',name:'ฟิสิกส์: สมดุลกล',                         hours:8, price:1500},
-  {id:'sr-phy5',cat:'sr',name:'ฟิสิกส์: การเคลื่อนที่แบบหมุน',            hours:8, price:1400},
-  {id:'sr-phyp1',cat:'sr',name:'ฟิสิกส์ Pack: กลศาสตร์ 1 (4 บท)',        hours:30,price:4500},
-  {id:'sr-phy6',cat:'sr',name:'ฟิสิกส์: การเคลื่อนที่แบบฮาร์มอนิก',      hours:7, price:1300},
-  {id:'sr-phy7',cat:'sr',name:'ฟิสิกส์: คลื่น',                           hours:10,price:1900},
-  {id:'sr-phy8',cat:'sr',name:'ฟิสิกส์: แสงเชิงรังสีและเชิงคลื่น',        hours:12,price:2500},
-  {id:'sr-phyp2',cat:'sr',name:'ฟิสิกส์ Pack: คลื่น+ฮาร์มอนิก+แสง',     hours:30,price:5500},
-  {id:'sr-chem1',cat:'sr',name:'เคมี: สมดุลเคมี',                          hours:10,price:1900},
-  {id:'sr-bio1', cat:'sr',name:'ชีววิทยา: ธรรมชาติของสิ่งมีชีวิต',        hours:5, price:600},
-  {id:'sr-engp', cat:'sr',name:'อังกฤษ Pack: เสริมทักษะการอ่าน ม.ปลาย',  hours:40,price:7600},
-  // ── ม.ต้น เนื้อหา ───────────────────────────────────
-  {id:'jr-phy1',cat:'jr',name:'ฟิสิกส์ ม.ต้น: กลศาสตร์ 1',              hours:12,price:2200},
-  {id:'jr-phy2',cat:'jr',name:'ฟิสิกส์ ม.ต้น: กลศาสตร์ 2',              hours:9, price:1600},
-  {id:'jr-phy3',cat:'jr',name:'ฟิสิกส์ ม.ต้น: คลื่น',                    hours:9, price:1700},
-  {id:'jr-phy4',cat:'jr',name:'ฟิสิกส์ ม.ต้น: สมบัติสารและอุตุนิยมวิทยา',hours:9,price:1700},
-  {id:'jr-phy5',cat:'jr',name:'ฟิสิกส์ ม.ต้น: ไฟฟ้าและอิเล็กทรอนิกส์',   hours:9, price:1600},
-  {id:'jr-phyp',cat:'jr',name:'ฟิสิกส์ ม.ต้น Pack: กลศาสตร์ 1+2+สมบัติสาร',hours:30,price:4200},
-  {id:'jr-chem1',cat:'jr',name:'เคมี ม.ต้น: พื้นฐานเคมี สารรอบตัว',      hours:7, price:1300},
-  {id:'jr-math1',cat:'jr',name:'คณิต ม.ต้น: จำนวนและตัวเลข',              hours:12,price:2400},
-  {id:'jr-math2',cat:'jr',name:'คณิต ม.ต้น: พาราโบลา',                    hours:10,price:1900},
-  {id:'jr-math3',cat:'jr',name:'คณิต ม.ต้น: ทฤษฎีบทเส้นขนานและวงกลม',   hours:12,price:2200},
-  {id:'jr-eng1', cat:'jr',name:'อังกฤษ ม.ต้น: ปรับพื้นฐาน',               hours:15,price:2899},
-  {id:'jr-eng2', cat:'jr',name:'อังกฤษ ม.ต้น: Grammar 1',                  hours:15,price:2899},
-  {id:'jr-eng3', cat:'jr',name:'อังกฤษ ม.ต้น: Grammar 2',                  hours:15,price:2899},
-  {id:'jr-engp', cat:'jr',name:'อังกฤษ ม.ต้น Pack: Grammar 1+2',           hours:30,price:4999},
-  // ── IELTS / International ─────────────────────────────
-  {id:'ielts',cat:'ielts',name:'IELTS Prep Course',                        hours:45,price:7500,hot:1},
-  {id:'sat',  cat:'ielts',name:'SAT Math + English',                        hours:50,price:8500},
+  // ═══ Catalog ปี 2026 — ดึงจาก [PD] ราคาคอร์สระบบปี 2026.xlsx (27 ก.ค. 2026) ═══
+  // ── jr-comp · BIO ──
+  {id:'jr-comp-2114',cat:'jr-comp',code:'2114',subj:'BIO',grp:'สอบเข้าเตรียมอุดม/MWIT',name:'ติวเข้มเนื้อหาชีววิทยา เข้าเตรียมอุดม มหิดล กำเนิดวิทย์ และโรงเรียนแข่งขันสูง',hours:55,price:5500},
+  {id:'jr-comp-2115',cat:'jr-comp',code:'2115',subj:'BIO',grp:'สอบเข้าเตรียมอุดม/MWIT',name:'UpSkill ตะลุยโจทย์ชีววิทยา เข้ามหิดลฯ และจุฬาภรณฯ',hours:20,price:2900},
+  {id:'jr-comp-2116',cat:'jr-comp',code:'2116',subj:'BIO',grp:'สอบเข้าเตรียมอุดม/MWIT',name:'UpSkill ตะลุยโจทย์ชีววิทยา เข้าเตรียมอุดมฯ',hours:17,price:2900},
+  {id:'jr-comp-2117',cat:'jr-comp',code:'2117',subj:'BIO',grp:'ไม่ปรับราคา',name:'ชีววิทยาเพื่อสอบ IJSO',hours:44,price:5500},
+  {id:'jr-comp-2118',cat:'jr-comp',code:'2118',subj:'BIO',grp:'สอบเข้าสอวน./สพฐ.',name:'ชีววิทยาเพื่อสอบ สอวน.',hours:84,price:6600},
+  {id:'jr-comp-2189',cat:'jr-comp',code:'2189',subj:'BIO',grp:'สอบเข้าเตรียมอุดม/MWIT',name:'Pack ติวเข้ม + UpSkill ตะลุยโจทย์ชีววิทยาเข้ามหิดลฯ และจุฬาภรณฯ',hours:75,price:6800},
+  {id:'jr-comp-2190',cat:'jr-comp',code:'2190',subj:'BIO',grp:'สอบเข้าเตรียมอุดม/MWIT',name:'Pack ติวเข้ม + UpSkill ตะลุยโจทย์ชีววิทยาเข้าเตรียมอุดมฯ',hours:72,price:6800},
+  // ── jr-comp · CHEM ──
+  {id:'jr-comp-3109',cat:'jr-comp',code:'3109',subj:'CHEM',grp:'ไม่ปรับราคา',name:'Advance เคมี ม.ต้น (เพื่อสอบ IJSO รอบ 1)',hours:83,price:5500},
+  {id:'jr-comp-3110',cat:'jr-comp',code:'3110',subj:'CHEM',grp:'ไม่ปรับราคา',name:'เคมีเพื่อสอบเข้า สอวน. ค่าย1',hours:49,price:5500},
+  {id:'jr-comp-3111',cat:'jr-comp',code:'3111',subj:'CHEM',grp:'ไม่ปรับราคา',name:'Advance เคมี ม.ต้น (เพื่อสอบ IJSO รอบ 2)',hours:33,price:5500},
+  {id:'jr-comp-3112',cat:'jr-comp',code:'3112',subj:'CHEM',grp:'สอบเข้าเตรียมอุดม/MWIT',name:'ติวเข้มเนื้อหาเคมีเข้า เตรียมอุดมฯ มหิดลฯ กำเนิดวิทย์ และโรงเรียนแข่งขันสูง',hours:50,price:5300},
+  {id:'jr-comp-3113',cat:'jr-comp',code:'3113',subj:'CHEM',grp:'สอบเข้าเตรียมอุดม/MWIT',name:'UpSkill ตะลุยโจทย์เคมีเข้ามหิดลฯ และจุฬาภรณฯ',hours:22,price:3000},
+  {id:'jr-comp-3114',cat:'jr-comp',code:'3114',subj:'CHEM',grp:'สอบเข้าเตรียมอุดม/MWIT',name:'UpSkill ตะลุยโจทย์เคมีเข้าเตรียมอุดมฯ',hours:20,price:3000},
+  {id:'jr-comp-3190',cat:'jr-comp',code:'3190',subj:'CHEM',grp:'สอบเข้าเตรียมอุดม/MWIT',name:'Pack ติวเข้ม + Upskill ตะลุยโจทย์เคมีเข้ามหิดลฯ และจุฬาภรณฯ (3112, 3113)',hours:72,price:6500},
+  {id:'jr-comp-3191',cat:'jr-comp',code:'3191',subj:'CHEM',grp:'สอบเข้าเตรียมอุดม/MWIT',name:'Pack ติวเข้ม + Upskill ตะลุยโจทย์เคมีเข้าเตรียมอุดมฯ (3112, 3114)',hours:62.5,price:6500},
+  {id:'jr-comp-3309',cat:'jr-comp',code:'3309',subj:'CHEM',grp:'ไม่ปรับราคา',name:'Advanced เคมี อินทรีย์ 1',hours:26,price:5500},
+  {id:'jr-comp-3310',cat:'jr-comp',code:'3310',subj:'CHEM',grp:'ไม่ปรับราคา',name:'Advanced เคมี อินทรีย์ 2',hours:14,price:2200},
+  {id:'jr-comp-3311',cat:'jr-comp',code:'3311',subj:'CHEM',grp:'ไม่ปรับราคา',name:'เคมี สอวน. ค่ายที่ 1 Super Chem Part 1',hours:32,price:5500},
+  {id:'jr-comp-3312',cat:'jr-comp',code:'3312',subj:'CHEM',grp:'ไม่ปรับราคา',name:'เคมี สอวน. ค่ายที่ 2 Super Chem Part 2',hours:26,price:5500},
+  // ── jr-comp · ENG ──
+  {id:'jr-comp-P2031',cat:'jr-comp',code:'P2031',subj:'ENG',grp:'สอบเข้าเตรียมอุดม/MWIT',name:'ติวเข้มภาษาอังกฤษสอบเข้า ม.4 รร.เตรียมอุดมฯ และ รร.ชั้นนำเล่ม 1 / เล่ม 2',hours:66,price:6900},
+  {id:'jr-comp-P2032',cat:'jr-comp',code:'P2032',subj:'ENG',grp:'สอบเข้าเตรียมอุดม/MWIT',name:'Upskill ภาษาอังกฤษสอบเข้า ม.4 รร.เตรียมอุดมฯ และ รร.ชั้นนำ 1',hours:33,price:4900},
+  {id:'jr-comp-P6147',cat:'jr-comp',code:'P6147',subj:'ENG',grp:'สอบเข้าเตรียมอุดม/MWIT',name:'Upskill ภาษาอังกฤษสอบเข้า ม.4 รร.เตรียมอุดมฯ และ รร.ชั้นนำ 2',hours:33,price:4900},
+  {id:'jr-comp-P6191',cat:'jr-comp',code:'P6191',subj:'ENG',grp:'สอบเข้าเตรียมอุดม/MWIT',name:'Pack ติวเข้ม ตะลุยโจทย์ภาษาอังกฤษสอบเข้า ม.4 รร.เตรียมอุดมฯ และ รร.ชั้นนำ',hours:132,price:9900},
+  // ── jr-comp · MATH ──
+  {id:'jr-comp-8113',cat:'jr-comp',code:'8113',subj:'MATH',grp:'สอบเข้าเตรียมอุดม/MWIT',name:'คณิตศาสตร์เข้ามหิดลฯ กำเนิดวิทย์ และจุฬาภรณฯ',hours:82,price:6900},
+  {id:'jr-comp-8114',cat:'jr-comp',code:'8114',subj:'MATH',grp:'สอบเข้าเตรียมอุดม/MWIT',name:'คณิตศาสตร์เข้าเตรียมอุดมฯ',hours:66,price:6900},
+  {id:'jr-comp-8116',cat:'jr-comp',code:'8116',subj:'MATH',grp:'สอบเข้าเตรียมอุดม/MWIT',name:'Upskill ตะลุยโจทย์คณิตศาสตร์เข้าเตรียมอุดมฯ',hours:43,price:4900},
+  {id:'jr-comp-8117',cat:'jr-comp',code:'8117',subj:'MATH',grp:'สอบเข้าเตรียมอุดม/MWIT',name:'Upskill ตะลุยโจทย์คณิตศาสตร์เข้ามหิดลฯ กำเนิดวิทย์ และจุฬาภรณฯ',hours:43,price:4900},
+  {id:'jr-comp-8119',cat:'jr-comp',code:'8119',subj:'MATH',grp:'สอบเข้าสอวน./สพฐ.',name:'คณิตศาสตร์เพื่อสอบเข้า สพฐ. (รอบ1 และ 2)',hours:44,price:5500},
+  {id:'jr-comp-8121',cat:'jr-comp',code:'8121',subj:'MATH',grp:'สอบเข้าสอวน./สพฐ.',name:'ตะลุยโจทย์คณิตฯ สสวท., สพฐ รอบ 1 และรอบ 2 (ประถม)',hours:55,price:5500},
+  {id:'jr-comp-8123',cat:'jr-comp',code:'8123',subj:'MATH',grp:'สอบเข้าสอวน./สพฐ.',name:'คณิตศาสตร์เพื่อสอบ IJSO',hours:22,price:3700},
+  {id:'jr-comp-8192',cat:'jr-comp',code:'8192',subj:'MATH',grp:'สอบเข้าเตรียมอุดม/MWIT',name:'Pack ติวเข้ม + Upskill ตะลุยโจทย์คณิตศาสตร์เข้าเตรียมอุดม (8114, 8116)',hours:109,price:9300},
+  {id:'jr-comp-8193',cat:'jr-comp',code:'8193',subj:'MATH',grp:'สอบเข้าเตรียมอุดม/MWIT',name:'Pack ติวเข้ม + Upskill ตะลุยโจทย์คณิตศาสตร์เข้ามหิดลฯ กำเนิดวิทย์ และจุฬาภรณฯ (8113, 8117)',hours:125,price:9300},
+  {id:'jr-comp-8401',cat:'jr-comp',code:'8401',subj:'MATH',grp:'สอบเข้าสอวน./สพฐ.',name:'คณิตศาสตร์เพื่อสอบ สอวน.',hours:43,price:6000},
+  {id:'jr-comp-8403',cat:'jr-comp',code:'8403',subj:'MATH',grp:'สอบเข้าสอวน./สพฐ.',name:'คณิตศาสตร์เพื่อสอบ สอวน. คอมพิวเตอร์',hours:30,price:6000},
+  {id:'jr-comp-8404',cat:'jr-comp',code:'8404',subj:'MATH',grp:'สินค้าใหม่',name:'Coding for สอวน. คอมพิวเตอร์ (TOI-Zero)',hours:20,price:3500},
+  {id:'jr-comp-8499',cat:'jr-comp',code:'8499',subj:'MATH',grp:'สินค้าใหม่',name:'Pack คณิตศาสตร์เพื่อสอบ สอวน. คอมพิวเตอร์ + TOI-Zero',hours:50,price:7500},
+  // ── jr-comp · MIX ──
+  {id:'jr-comp-9287',cat:'jr-comp',code:'9287',subj:'MIX',grp:'รวมวิชา สอบเข้าเตรียมอุดม/MWIT/KVIS',name:'Pack ติวเข้มเข้ามหิดลฯ และจุฬาภรณฯ คณิต & ฟิสิกส์',hours:125.4,price:9300},
+  {id:'jr-comp-9288',cat:'jr-comp',code:'9288',subj:'MIX',grp:'รวมวิชา สอบเข้าเตรียมอุดม/MWIT/KVIS',name:'Pack ติวเข้มเข้าเตรียมอุดมฯ คณิต & ฟิสิกส์',hours:110,price:9300},
+  {id:'jr-comp-9289',cat:'jr-comp',code:'9289',subj:'MIX',grp:'รวมวิชา สอบเข้าเตรียมอุดม/MWIT/KVIS',name:'Pack ติวเข้มเข้าเตรียมอุดมฯ มหิดลฯ กำเนิดวิทย์ และโรงเรียนแข่งขันสูง ชีวะ & เคมี',hours:110,price:8200},
+  {id:'jr-comp-9290',cat:'jr-comp',code:'9290',subj:'MIX',grp:'รวมวิชา สอบเข้าเตรียมอุดม/MWIT/KVIS',name:'Pack Upskill มหิดลฯ และจุฬาภรณฯ (คณิต ฟิสิกส์ เคมี ชีวะ)',hours:130.9,price:12000},
+  {id:'jr-comp-9291',cat:'jr-comp',code:'9291',subj:'MIX',grp:'รวมวิชา สอบเข้าเตรียมอุดม/MWIT/KVIS',name:'Pack Upskill เตรียมอุดมฯ 4 วิชา (คณิต ฟิสิกส์ เคมี ชีวะ)',hours:120.4,price:12000},
+  {id:'jr-comp-9295',cat:'jr-comp',code:'9295',subj:'MIX',grp:'รวมวิชา สอบเข้าเตรียมอุดม/MWIT/KVIS',name:'Pack Upskill เตรียมอุดมฯ 5 วิชา (คณิต ฟิสิกส์ เคมี ชีวะ อังกฤษ)',hours:153.4,price:16000},
+  // ── jr-comp · PHY ──
+  {id:'jr-comp-1106',cat:'jr-comp',code:'1106',subj:'PHY',grp:'สอบเข้าเตรียมอุดม/MWIT',name:'ติวเข้มฟิสิกส์เข้าเตรียมอุดมฯ',hours:44,price:5500},
+  {id:'jr-comp-1107',cat:'jr-comp',code:'1107',subj:'PHY',grp:'สอบเข้าเตรียมอุดม/MWIT',name:'ติวเข้มฟิสิกส์เข้ามหิดลฯ และจุฬาภรณฯ',hours:44,price:5500},
+  {id:'jr-comp-1108',cat:'jr-comp',code:'1108',subj:'PHY',grp:'สอบเข้าสอวน./สพฐ.',name:'ฟิสิกส์เพื่อสอบ สอวน. ค่ายแรก',hours:75,price:6900},
+  {id:'jr-comp-1112',cat:'jr-comp',code:'1112',subj:'PHY',grp:'สอบเข้าเตรียมอุดม/MWIT',name:'Upskill ตะลุยโจทย์ฟิสิกส์เข้าเตรียมอุดมฯ',hours:40,price:5000},
+  {id:'jr-comp-1113',cat:'jr-comp',code:'1113',subj:'PHY',grp:'สอบเข้าเตรียมอุดม/MWIT',name:'Upskill ตะลุยโจทย์ฟิสิกส์เข้ามหิดลฯ จุฬาภรณฯ และโรงเรียนแข่งขันสูง',hours:40,price:5000},
+  {id:'jr-comp-1114',cat:'jr-comp',code:'1114',subj:'PHY',grp:'สอบเข้าสอวน./สพฐ.',name:'Upskill ตะลุยโจทย์ฟิสิกส์เพื่อสอบ สอวน. ค่ายแรก และ IJSO',hours:17,price:2900},
+  {id:'jr-comp-1185',cat:'jr-comp',code:'1185',subj:'PHY',grp:'สอบเข้าเตรียมอุดม/MWIT',name:'Pack ติวเข้ม + Upskill ตะลุยโจทย์ ฟิสิกส์เข้าเตรียมอุดมฯ',hours:84,price:8200},
+  {id:'jr-comp-1186',cat:'jr-comp',code:'1186',subj:'PHY',grp:'สอบเข้าเตรียมอุดม/MWIT',name:'Pack ติวเข้ม + Upskill ตะลุยโจทย์ ฟิสิกส์เข้ามหิดลฯ จุฬาภรณฯ และโรงเรียนแข่งขันสูง',hours:84,price:8200},
+  // ── jr-cont · BIO ──
+  {id:'jr-cont-2131',cat:'jr-cont',code:'2131',subj:'BIO',name:'อาหาร (โภชนาการและสารชีวโมเลกุล)',hours:12,price:1500},
+  {id:'jr-cont-2132',cat:'jr-cont',code:'2132',subj:'BIO',name:'เซลล์ (ออร์แกเนลล์ การแพร่และออสโมซิส)',hours:8,price:1200},
+  {id:'jr-cont-2133',cat:'jr-cont',code:'2133',subj:'BIO',name:'พืช',hours:12,price:1500},
+  {id:'jr-cont-2134',cat:'jr-cont',code:'2134',subj:'BIO',name:'ระบบนิเวศและประชากร',hours:8,price:1400},
+  {id:'jr-cont-2135',cat:'jr-cont',code:'2135',subj:'BIO',name:'กลไกพื้นฐานของมนุษย์ I (ระบบย่อยอาหาร หมุนเวียนเลือดฯ)',hours:16,price:1900},
+  {id:'jr-cont-2136',cat:'jr-cont',code:'2136',subj:'BIO',name:'กลไกพื้นฐานของมนุษย์ II (ระบบประสาทและพฤติกรรม)',hours:8,price:1200},
+  {id:'jr-cont-2137',cat:'jr-cont',code:'2137',subj:'BIO',name:'กลไกพื้นฐานของมนุษย์ III (ระบบสืบพันธุ์และพันธุศาสตร์)',hours:14,price:1800},
+  {id:'jr-cont-2138',cat:'jr-cont',code:'2138',subj:'BIO',name:'ชีวิตสัตว์และความหลากหลายทางชีวภาพ',hours:6,price:900},
+  {id:'jr-cont-2183',cat:'jr-cont',code:'2183',subj:'BIO',name:'Pack กลุ่มพื้นฐานชีววิทยา อาหาร เซลล์ พืช และระบบนิเวศ',hours:40,price:4200},
+  {id:'jr-cont-2184',cat:'jr-cont',code:'2184',subj:'BIO',name:'Pack กลุ่มกลไกมนุษย์ พันธุศาสตร์และความหลากหลายทางชีวภาพ',hours:44,price:4200},
+  // ── jr-cont · CHEM ──
+  {id:'jr-cont-3121',cat:'jr-cont',code:'3121',subj:'CHEM',name:'พื้นฐานเคมี สารรอบตัวและการจำแนกสาร',hours:15,price:1300},
+  {id:'jr-cont-3122',cat:'jr-cont',code:'3122',subj:'CHEM',name:'สารละลายและการแยกสาร',hours:18,price:1800},
+  {id:'jr-cont-3123',cat:'jr-cont',code:'3123',subj:'CHEM',name:'ปฏิกิริยาเคมี พอลิเมอร์ เซรามิกส์ โลหะ วัสดุผสม',hours:12,price:1700},
+  {id:'jr-cont-3124',cat:'jr-cont',code:'3124',subj:'CHEM',name:'เคมี ม.ต้น เข้มข้น สำหรับนักเรียนโรงเรียนแข่งขันสูง',hours:39,price:4000},
+  {id:'jr-cont-3186',cat:'jr-cont',code:'3186',subj:'CHEM',name:'Pack พื้นฐาน เคมี ม.ต้น',hours:45,price:4000},
+  // ── jr-cont · ENG ──
+  {id:'jr-cont-P2004',cat:'jr-cont',code:'P2004',subj:'ENG',name:'Advanced Grammar Reading & Vocab ม.ต้น (ตะลุยโจทย์)',hours:40,price:5500},
+  {id:'jr-cont-P6186',cat:'jr-cont',code:'P6186',subj:'ENG',name:'Pack Essential ม.ต้น 1 (P6108, P6109) (NEW)',hours:50,price:6000},
+  {id:'jr-cont-P6187',cat:'jr-cont',code:'P6187',subj:'ENG',name:'Pack Essential ม.ต้น 2 (P6110, P6111) (NEW)',hours:50,price:6000},
+  {id:'jr-cont-P6188',cat:'jr-cont',code:'P6188',subj:'ENG',name:'Pack Ultimate Essential ม.ต้น (P6108, P6109, P6110, P6111) (NEW)',hours:100,price:9900},
+  // ── jr-cont · MATH ──
+  {id:'jr-cont-7827',cat:'jr-cont',code:'7827',subj:'MATH',name:'UpGrade ตะลุยโจทย์เสริมเพิ่มเกรด Pack 1 คณิตศาสตร์ ม.ต้น (8101-8102)',hours:3,price:0},
+  {id:'jr-cont-7828',cat:'jr-cont',code:'7828',subj:'MATH',name:'UpGrade ตะลุยโจทย์เสริมเพิ่มเกรด Pack 2 คณิตศาสตร์ ม.ต้น',hours:3,price:0},
+  {id:'jr-cont-7829',cat:'jr-cont',code:'7829',subj:'MATH',name:'UpGrade ตะลุยโจทย์เสริมเพิ่มเกรด Pack 3 คณิตศาสตร์ ม.ต้น',hours:3,price:0},
+  {id:'jr-cont-7830',cat:'jr-cont',code:'7830',subj:'MATH',name:'UpGrade ตะลุยโจทย์เสริมเพิ่มเกรด Pack 4 คณิตศาสตร์ ม.ต้น',hours:3,price:0},
+  {id:'jr-cont-7831',cat:'jr-cont',code:'7831',subj:'MATH',name:'UpGrade ตะลุยโจทย์เสริมเพิ่มเกรด Pack 5 คณิตศาสตร์ ม.ต้น',hours:3.5,price:0},
+  {id:'jr-cont-7832',cat:'jr-cont',code:'7832',subj:'MATH',name:'UpGrade ตะลุยโจทย์เสริมเพิ่มเกรด Pack 6 คณิตศาสตร์ ม.ต้น',hours:3,price:0},
+  {id:'jr-cont-8101',cat:'jr-cont',code:'8101',subj:'MATH',name:'จำนวนและตัวเลข',hours:23.5,price:2400},
+  {id:'jr-cont-8102',cat:'jr-cont',code:'8102',subj:'MATH',name:'เลขยกกำลังและโจทย์ประยุกต์',hours:12.5,price:1600},
+  {id:'jr-cont-8103',cat:'jr-cont',code:'8103',subj:'MATH',name:'เรขาคณิตเบื้องต้นและทฤษฎีบทสามเหลี่ยม',hours:22.5,price:2000},
+  {id:'jr-cont-8104',cat:'jr-cont',code:'8104',subj:'MATH',name:'ระบบสมการ อสมการและกราฟ',hours:22.5,price:2800},
+  {id:'jr-cont-8105',cat:'jr-cont',code:'8105',subj:'MATH',name:'พหุนามและการแยกตัวประกอบ',hours:30,price:2800},
+  {id:'jr-cont-8106',cat:'jr-cont',code:'8106',subj:'MATH',name:'พื้นที่ผิวและปริมาตร',hours:27.5,price:2800},
+  {id:'jr-cont-8107',cat:'jr-cont',code:'8107',subj:'MATH',name:'จำนวนจริง',hours:12.5,price:1700},
+  {id:'jr-cont-8108',cat:'jr-cont',code:'8108',subj:'MATH',name:'ทฤษฎีบทพีทาโกรัสและอัตราส่วนตรีโกณมิติ',hours:22.5,price:2500},
+  {id:'jr-cont-8109',cat:'jr-cont',code:'8109',subj:'MATH',name:'ทฤษฎีบทเส้นขนานและวงกลม',hours:17.5,price:2200},
+  {id:'jr-cont-8110',cat:'jr-cont',code:'8110',subj:'MATH',name:'พาราโบลา',hours:15,price:1900},
+  {id:'jr-cont-8111',cat:'jr-cont',code:'8111',subj:'MATH',name:'สถิติ',hours:19,price:2200},
+  {id:'jr-cont-8112',cat:'jr-cont',code:'8112',subj:'MATH',name:'ความน่าจะเป็น',hours:19,price:2200},
+  {id:'jr-cont-8186',cat:'jr-cont',code:'8186',subj:'MATH',name:'Pack 1 คณิตศาสตร์ ม.ต้น (8101-8102)',hours:39,price:3300},
+  {id:'jr-cont-8187',cat:'jr-cont',code:'8187',subj:'MATH',name:'Pack 2 คณิตศาสตร์ ม.ต้น (8103-8104)',hours:48,price:3600},
+  {id:'jr-cont-8188',cat:'jr-cont',code:'8188',subj:'MATH',name:'Pack 3 คณิตศาสตร์ ม.ต้น (8105-8106)',hours:60.5,price:4600},
+  {id:'jr-cont-8189',cat:'jr-cont',code:'8189',subj:'MATH',name:'Pack 4 คณิตศาสตร์ ม.ต้น (8107-8108)',hours:38,price:3800},
+  {id:'jr-cont-8190',cat:'jr-cont',code:'8190',subj:'MATH',name:'Pack 5 คณิตศาสตร์ ม.ต้น (8109-8110)',hours:36,price:3800},
+  {id:'jr-cont-8191',cat:'jr-cont',code:'8191',subj:'MATH',name:'Pack 6 คณิตศาสตร์ ม.ต้น (8111-8112)',hours:41,price:3800},
+  // ── jr-cont · PHY ──
+  {id:'jr-cont-1101',cat:'jr-cont',code:'1101',subj:'PHY',name:'กลุ่มกลศาสตร์ 1',hours:20,price:2200},
+  {id:'jr-cont-1102',cat:'jr-cont',code:'1102',subj:'PHY',name:'กลุ่มกลศาสตร์ 2',hours:14,price:1600},
+  {id:'jr-cont-1103',cat:'jr-cont',code:'1103',subj:'PHY',name:'กลุ่มสมบัติสารและอุตุนิยมวิทยา',hours:12,price:1700},
+  {id:'jr-cont-1104',cat:'jr-cont',code:'1104',subj:'PHY',name:'กลุ่มคลื่น',hours:16,price:1700},
+  {id:'jr-cont-1105',cat:'jr-cont',code:'1105',subj:'PHY',name:'กลุ่มไฟฟ้าและอิเล็กทรอนิกส์',hours:12,price:1600},
+  {id:'jr-cont-1109',cat:'jr-cont',code:'1109',subj:'PHY',name:'กลุ่มธรณีวิทยาและดาราศาสตร์',hours:14,price:1800},
+  {id:'jr-cont-1183',cat:'jr-cont',code:'1183',subj:'PHY',name:'Pack กลุ่มกลศาสตร์ 1, 2 และกลุ่มสมบัติสารและอุตุนิยมวิทยา (1101, 1102, 1103)',hours:50,price:4200},
+  {id:'jr-cont-1184',cat:'jr-cont',code:'1184',subj:'PHY',name:'Pack กลุ่มคลื่น, กลุ่มไฟฟ้า, ธรณีวิทยาและดาราศาสตร์ (1104, 1105, 1109)',hours:38,price:4000},
+  // ── sr-comp · BIO ──
+  {id:'sr-comp-2301',cat:'sr-comp',code:'2301',subj:'BIO',grp:'TCAS / A-Level',name:'Biology TCAS ชีววิทยา เล่ม 1 : Basic Bio',hours:27,price:2600},
+  {id:'sr-comp-2302',cat:'sr-comp',code:'2302',subj:'BIO',grp:'TCAS / A-Level',name:'Biology TCAS ชีววิทยา เล่ม 2 : Genetics',hours:52,price:3900},
+  {id:'sr-comp-2303',cat:'sr-comp',code:'2303',subj:'BIO',grp:'TCAS / A-Level',name:'Biology TCAS ชีววิทยา เล่ม 3 : Taxo & Eco',hours:34,price:2800},
+  {id:'sr-comp-2304',cat:'sr-comp',code:'2304',subj:'BIO',grp:'TCAS / A-Level',name:'Biology TCAS ชีววิทยา เล่ม 4 : Human I',hours:27,price:2400},
+  {id:'sr-comp-2305',cat:'sr-comp',code:'2305',subj:'BIO',grp:'TCAS / A-Level',name:'Biology TCAS ชีววิทยา เล่ม 5 : Human II',hours:32,price:2800},
+  {id:'sr-comp-2306',cat:'sr-comp',code:'2306',subj:'BIO',grp:'TCAS / A-Level',name:'Biology TCAS ชีววิทยา เล่ม 6 : Plant',hours:23,price:2200},
+  {id:'sr-comp-2307',cat:'sr-comp',code:'2307',subj:'BIO',grp:'Upskill A-Level',name:'Upskill ชีววิทยา A-Level',hours:45,price:4000},
+  {id:'sr-comp-2308',cat:'sr-comp',code:'2308',subj:'BIO',grp:'TCAS / A-Level',name:'ตะลุยโจทย์ PAT2 ชีววิทยา',hours:22,price:2000},
+  {id:'sr-comp-2316',cat:'sr-comp',code:'2316',subj:'BIO',grp:'NETSAT ม.ขอนแก่น',name:'ติวเข้ม ตะลุยโจทย์ NETSAT โควตา ม.ขอนแก่น (ความฉลาดรู้เฉพาะ ด้านชีววิทยา)',hours:18,price:1900},
+  {id:'sr-comp-2399',cat:'sr-comp',code:'2399',subj:'BIO',grp:'TCAS / A-Level',name:'Pack Biology TCAS ชีววิทยา (2301-2306)',hours:194,price:9500},
+  {id:'sr-comp-9304',cat:'sr-comp',code:'9304',subj:'BIO',grp:'TCAS / A-Level',name:'ชีววิทยา O-Net',hours:12,price:1500},
+  {id:'sr-comp-9382',cat:'sr-comp',code:'9382',subj:'BIO',grp:'TCAS / A-Level',name:'Pack Biology TCAS + UpSkill ชีววิทยา A-Level',hours:240,price:11900},
+  // ── sr-comp · CHEM ──
+  {id:'sr-comp-3301',cat:'sr-comp',code:'3301',subj:'CHEM',grp:'TCAS / A-Level',name:'เคมี TCAS เล่ม 1 : กลุ่มอะตอม',hours:48,price:3900},
+  {id:'sr-comp-3302',cat:'sr-comp',code:'3302',subj:'CHEM',grp:'TCAS / A-Level',name:'เคมี TCAS เล่ม 2 : กลุ่มปริมาณสารสัมพันธ์',hours:28,price:3000},
+  {id:'sr-comp-3303',cat:'sr-comp',code:'3303',subj:'CHEM',grp:'TCAS / A-Level',name:'เคมี TCAS เล่ม 3 : กลุ่มแก๊ส อัตราและสมดุลเคมี',hours:28,price:3500},
+  {id:'sr-comp-3304',cat:'sr-comp',code:'3304',subj:'CHEM',grp:'TCAS / A-Level',name:'เคมี TCAS เล่ม 4 : กลุ่มกรด-เบสและเคมีไฟฟ้า',hours:49,price:3900},
+  {id:'sr-comp-3305',cat:'sr-comp',code:'3305',subj:'CHEM',grp:'TCAS / A-Level',name:'เคมี TCAS เล่ม 5 : กลุ่มเคมีอินทรีย์',hours:36,price:3900},
+  {id:'sr-comp-3307',cat:'sr-comp',code:'3307',subj:'CHEM',grp:'TCAS / A-Level',name:'Upskill เคมี A-Level',hours:60,price:4000},
+  {id:'sr-comp-3316',cat:'sr-comp',code:'3316',subj:'CHEM',grp:'TCAS / A-Level',name:'ตะลุยโจทย์เคมี (King\'s Scholarship)',hours:20,price:4000},
+  {id:'sr-comp-3317',cat:'sr-comp',code:'3317',subj:'CHEM',grp:'TCAS / A-Level',name:'ตะลุยโจทย์เคมี ทุนรัฐบาลญี่ปุ่น (Monbukagakusho)',hours:20,price:4000},
+  {id:'sr-comp-3323',cat:'sr-comp',code:'3323',subj:'CHEM',grp:'NETSAT ม.ขอนแก่น',name:'ติวเข้ม ตะลุยโจทย์ NETSAT โควตา ม.ขอนแก่น (ความฉลาดรู้เฉพาะ ด้านเคมี)',hours:18,price:1900},
+  {id:'sr-comp-3399',cat:'sr-comp',code:'3399',subj:'CHEM',grp:'TCAS / A-Level',name:'Pack เคมี TCAS (เล่ม 1-5)',hours:189,price:9500},
+  {id:'sr-comp-9383',cat:'sr-comp',code:'9383',subj:'CHEM',grp:'TCAS / A-Level',name:'Pack เคมี TCAS + Upskill เคมี A-Level',hours:249,price:11900},
+  // ── sr-comp · ENG ──
+  {id:'sr-comp-P2015',cat:'sr-comp',code:'P2015',subj:'ENG',grp:'TCAS / A-Level',name:'English TCAS Success เล่ม 1 (TGAT)',hours:30,price:5500},
+  {id:'sr-comp-P2017',cat:'sr-comp',code:'P2017',subj:'ENG',grp:'TCAS / A-Level',name:'English TCAS Success เล่ม 2 (A-Level)',hours:30,price:5500},
+  {id:'sr-comp-P2019',cat:'sr-comp',code:'P2019',subj:'ENG',grp:'TCAS / A-Level',name:'ตะลุยโจทย์ ภาษาอังกฤษทุนญี่ปุ่น',hours:10,price:2500},
+  {id:'sr-comp-P2020',cat:'sr-comp',code:'P2020',subj:'ENG',grp:'TCAS / A-Level',name:'ตะลุยโจทย์ภาษาอังกฤษ ทุนเล่าเรียนหลวง/ทุนรัฐบาล',hours:20,price:5000},
+  {id:'sr-comp-P2023',cat:'sr-comp',code:'P2023',subj:'ENG',grp:'TCAS / A-Level',name:'Writing Scholar: King\'s Scholarship',hours:30,price:10000},
+  {id:'sr-comp-P2033',cat:'sr-comp',code:'P2033',subj:'ENG',grp:'Upskill A-Level',name:'Upskill A-Level English',hours:24,price:4900},
+  {id:'sr-comp-P2034',cat:'sr-comp',code:'P2034',subj:'ENG',grp:'NETSAT ม.ขอนแก่น',name:'ติวเข้ม ตะลุยโจทย์ NETSAT โควตา ม.ขอนแก่น (ความฉลาดรู้ทั่วไป ด้านภาษาอังกฤษ)',hours:18,price:1900},
+  {id:'sr-comp-P2037',cat:'sr-comp',code:'P2037',subj:'ENG',grp:'TCAS / A-Level',name:'Translation Boot Camp',hours:10,price:15000},
+  {id:'sr-comp-P2038',cat:'sr-comp',code:'P2038',subj:'ENG',grp:'TCAS / A-Level',name:'Writing Scholar Boot Camp',hours:10,price:12000},
+  {id:'sr-comp-P3009',cat:'sr-comp',code:'P3009',subj:'ENG',grp:'TCAS / A-Level',name:'Pack English TCAS Success',hours:60,price:8500},
+  {id:'sr-comp-P3013',cat:'sr-comp',code:'P3013',subj:'ENG',grp:'TCAS / A-Level',name:'Pack English TCAS + Upskill (P2015+P2017+P2033)',hours:144,price:11000},
+  // ── sr-comp · MATH ──
+  {id:'sr-comp-8303',cat:'sr-comp',code:'8303',subj:'MATH',grp:'TCAS / A-Level',name:'APPLIED MATH ADMISSION TCAS เล่ม 1',hours:45,price:4000},
+  {id:'sr-comp-8304',cat:'sr-comp',code:'8304',subj:'MATH',grp:'TCAS / A-Level',name:'APPLIED MATH ADMISSION TCAS เล่ม 2',hours:40,price:4000},
+  {id:'sr-comp-8305',cat:'sr-comp',code:'8305',subj:'MATH',grp:'TCAS / A-Level',name:'APPLIED MATH ADMISSION TCAS เล่ม 3',hours:32,price:3300},
+  {id:'sr-comp-8306',cat:'sr-comp',code:'8306',subj:'MATH',grp:'TCAS / A-Level',name:'APPLIED MATH ADMISSION TCAS เล่ม 4',hours:40,price:4000},
+  {id:'sr-comp-8307',cat:'sr-comp',code:'8307',subj:'MATH',grp:'TCAS / A-Level',name:'APPLIED MATH ADMISSION TCAS เล่ม 5',hours:36,price:4000},
+  {id:'sr-comp-8309',cat:'sr-comp',code:'8309',subj:'MATH',grp:'TCAS / A-Level',name:'Upskill คณิตศาสตร์ประยุกต์ 1',hours:54,price:4000},
+  {id:'sr-comp-8312',cat:'sr-comp',code:'8312',subj:'MATH',grp:'TCAS / A-Level',name:'ตะลุยโจทย์ คณิตศาสตร์ ทุนคิง',hours:42,price:5500},
+  {id:'sr-comp-8318',cat:'sr-comp',code:'8318',subj:'MATH',grp:'TCAS / A-Level',name:'ติวเข้ม A-Level คณิต2 (วิชาคณิตศาสตร์ประยุกต์ 2)',hours:50,price:3200},
+  {id:'sr-comp-8319',cat:'sr-comp',code:'8319',subj:'MATH',grp:'NETSAT ม.ขอนแก่น',name:'ติวเข้ม ตะลุยโจทย์ NETSAT โควตา ม.ขอนแก่น (ความฉลาดรู้เฉพาะ ด้านคณิตศาสตร์)',hours:24,price:1900},
+  {id:'sr-comp-8320',cat:'sr-comp',code:'8320',subj:'MATH',grp:'TCAS / A-Level',name:'ตะลุยโจทย์ คณิตศาสตร์ประยุกต์ 2',hours:22,price:1600},
+  {id:'sr-comp-8399',cat:'sr-comp',code:'8399',subj:'MATH',grp:'TCAS / A-Level',name:'PACK APPLIED MATH ADMISSION TCAS (8303-8307)',hours:193,price:9500},
+  {id:'sr-comp-9385',cat:'sr-comp',code:'9385',subj:'MATH',grp:'TCAS / A-Level',name:'Pack TCAS + UpSkill คณิตศาสตร์ A-Level',hours:247,price:11900},
+  // ── sr-comp · MIX ──
+  {id:'sr-comp-9377',cat:'sr-comp',code:'9377',subj:'MIX',grp:'NETSAT ม.ขอนแก่น',name:'Pack NETSAT รอบพอร์ต+โควตาแพทย์/ทันตะ/เภสัช ม.ขอนแก่น 5 วิชา + Intensive IELTS',hours:138,price:21500},
+  {id:'sr-comp-9378',cat:'sr-comp',code:'9378',subj:'MIX',grp:'NETSAT ม.ขอนแก่น',name:'Pack NETSAT รอบพอร์ต+โควตาแพทย์/ทันตะ/เภสัช ม.ขอนแก่น 5 วิชา + Foundation IELTS',hours:177,price:30000},
+  {id:'sr-comp-9379',cat:'sr-comp',code:'9379',subj:'MIX',grp:'NETSAT ม.ขอนแก่น',name:'Pack NETSAT โควตาวิศวกรรมศาสตร์ ม.ขอนแก่น 4 วิชา (คณิตศาสตร์, วิทย์เทคโนฯ, เคมี, ภาษาอังกฤษ)',hours:78,price:6000},
+  {id:'sr-comp-9380',cat:'sr-comp',code:'9380',subj:'MIX',grp:'NETSAT ม.ขอนแก่น',name:'Pack NETSAT โควตาสถาปัตยฯ/บริหารฯ/นิติฯ และอื่นๆ ม.ขอนแก่น 3 วิชา (คณิตศาสตร์, วิทย์และเทคโนโลยี, ภาษาอังกฤษ)',hours:60,price:5000},
+  {id:'sr-comp-9381',cat:'sr-comp',code:'9381',subj:'MIX',grp:'Pack รวมวิชา',name:'Pack Upskill วิชาสามัญ (คณิต ฟิสิกส์ เคมี ชีวะ)',hours:195,price:11900},
+  {id:'sr-comp-9387',cat:'sr-comp',code:'9387',subj:'MIX',grp:'NETSAT ม.ขอนแก่น',name:'Pack Biology TCAS + NETSAT ความฉลาดรู้เฉพาะ ด้านชีววิทยา',hours:212,price:9900},
+  {id:'sr-comp-9388',cat:'sr-comp',code:'9388',subj:'MIX',grp:'NETSAT ม.ขอนแก่น',name:'Pack Chem TCAS + NETSAT ความฉลาดรู้เฉพาะ ด้านเคมี',hours:207,price:9900},
+  {id:'sr-comp-9389',cat:'sr-comp',code:'9389',subj:'MIX',grp:'NETSAT ม.ขอนแก่น',name:'Pack V-Series Physics TCAS + NETSAT ความฉลาดรู้เฉพาะ ด้านฟิสิกส์',hours:178,price:9900},
+  {id:'sr-comp-9390',cat:'sr-comp',code:'9390',subj:'MIX',grp:'NETSAT ม.ขอนแก่น',name:'Pack Math Admissions TCAS + NETSAT ความฉลาดรู้ทั่วไป ด้านคณิตศาสตร์',hours:217,price:9900},
+  {id:'sr-comp-9392',cat:'sr-comp',code:'9392',subj:'MIX',grp:'Pack รวมวิชา',name:'Pack Upskill A-level Math+Eng+Phy (สำหรับน้องสายคำนวณถนัดฟิสิกส์)',hours:114,price:10900},
+  {id:'sr-comp-9393',cat:'sr-comp',code:'9393',subj:'MIX',grp:'Pack รวมวิชา',name:'Pack Upskill A-level Math+Eng+Chem (สำหรับน้องสายเคมี)',hours:138,price:10900},
+  {id:'sr-comp-9394',cat:'sr-comp',code:'9394',subj:'MIX',grp:'Pack รวมวิชา',name:'Pack Upskill A-level Math+Eng+Bio (สำหรับน้องสายท่องจำ ชอบชีวะ)',hours:123,price:10900},
+  {id:'sr-comp-9395',cat:'sr-comp',code:'9395',subj:'MIX',grp:'Pack รวมวิชา',name:'Pack Upskill วิชาสามัญ 5 วิชา (คณิต ฟิสิกส์ เคมี ชีวะ อังกฤษ)',hours:219,price:15900},
+  {id:'sr-comp-9397',cat:'sr-comp',code:'9397',subj:'MIX',grp:'NETSAT ม.ขอนแก่น',name:'Pack NETSAT รวมแพทย์และวิศวะ ม.ขอนแก่น 6 วิชา (อังกฤษ, คณิตศาสตร์, ฟิสิกส์, เคมี, ชีววิทยา, วิทยาศาสตร์และเทคโนโลยี)',hours:114,price:8000},
+  {id:'sr-comp-9398',cat:'sr-comp',code:'9398',subj:'MIX',grp:'NETSAT ม.ขอนแก่น',name:'Pack NETSAT โควตาแพทย์/ทันตะ/เภสัช ม.ขอนแก่น 5 วิชา (คณิตศาสตร์, ฟิสิกส์, เคมี, ชีววิทยา, ภาษาอังกฤษ)',hours:96,price:7000},
+  {id:'sr-comp-9399',cat:'sr-comp',code:'9399',subj:'MIX',grp:'Pack รวมวิชา',name:'Pack TCAS 5 วิชา (คณิต ฟิสิกส์ เคมี ชีวะ อังกฤษ)',hours:816,price:36900},
+  {id:'sr-comp-P2039',cat:'sr-comp',code:'P2039',subj:'MIX',grp:'NETSAT ม.ขอนแก่น',name:'Pack English TCAS Success + NETSAT โควตา ม.ขอนแก่น (ความฉลาดรู้ทั่วไป ด้านภาษาอังกฤษ)',hours:78,price:9900},
+  // ── sr-comp · PHY ──
+  {id:'sr-comp-1301',cat:'sr-comp',code:'1301',subj:'PHY',grp:'TCAS / A-Level',name:'V-Series Physics TCAS เล่ม 1 : กลุ่มกลศาสตร์ 1',hours:16,price:1700},
+  {id:'sr-comp-1302',cat:'sr-comp',code:'1302',subj:'PHY',grp:'TCAS / A-Level',name:'V-Series Physics TCAS เล่ม 2 : กลุ่มกลศาสตร์ 2',hours:28,price:2900},
+  {id:'sr-comp-1303',cat:'sr-comp',code:'1303',subj:'PHY',grp:'TCAS / A-Level',name:'V-Series Physics TCAS เล่ม 3 : กลุ่มกลศาสตร์ 3',hours:13,price:2000},
+  {id:'sr-comp-1304',cat:'sr-comp',code:'1304',subj:'PHY',grp:'TCAS / A-Level',name:'V-Series Physics TCAS เล่ม 4 : กลุ่มสมบัติสาร',hours:25,price:2600},
+  {id:'sr-comp-1305',cat:'sr-comp',code:'1305',subj:'PHY',grp:'TCAS / A-Level',name:'V-Series Physics TCAS เล่ม 5 : กลุ่มไฟฟ้า',hours:32,price:3600},
+  {id:'sr-comp-1306',cat:'sr-comp',code:'1306',subj:'PHY',grp:'TCAS / A-Level',name:'V-Series Physics TCAS เล่ม 6 : กลุ่มคลื่น',hours:22,price:2500},
+  {id:'sr-comp-1307',cat:'sr-comp',code:'1307',subj:'PHY',grp:'TCAS / A-Level',name:'V-Series Physics TCAS เล่ม 7 : ฟิสิกส์แผนใหม่',hours:26,price:3300},
+  {id:'sr-comp-1308',cat:'sr-comp',code:'1308',subj:'PHY',grp:'TCAS / A-Level',name:'ตะลุยโจทย์ PAT2 ฟิสิกส์',hours:72,price:5500},
+  {id:'sr-comp-1309',cat:'sr-comp',code:'1309',subj:'PHY',grp:'TCAS / A-Level',name:'ฟิสิกส์ทุน King\'s Scholarship และทุนรัฐบาลญี่ปุ่น',hours:64,price:5500},
+  {id:'sr-comp-1316',cat:'sr-comp',code:'1316',subj:'PHY',grp:'Upskill A-Level',name:'Upskill ฟิสิกส์ A-Level',hours:36,price:4000},
+  {id:'sr-comp-1317',cat:'sr-comp',code:'1317',subj:'PHY',grp:'NETSAT ม.ขอนแก่น',name:'ติวเข้ม ตะลุยโจทย์ NETSAT โควตา ม.ขอนแก่น (ความฉลาดรู้เฉพาะ ด้านฟิสิกส์)',hours:18,price:1900},
+  {id:'sr-comp-1399',cat:'sr-comp',code:'1399',subj:'PHY',grp:'TCAS / A-Level',name:'Pack V-Series Physics TCAS',hours:160,price:9500},
+  {id:'sr-comp-9305',cat:'sr-comp',code:'9305',subj:'PHY',grp:'TCAS / A-Level',name:'โลกและอวกาศ TCAS',hours:18,price:11900},
+  {id:'sr-comp-9384',cat:'sr-comp',code:'9384',subj:'PHY',grp:'TCAS / A-Level',name:'Pack TCAS + Upskill Physics',hours:196,price:11900},
+  // ── sr-comp · SCI ──
+  {id:'sr-comp-1318',cat:'sr-comp',code:'1318',subj:'SCI',grp:'NETSAT ม.ขอนแก่น',name:'ติวเข้ม ตะลุยโจทย์ NETSAT โควตา ม.ขอนแก่น (ความฉลาดรู้เฉพาะ ด้านวิทยาศาสตร์ และเทคโนโลยี)',hours:18,price:1900},
+  // ── sr-comp · TPAT ──
+  {id:'sr-comp-9905',cat:'sr-comp',code:'9905',subj:'TPAT',grp:'TPAT1 ความถนัดแพทย์',name:'โค้งสุดท้าย ติวเข้ม ความถนัดแพทย์ พาร์ทเชื่อมโยง และ พาร์ทเชาวน์ไทย',hours:12,price:1500},
+  {id:'sr-comp-9906',cat:'sr-comp',code:'9906',subj:'TPAT',grp:'TPAT1 ความถนัดแพทย์',name:'โค้งสุดท้าย ติวเข้ม ความถนัดแพทย์ พาร์ทเชาวน์ปัญญา (เชาวน์เลข)',hours:15,price:2000},
+  {id:'sr-comp-9907',cat:'sr-comp',code:'9907',subj:'TPAT',grp:'TPAT1 ความถนัดแพทย์',name:'โค้งสุดท้าย ติวเข้ม ความถนัดแพทย์ พาร์ทจริยธรรมแพทย์',hours:20,price:3500},
+  {id:'sr-comp-9996',cat:'sr-comp',code:'9996',subj:'TPAT',grp:'TPAT1 ความถนัดแพทย์',name:'Pack ติวเข้มความถนัดแพทย์ และ Upskill ความถนัดแพทย์ + Simulation จริยธรรม',hours:120,price:8000},
+  {id:'sr-comp-9997',cat:'sr-comp',code:'9997',subj:'TPAT',grp:'TPAT1 ความถนัดแพทย์',name:'Pack ติวเข้มความถนัดแพทย์ (TPAT1)',hours:47,price:4500},
+  {id:'sr-comp-9998',cat:'sr-comp',code:'9998',subj:'TPAT',grp:'TPAT1 ความถนัดแพทย์',name:'Upskill ความถนัดแพทย์ พาร์ทเชาวน์ปัญญา จับใจความ เชื่อมโยง และจริยธรรมแพทย์ + Simulation',hours:48,price:4500},
+  {id:'sr-comp-9999',cat:'sr-comp',code:'9999',subj:'TPAT',grp:'TPAT1 ความถนัดแพทย์',name:'Pack Simulation ความถนัดแพทย์ พาร์ทเชื่อมโยง และ พาร์ทจริยธรรมแพทย์',hours:26,price:2900},
+  // ── sr-cont · BIO ──
+  {id:'sr-cont-2201',cat:'sr-cont',code:'2201',subj:'BIO',name:'ธรรมชาติของสิ่งมีชีวิตและสิ่งแวดล้อม',hours:2,price:600},
+  {id:'sr-cont-2202',cat:'sr-cont',code:'2202',subj:'BIO',name:'การศึกษาชีววิทยาและกล้องจุลทรรศน์',hours:8,price:1000},
+  {id:'sr-cont-2203',cat:'sr-cont',code:'2203',subj:'BIO',name:'เคมีที่เป็นพื้นฐานของสิ่งมีชีวิตและสารชีวโมเลกุล',hours:14,price:1800},
+  {id:'sr-cont-2204',cat:'sr-cont',code:'2204',subj:'BIO',name:'เซลล์ของสิ่งมีชีวิต',hours:12,price:1700},
+  {id:'sr-cont-2205',cat:'sr-cont',code:'2205',subj:'BIO',name:'ปฏิกิริยาเคมีในเซลล์ของสิ่งมีชีวิตและเอนไซม์',hours:4,price:600},
+  {id:'sr-cont-2206',cat:'sr-cont',code:'2206',subj:'BIO',name:'การแบ่งเซลล์',hours:7,price:1000},
+  {id:'sr-cont-2207',cat:'sr-cont',code:'2207',subj:'BIO',name:'ความหลากหลายทางชีวภาพ',hours:25.5,price:3000},
+  {id:'sr-cont-2208',cat:'sr-cont',code:'2208',subj:'BIO',name:'การย่อยอาหารและการดูดซึมอาหาร',hours:12,price:1500},
+  {id:'sr-cont-2209',cat:'sr-cont',code:'2209',subj:'BIO',name:'ระบบหมุนเวียนเลือด น้ำเหลืองและภูมิคุ้มกัน',hours:16,price:1800},
+  {id:'sr-cont-2210',cat:'sr-cont',code:'2210',subj:'BIO',name:'การหายใจและแลกเปลี่ยนแก๊ส',hours:9,price:1200},
+  {id:'sr-cont-2211',cat:'sr-cont',code:'2211',subj:'BIO',name:'การสลายอาหารระดับเซลล์',hours:7,price:1100},
+  {id:'sr-cont-2212',cat:'sr-cont',code:'2212',subj:'BIO',name:'การรักษาดุลยภาพในร่างกายและการขับถ่าย',hours:7,price:1100},
+  {id:'sr-cont-2213',cat:'sr-cont',code:'2213',subj:'BIO',name:'ระบบประสาทและอวัยวะรับความรู้สึก',hours:14,price:1900},
+  {id:'sr-cont-2214',cat:'sr-cont',code:'2214',subj:'BIO',name:'ระบบต่อมไร้ท่อ',hours:11,price:1600},
+  {id:'sr-cont-2215',cat:'sr-cont',code:'2215',subj:'BIO',name:'การเคลื่อนที่ของสิ่งมีชีวิต',hours:5,price:800},
+  {id:'sr-cont-2216',cat:'sr-cont',code:'2216',subj:'BIO',name:'พฤติกรรมของสิ่งมีชีวิต',hours:4,price:600},
+  {id:'sr-cont-2217',cat:'sr-cont',code:'2217',subj:'BIO',name:'เนื้อเยื่อ โครงสร้างและการลำเลียงสารของพืช',hours:12,price:1500},
+  {id:'sr-cont-2218',cat:'sr-cont',code:'2218',subj:'BIO',name:'การสังเคราะห์ด้วยแสง',hours:9,price:1300},
+  {id:'sr-cont-2219',cat:'sr-cont',code:'2219',subj:'BIO',name:'การสืบพันธุ์ของพืชดอกและวงชีพแบบสลับ',hours:6,price:900},
+  {id:'sr-cont-2220',cat:'sr-cont',code:'2220',subj:'BIO',name:'การตอบสนองของพืชและฮอร์โมนพืช',hours:4,price:600},
+  {id:'sr-cont-2221',cat:'sr-cont',code:'2221',subj:'BIO',name:'การสืบพันธุ์และการเจริญเติบโตของสัตว์',hours:10,price:1500},
+  {id:'sr-cont-2222',cat:'sr-cont',code:'2222',subj:'BIO',name:'พันธุศาสตร์',hours:32,price:3800},
+  {id:'sr-cont-2223',cat:'sr-cont',code:'2223',subj:'BIO',name:'วิวัฒนาการและพันธุศาสตร์เชิงประชากร',hours:8,price:1100},
+  {id:'sr-cont-2224',cat:'sr-cont',code:'2224',subj:'BIO',name:'ระบบนิเวศ วัฏจักรของสาร และการเปลี่ยนแปลงแทนที่',hours:12,price:1500},
+  {id:'sr-cont-2225',cat:'sr-cont',code:'2225',subj:'BIO',name:'ประชากร',hours:8,price:900},
+  {id:'sr-cont-2281',cat:'sr-cont',code:'2281',subj:'BIO',name:'Pack ชีววิทยา ม.4 เทอม 1 ร.ร.เตรียมอุดมศึกษาฯ (2201, 2202, 2204, 2207)',hours:47.5,price:4900},
+  {id:'sr-cont-2282',cat:'sr-cont',code:'2282',subj:'BIO',name:'Pack ชีววิทยา ม.4 เทอม 2 ร.ร.เตรียมอุดมศึกษาฯ (2203, 2205, 2208-2210, 2212)',hours:62,price:5500},
+  {id:'sr-cont-2283',cat:'sr-cont',code:'2283',subj:'BIO',name:'Pack ชีววิทยา ม.5 เทอม 1 ร.ร.เตรียมอุดมศึกษาฯ (2211, 2217, 2218, 2224)',hours:40,price:4000},
+  {id:'sr-cont-2284',cat:'sr-cont',code:'2284',subj:'BIO',name:'Pack ชีววิทยา ม.5 เทอม 2 ร.ร.เตรียมอุดมศึกษาฯ (2206, 2219, 2221)',hours:23,price:2800},
+  {id:'sr-cont-2285',cat:'sr-cont',code:'2285',subj:'BIO',name:'Pack ชีววิทยา ม.6 เทอม 1 ร.ร.เตรียมอุดมศึกษาฯ (2213-2216, 2220)',hours:38,price:4300},
+  {id:'sr-cont-2291',cat:'sr-cont',code:'2291',subj:'BIO',name:'Pack กลุ่มพื้นฐานชีววิทยา (2201-2206) ม.4 เทอม1',hours:47,price:4500},
+  {id:'sr-cont-2292',cat:'sr-cont',code:'2292',subj:'BIO',name:'Pack กลุ่มกลไกในร่างกายมนุษย์ 1 (2208-2212) ม.5 เทอม2',hours:51,price:4600},
+  {id:'sr-cont-2293',cat:'sr-cont',code:'2293',subj:'BIO',name:'Pack กลุ่มกลไกในร่างกายมนุษย์ 2 (2213-2216, 2221) ม.6 เทอม 1',hours:44,price:4300},
+  {id:'sr-cont-2294',cat:'sr-cont',code:'2294',subj:'BIO',name:'Pack กลุ่มพืช (2217-2220) ม.5 เทอม 1',hours:31,price:3800},
+  {id:'sr-cont-2295',cat:'sr-cont',code:'2295',subj:'BIO',name:'Pack กลุ่มพันธุศาสตร์และวิวัฒนาการ (2222-2223) ม.4 เทอม 2',hours:40,price:4200},
+  {id:'sr-cont-2296',cat:'sr-cont',code:'2296',subj:'BIO',name:'Pack กลุ่มความหลากหลายทางชีวภาพและระบบนิเวศ (2207, 2224-2225) ม.6 เทอม 2',hours:45.5,price:4200},
+  // ── sr-cont · CHEM ──
+  {id:'sr-cont-3201',cat:'sr-cont',code:'3201',subj:'CHEM',name:'ปรับพื้นฐานเคมี ม.ปลาย',hours:12.5,price:1200},
+  {id:'sr-cont-3202',cat:'sr-cont',code:'3202',subj:'CHEM',name:'อะตอมและตารางธาตุ',hours:20,price:1900},
+  {id:'sr-cont-3203',cat:'sr-cont',code:'3203',subj:'CHEM',name:'สมบัติของธาตุและสารประกอบ',hours:20,price:2500},
+  {id:'sr-cont-3204',cat:'sr-cont',code:'3204',subj:'CHEM',name:'พันธะเคมี',hours:32,price:3000},
+  {id:'sr-cont-3205',cat:'sr-cont',code:'3205',subj:'CHEM',name:'ปริมาณสารสัมพันธ์ I',hours:15,price:1700},
+  {id:'sr-cont-3206',cat:'sr-cont',code:'3206',subj:'CHEM',name:'ปริมาณสารสัมพันธ์ II',hours:45,price:3700},
+  {id:'sr-cont-3207',cat:'sr-cont',code:'3207',subj:'CHEM',name:'แก๊สและสมบัติของแก๊ส',hours:21,price:2200},
+  {id:'sr-cont-3208',cat:'sr-cont',code:'3208',subj:'CHEM',name:'อัตราการเกิดปฏิกิริยาเคมี',hours:16,price:1700},
+  {id:'sr-cont-3209',cat:'sr-cont',code:'3209',subj:'CHEM',name:'สมดุลเคมี',hours:15,price:1900},
+  {id:'sr-cont-3210',cat:'sr-cont',code:'3210',subj:'CHEM',name:'กรด-เบส',hours:40.5,price:3600},
+  {id:'sr-cont-3211',cat:'sr-cont',code:'3211',subj:'CHEM',name:'ไฟฟ้าเคมี',hours:31,price:2800},
+  {id:'sr-cont-3213',cat:'sr-cont',code:'3213',subj:'CHEM',name:'เคมีอินทรีย์',hours:42.5,price:3900},
+  {id:'sr-cont-3215',cat:'sr-cont',code:'3215',subj:'CHEM',name:'พอลิเมอร์',hours:7.5,price:1600},
+  {id:'sr-cont-3216',cat:'sr-cont',code:'3216',subj:'CHEM',name:'Upskill ตะลุยโจทย์ เคมี ม.4 เทอม 1 รร.เตรียมอุดมฯ',hours:30,price:2600},
+  {id:'sr-cont-3217',cat:'sr-cont',code:'3217',subj:'CHEM',name:'Upskill ตะลุยโจทย์ เคมี ม.4 เทอม 2 รร.เตรียมอุดมฯ',hours:30,price:2600},
+  {id:'sr-cont-3218',cat:'sr-cont',code:'3218',subj:'CHEM',name:'Upskill ตะลุยโจทย์ เคมี ม.5 เทอม 1 รร.เตรียมอุดมฯ',hours:30,price:2600},
+  {id:'sr-cont-3219',cat:'sr-cont',code:'3219',subj:'CHEM',name:'Upskill ตะลุยโจทย์ เคมี ม.5 เทอม 2 รร.เตรียมอุดมฯ',hours:30,price:2600},
+  {id:'sr-cont-3281',cat:'sr-cont',code:'3281',subj:'CHEM',name:'Pack เคมี ม.4 เทอม 1 รร.เตรียมอุดมฯ (3201, 3202, 3203, 3205)',hours:67.5,price:4500},
+  {id:'sr-cont-3282',cat:'sr-cont',code:'3282',subj:'CHEM',name:'Pack เคมี ม.4 เทอม 2 รร.เตรียมอุดมฯ (3204, 3207)',hours:53,price:4000},
+  {id:'sr-cont-3283',cat:'sr-cont',code:'3283',subj:'CHEM',name:'Pack เคมี ม.5 เทอม 1 รร.เตรียมอุดมฯ (3206, 3208)',hours:61,price:4500},
+  {id:'sr-cont-3284',cat:'sr-cont',code:'3284',subj:'CHEM',name:'Pack เคมี ม.5 เทอม 2 รร.เตรียมอุดมฯ (3213, 3215)',hours:50,price:4600},
+  {id:'sr-cont-3285',cat:'sr-cont',code:'3285',subj:'CHEM',name:'Pack เคมี ม.6 เทอม 1 รร.เตรียมอุดมฯ (3209, 3210)',hours:55.5,price:4300},
+  {id:'sr-cont-3291',cat:'sr-cont',code:'3291',subj:'CHEM',name:'กลุ่มอะตอม ตารางธาตุและพันธะเคมี',hours:84.5,price:4300},
+  {id:'sr-cont-3292',cat:'sr-cont',code:'3292',subj:'CHEM',name:'กลุ่มปริมาณสารสัมพันธ์',hours:60,price:4500},
+  {id:'sr-cont-3293',cat:'sr-cont',code:'3293',subj:'CHEM',name:'กลุ่มแก๊ส อัตรา และสมดุลเคมี',hours:52,price:3800},
+  {id:'sr-cont-3294',cat:'sr-cont',code:'3294',subj:'CHEM',name:'กลุ่มไฟฟ้าเคมี และกรด-เบส',hours:71.5,price:4800},
+  {id:'sr-cont-3295',cat:'sr-cont',code:'3295',subj:'CHEM',name:'กลุ่มเคมีอินทรีย์',hours:50,price:4600},
+  // ── sr-cont · ENG ──
+  {id:'sr-cont-P2011',cat:'sr-cont',code:'P2011',subj:'ENG',name:'Grammar Essential ม.ปลาย',hours:50,price:5500},
+  {id:'sr-cont-P2012',cat:'sr-cont',code:'P2012',subj:'ENG',name:'Reading & Vocab Essential ม.ปลาย',hours:40,price:5500},
+  {id:'sr-cont-P2014',cat:'sr-cont',code:'P2014',subj:'ENG',name:'Upskill Grammar Reading & Vocab ม.ปลาย (ตะลุยโจทย์)',hours:40,price:4000},
+  {id:'sr-cont-P2021',cat:'sr-cont',code:'P2021',subj:'ENG',name:'Writing Intermediate: Essay',hours:30,price:6000},
+  {id:'sr-cont-P3005',cat:'sr-cont',code:'P3005',subj:'ENG',name:'Pack Essential ปูพื้นฐานภาษาอังกฤษ ม.ปลาย (P2011+P2012)',hours:90,price:8800},
+  // ── sr-cont · MATH ──
+  {id:'sr-cont-8201',cat:'sr-cont',code:'8201',subj:'MATH',name:'เซต',hours:24,price:2200},
+  {id:'sr-cont-8202',cat:'sr-cont',code:'8202',subj:'MATH',name:'ตรรกศาสตร์เบื้องต้นและการให้เหตุผล',hours:33,price:1600},
+  {id:'sr-cont-8203',cat:'sr-cont',code:'8203',subj:'MATH',name:'ระบบจำนวนจริง',hours:30,price:3000},
+  {id:'sr-cont-8204',cat:'sr-cont',code:'8204',subj:'MATH',name:'ทฤษฎีจำนวนเบื้องต้น',hours:16,price:1300},
+  {id:'sr-cont-8205',cat:'sr-cont',code:'8205',subj:'MATH',name:'เรขาคณิตวิเคราะห์และภาคตัดกรวย',hours:30,price:2600},
+  {id:'sr-cont-8206',cat:'sr-cont',code:'8206',subj:'MATH',name:'ความสัมพันธ์และฟังก์ชัน',hours:30,price:2600},
+  {id:'sr-cont-8207',cat:'sr-cont',code:'8207',subj:'MATH',name:'เมทริกซ์',hours:30,price:2000},
+  {id:'sr-cont-8208',cat:'sr-cont',code:'8208',subj:'MATH',name:'อัตราส่วนตรีโกณมิติ',hours:8.5,price:1000},
+  {id:'sr-cont-8209',cat:'sr-cont',code:'8209',subj:'MATH',name:'ฟังก์ชันเอกซ์โพเนนเชียล และฟังก์ชันลอการิทึม',hours:30.5,price:2600},
+  {id:'sr-cont-8210',cat:'sr-cont',code:'8210',subj:'MATH',name:'ฟังก์ชันตรีโกณมิติและการประยุกต์',hours:42,price:3500},
+  {id:'sr-cont-8211',cat:'sr-cont',code:'8211',subj:'MATH',name:'เวกเตอร์และทฤษฎีกราฟ',hours:22.5,price:2600},
+  {id:'sr-cont-8212',cat:'sr-cont',code:'8212',subj:'MATH',name:'ลำดับและอนุกรม',hours:23.5,price:2000},
+  {id:'sr-cont-8213',cat:'sr-cont',code:'8213',subj:'MATH',name:'ความน่าจะเป็น',hours:24,price:2200},
+  {id:'sr-cont-8214',cat:'sr-cont',code:'8214',subj:'MATH',name:'จำนวนเชิงซ้อน',hours:26,price:2200},
+  {id:'sr-cont-8215',cat:'sr-cont',code:'8215',subj:'MATH',name:'แคลคูลัส',hours:34.5,price:2800},
+  {id:'sr-cont-8216',cat:'sr-cont',code:'8216',subj:'MATH',name:'สถิติและความสัมพันธ์เชิงฟังก์ชันระหว่างข้อมูล',hours:24,price:2800},
+  {id:'sr-cont-8218',cat:'sr-cont',code:'8218',subj:'MATH',name:'UpSkill ตะลุยโจทย์ คณิตศาสตร์ ม.4 เทอม 1 รร.เตรียมอุดมฯ',hours:32,price:2600},
+  {id:'sr-cont-8219',cat:'sr-cont',code:'8219',subj:'MATH',name:'UpSkill ตะลุยโจทย์ คณิตศาสตร์ ม.4 เทอม 2 รร.เตรียมอุดมฯ',hours:32,price:2600},
+  {id:'sr-cont-8220',cat:'sr-cont',code:'8220',subj:'MATH',name:'UpSkill ตะลุยโจทย์ คณิตศาสตร์ ม.5 เทอม 1 รร.เตรียมอุดมฯ',hours:32,price:2600},
+  {id:'sr-cont-8221',cat:'sr-cont',code:'8221',subj:'MATH',name:'UpSkill ตะลุยโจทย์ คณิตศาสตร์ ม.5 เทอม 2 รร.เตรียมอุดมฯ',hours:32,price:2600},
+  {id:'sr-cont-8222',cat:'sr-cont',code:'8222',subj:'MATH',name:'UpSkill ตะลุยโจทย์ คณิตศาสตร์ ม.6 รร.เตรียมอุดมฯ',hours:32,price:2600},
+  {id:'sr-cont-8223',cat:'sr-cont',code:'8223',subj:'MATH',name:'ปรับพื้นฐานคณิต ม.ปลาย',hours:15,price:99},
+  {id:'sr-cont-8281',cat:'sr-cont',code:'8281',subj:'MATH',name:'PACK 1 คณิตฯ ม.ปลาย (8201-8204)',hours:103,price:4300},
+  {id:'sr-cont-8282',cat:'sr-cont',code:'8282',subj:'MATH',name:'PACK 2 คณิตฯ ม.ปลาย (8205-8207)',hours:90,price:4900},
+  {id:'sr-cont-8283',cat:'sr-cont',code:'8283',subj:'MATH',name:'PACK 3 คณิตฯ ม.ปลาย (8209-8211)',hours:95,price:5500},
+  {id:'sr-cont-8284',cat:'sr-cont',code:'8284',subj:'MATH',name:'PACK 4 คณิตฯ ม.ปลาย (8212-8214)',hours:73.5,price:4900},
+  {id:'sr-cont-8285',cat:'sr-cont',code:'8285',subj:'MATH',name:'PACK 5 คณิตฯ ม.ปลาย (8215-8216)',hours:58.5,price:4900},
+  {id:'sr-cont-8286',cat:'sr-cont',code:'8286',subj:'MATH',name:'PACK คณิตศาสตร์ ม.4 เทอม 1 รร.เตรียมอุดมฯ (8201, 8202, 8203, 8207)',hours:117,price:4500},
+  {id:'sr-cont-8287',cat:'sr-cont',code:'8287',subj:'MATH',name:'PACK คณิตศาสตร์ ม.4 เทอม 2 รร.เตรียมอุดมฯ (8205, 8206)',hours:60,price:4200},
+  {id:'sr-cont-8288',cat:'sr-cont',code:'8288',subj:'MATH',name:'PACK คณิตศาสตร์ ม.5 เทอม 1 รร.เตรียมอุดมฯ (8209, 8210, 8211)',hours:91.5,price:5600},
+  {id:'sr-cont-8289',cat:'sr-cont',code:'8289',subj:'MATH',name:'PACK คณิตศาสตร์ ม.5 เทอม 2 รร.เตรียมอุดมฯ (8212, 8215)',hours:58,price:4000},
+  {id:'sr-cont-8290',cat:'sr-cont',code:'8290',subj:'MATH',name:'PACK คณิตศาสตร์ ม.6 รร.เตรียมอุดมฯ (8213, 8214, 8216)',hours:74,price:4600},
+  {id:'sr-cont-8291',cat:'sr-cont',code:'8291',subj:'MATH',name:'ปรับพื้นฐาน ม.ปลาย + ม.4 เทอม 1 (8223, 8201-8203)',hours:87,price:3690},
+  // ── sr-cont · PHY ──
+  {id:'sr-cont-0201',cat:'sr-cont',code:'0201',subj:'PHY',name:'บทนำและการวัด',hours:10,price:1100},
+  {id:'sr-cont-0202',cat:'sr-cont',code:'0202',subj:'PHY',name:'การเคลื่อนที่แนวตรง',hours:16,price:1800},
+  {id:'sr-cont-0203',cat:'sr-cont',code:'0203',subj:'PHY',name:'กฎของนิวตัน',hours:12,price:1500},
+  {id:'sr-cont-0204',cat:'sr-cont',code:'0204',subj:'PHY',name:'สมดุลกล',hours:12,price:1500},
+  {id:'sr-cont-0205',cat:'sr-cont',code:'0205',subj:'PHY',name:'งานและพลังงาน',hours:12,price:1500},
+  {id:'sr-cont-0206',cat:'sr-cont',code:'0206',subj:'PHY',name:'โมเมนตัม',hours:12,price:1400},
+  {id:'sr-cont-0207',cat:'sr-cont',code:'0207',subj:'PHY',name:'การเคลื่อนที่วิถีโค้ง',hours:10,price:1100},
+  {id:'sr-cont-0208',cat:'sr-cont',code:'0208',subj:'PHY',name:'การเคลื่อนที่วงกลมและดวงดาว',hours:16,price:1800},
+  {id:'sr-cont-0209',cat:'sr-cont',code:'0209',subj:'PHY',name:'การเคลื่อนที่ซิมเปิลฮาร์โมนิก',hours:11,price:1300},
+  {id:'sr-cont-0210',cat:'sr-cont',code:'0210',subj:'PHY',name:'การเคลื่อนที่แบบหมุน',hours:12,price:1400},
+  {id:'sr-cont-0211',cat:'sr-cont',code:'0211',subj:'PHY',name:'คลื่น',hours:16,price:1900},
+  {id:'sr-cont-0212',cat:'sr-cont',code:'0212',subj:'PHY',name:'เสียง',hours:16,price:1800},
+  {id:'sr-cont-0213',cat:'sr-cont',code:'0213',subj:'PHY',name:'แสงเชิงรังสีและแสงเชิงคลื่น',hours:20,price:2500},
+  {id:'sr-cont-0214',cat:'sr-cont',code:'0214',subj:'PHY',name:'แก๊สและทฤษฎีจลน์',hours:16.5,price:1900},
+  {id:'sr-cont-0215',cat:'sr-cont',code:'0215',subj:'PHY',name:'ของแข็ง ของเหลว และของไหล',hours:16.5,price:1900},
+  {id:'sr-cont-0216',cat:'sr-cont',code:'0216',subj:'PHY',name:'ไฟฟ้าสถิต',hours:15,price:1800},
+  {id:'sr-cont-0217',cat:'sr-cont',code:'0217',subj:'PHY',name:'ไฟฟ้ากระแสตรง',hours:16,price:1800},
+  {id:'sr-cont-0218',cat:'sr-cont',code:'0218',subj:'PHY',name:'แม่เหล็กไฟฟ้า',hours:13,price:1500},
+  {id:'sr-cont-0219',cat:'sr-cont',code:'0219',subj:'PHY',name:'ไฟฟ้ากระแสสลับ',hours:8,price:1000},
+  {id:'sr-cont-0220',cat:'sr-cont',code:'0220',subj:'PHY',name:'คลื่นแม่เหล็กไฟฟ้าและแสงเชิงฟิสิกส์',hours:6,price:1000},
+  {id:'sr-cont-0221',cat:'sr-cont',code:'0221',subj:'PHY',name:'ฟิสิกส์อะตอม',hours:13,price:1600},
+  {id:'sr-cont-0222',cat:'sr-cont',code:'0222',subj:'PHY',name:'ฟิสิกส์นิวเคลียร์และฟิสิกส์อนุภาค',hours:10,price:1200},
+  {id:'sr-cont-0223',cat:'sr-cont',code:'0223',subj:'PHY',name:'Upskill ตะลุยโจทย์ ฟิสิกส์ ม.4 เทอม 1 รร.เตรียมอุดมฯ',hours:33.5,price:2700},
+  {id:'sr-cont-0224',cat:'sr-cont',code:'0224',subj:'PHY',name:'Upskill ตะลุยโจทย์ ฟิสิกส์ ม.4 เทอม 2 รร.เตรียมอุดมฯ',hours:31.5,price:2700},
+  {id:'sr-cont-0225',cat:'sr-cont',code:'0225',subj:'PHY',name:'Upskill ตะลุยโจทย์ ฟิสิกส์ ม.5 เทอม 2 รร.เตรียมอุดมฯ',hours:21,price:2700},
+  {id:'sr-cont-0226',cat:'sr-cont',code:'0226',subj:'PHY',name:'Upskill ตะลุยโจทย์ ฟิสิกส์ ม.5 เทอม 1 รร.เตรียมอุดมฯ',hours:35,price:2700},
+  {id:'sr-cont-0281',cat:'sr-cont',code:'0281',subj:'PHY',name:'Pack กลศาสตร์ 1 (0201, 0202, 0203, 0204)',hours:50,price:4500},
+  {id:'sr-cont-0282',cat:'sr-cont',code:'0282',subj:'PHY',name:'Pack กลศาสตร์ 2 (0205, 0206, 0207, 0208)',hours:50,price:4600},
+  {id:'sr-cont-0284',cat:'sr-cont',code:'0284',subj:'PHY',name:'Pack ซิมเปิลฮาร์โมนิกและกลุ่มคลื่น (0209, 0211, 0212, 0213)',hours:63,price:5500},
+  {id:'sr-cont-0285',cat:'sr-cont',code:'0285',subj:'PHY',name:'Pack สมบัติสาร (0214, 0215)',hours:33,price:3200},
+  {id:'sr-cont-0286',cat:'sr-cont',code:'0286',subj:'PHY',name:'Pack ไฟฟ้า (0216, 0217, 0218, 0219)',hours:52,price:4800},
+  {id:'sr-cont-0288',cat:'sr-cont',code:'0288',subj:'PHY',name:'Pack ฟิสิกส์แผนใหม่ (0221, 0222)',hours:23,price:2700},
+  {id:'sr-cont-0293',cat:'sr-cont',code:'0293',subj:'PHY',name:'Pack ฟิสิกส์ ม.4 เทอม 1 รร.เตรียมอุดมฯ (0201, 0202, 0203, 0204, 0205)',hours:62,price:6000},
+  {id:'sr-cont-0294',cat:'sr-cont',code:'0294',subj:'PHY',name:'Pack ฟิสิกส์ ม.4 เทอม 2 รร.เตรียมอุดมฯ (0206, 0207, 0208, 0209, 0210)',hours:61,price:6000},
+  {id:'sr-cont-0295',cat:'sr-cont',code:'0295',subj:'PHY',name:'Pack ฟิสิกส์ ม.5 เทอม 1 รร.เตรียมอุดมฯ (0216, 0217, 0218)',hours:44,price:4300},
+  {id:'sr-cont-0296',cat:'sr-cont',code:'0296',subj:'PHY',name:'Pack ฟิสิกส์ ม.5 เทอม 2 รร.เตรียมอุดมฯ (0214, 0215)',hours:32,price:3200},
+  {id:'sr-cont-0297',cat:'sr-cont',code:'0297',subj:'PHY',name:'Pack ฟิสิกส์ ม.6 เทอม 1 รร.เตรียมอุดมฯ (0211, 0212, 0213, 0219)',hours:60,price:6000},
+  {id:'sr-cont-0298',cat:'sr-cont',code:'0298',subj:'PHY',name:'Pack ฟิสิกส์ ม.6 เทอม 2 รร.เตรียมอุดมฯ (0220, 0221, 0222)',hours:29,price:3100},
+  // ── อื่นๆ : 99B ปรับพื้นฐาน / Bundle / IELTS-SAT (ไม่อยู่ใน catalog 2026) ──
+  {id:'oth-b99-math',cat:'other',code:'',subj:'MIX',grp:'99B ปรับพื้นฐาน',name:'ปรับพื้นฐาน คณิตศาสตร์ ม.ปลาย',hours:10,price:99},
+  {id:'oth-b99-phy',cat:'other',code:'',subj:'MIX',grp:'99B ปรับพื้นฐาน',name:'ปรับพื้นฐาน ฟิสิกส์ ม.4',hours:10,price:99},
+  {id:'oth-b99-chem',cat:'other',code:'',subj:'MIX',grp:'99B ปรับพื้นฐาน',name:'ปรับพื้นฐาน เคมี',hours:10,price:99},
+  {id:'oth-b99-bio',cat:'other',code:'',subj:'MIX',grp:'99B ปรับพื้นฐาน',name:'ปรับพื้นฐาน ชีววิทยา',hours:10,price:99},
+  {id:'oth-b99-eng',cat:'other',code:'',subj:'MIX',grp:'99B ปรับพื้นฐาน',name:'ปรับพื้นฐาน ภาษาอังกฤษ ม.ปลาย',hours:10,price:99},
+  {id:'oth-b99-tp1',cat:'other',code:'',subj:'MIX',grp:'99B ปรับพื้นฐาน',name:'ปรับพื้นฐาน TPAT1 ความถนัดแพทย์',hours:8,price:99},
+  {id:'oth-b99-tp3',cat:'other',code:'',subj:'MIX',grp:'99B ปรับพื้นฐาน',name:'ปรับพื้นฐาน TPAT3 วิทย์-เทคโนโลยี',hours:8,price:99},
+  {id:'oth-b99-3a',cat:'other',code:'',subj:'MIX',grp:'99B ปรับพื้นฐาน',name:'Special Pack 99B คณิต+ชีวะ+เคมี',hours:30,price:297},
+  {id:'oth-b99-3b',cat:'other',code:'',subj:'MIX',grp:'99B ปรับพื้นฐาน',name:'Special Pack 99B ฟิสิกส์+ชีวะ+เคมี',hours:30,price:297},
+  {id:'oth-b99-3c',cat:'other',code:'',subj:'MIX',grp:'99B ปรับพื้นฐาน',name:'Special Pack 99B ฟิสิกส์+คณิต+ชีวะ',hours:30,price:297},
+  {id:'oth-b99-pmath',cat:'other',code:'',subj:'MIX',grp:'99B ปรับพื้นฐาน',name:'Special Pack ปรับพื้นฐาน คณิต TCAS',hours:10,price:99},
+  {id:'oth-b99-pphy',cat:'other',code:'',subj:'MIX',grp:'99B ปรับพื้นฐาน',name:'Special Pack ปรับพื้นฐาน ฟิสิกส์ TCAS',hours:10,price:99},
+  {id:'oth-b99-pbio',cat:'other',code:'',subj:'MIX',grp:'99B ปรับพื้นฐาน',name:'Special Pack ปรับพื้นฐาน ชีวะ TCAS',hours:10,price:99},
+  {id:'oth-b99-peng',cat:'other',code:'',subj:'MIX',grp:'99B ปรับพื้นฐาน',name:'Special Pack ปรับพื้นฐาน อังกฤษ TCAS',hours:10,price:99},
+  {id:'oth-b99-med',cat:'other',code:'',subj:'MIX',grp:'99B ปรับพื้นฐาน',name:'Special Pack ปรับพื้นฐาน หมอ 6 วิชา',hours:60,price:594},
+  {id:'oth-b99-eng2',cat:'other',code:'',subj:'MIX',grp:'99B ปรับพื้นฐาน',name:'Special Pack ปรับพื้นฐาน วิศวะ 5 วิชา',hours:50,price:495},
+  {id:'oth-bnd-med',cat:'other',code:'',subj:'MIX',grp:'Bundle',name:'Pack เข้าแพทย์ 6 วิชา',hours:60,price:594,hot:1},
+  {id:'oth-bnd-eng',cat:'other',code:'',subj:'MIX',grp:'Bundle',name:'Pack วิศวะ 5 วิชา',hours:50,price:495},
+  {id:'oth-ielts',cat:'other',code:'',subj:'MIX',grp:'IELTS / SAT',name:'IELTS Prep Course',hours:45,price:7500,hot:1},
+  {id:'oth-sat',cat:'other',code:'',subj:'MIX',grp:'IELTS / SAT',name:'SAT Math + English',hours:50,price:8500},
 ];
 
 function getColor(c){
-  var id=c.id, nm=c.name, cat=c.cat;
-  // Category-level color first
-  if(cat==='sr') return '#546E7A';      // ม.ปลาย = blue-grey
-  if(cat==='jr') return '#00695C';      // ม.ต้น = teal
-  if(cat==='alevel') return '#1B5E20';  // A-Level = dark green
-  if(cat==='ielts') return '#4527A0';   // IELTS/SAT = deep purple
-  if(cat==='custom') return '#7C3AED';   // custom = violet
-  // Subject colors
-  if(id.indexOf('math')>=0||nm.indexOf('คณิต')>=0) return '#C62828';
-  if(id.indexOf('phy')>=0||nm.indexOf('ฟิสิกส์')>=0) return '#1565C0';
-  if(id.indexOf('chem')>=0||nm.indexOf('เคมี')>=0) return '#E65100';
-  if(id.indexOf('bio')>=0||nm.indexOf('ชีว')>=0) return '#2E7D32';
-  if(id.indexOf('eng')>=0||id.indexOf('ielts')>=0||id.indexOf('sat')>=0) return '#6A1B9A';
-  if(id.indexOf('tgat')>=0) return '#00838F';
-  if(id.indexOf('tpat1')>=0||id.indexOf('tp1')>=0||id.indexOf('med')>=0) return '#880E4F';
-  if(id.indexOf('tpat2')>=0) return '#AD1457';
-  if(id.indexOf('tpat3')>=0||id.indexOf('tp3')>=0) return '#37474F';
-  if(id.indexOf('tpat4')>=0) return '#4E342E';
-  if(id.indexOf('tpat5')>=0) return '#1B5E20';
-  if(id.indexOf('bnd')>=0||id.indexOf('med')>=0) return '#4A148C';
+  // สีตามวิชา (ใช้ field subj จาก catalog 2026)
+  var S = {
+    PHY:'#1565C0',   // ฟิสิกส์  = น้ำเงิน
+    CHEM:'#E65100',  // เคมี     = ส้ม
+    BIO:'#2E7D32',   // ชีววิทยา = เขียว
+    MATH:'#C62828',  // คณิต     = แดง
+    ENG:'#6A1B9A',   // อังกฤษ   = ม่วง
+    TPAT:'#880E4F',  // TPAT     = แดงเข้ม
+    SCI:'#00838F',   // วิทย์ทั่วไป
+    MIX:'#455A64'    // รวมวิชา / Pack
+  };
+  if(c.cat === 'custom') return '#7C3AED';
+  if(c.subj && S[c.subj]) return S[c.subj];
+  // fallback สำหรับคอร์สเก่าที่ไม่มี subj
+  var nm = c.name || '';
+  if(nm.indexOf('คณิต')>=0) return S.MATH;
+  if(nm.indexOf('ฟิสิกส์')>=0) return S.PHY;
+  if(nm.indexOf('เคมี')>=0) return S.CHEM;
+  if(nm.indexOf('ชีว')>=0) return S.BIO;
+  if(nm.indexOf('อังกฤษ')>=0||nm.indexOf('English')>=0||nm.indexOf('IELTS')>=0||nm.indexOf('SAT')>=0) return S.ENG;
   return '#455A64';
 }
 
@@ -1014,58 +1339,58 @@ function getColor(c){
 var PERSONA_PLANS_BY_LEVEL = {
   'แพทย์': {
     'ม.4': { // 3 ปี — ค่อยๆ สะสม
-      0: { 4:['b99-med'],                       9:['pk-math','pk-phy'],          2:['pk-chem']            },
-      1: { 4:['pk-bio','pk-eng'],               9:['tgat1','tgat23'],             2:['tpat1']              },
-      2: { 4:['al-bio','al-chem','al-phy'],      9:['al-math','al-eng'],           2:[]                     }
+      0: { 4:['oth-b99-med'],                       9:['sr-comp-8399','sr-comp-1399'],          2:['sr-comp-3399']            },
+      1: { 4:['sr-comp-2399','sr-comp-P3009'],               9:['tgat1','tgat23'],             2:['tpat1']              },
+      2: { 4:['sr-comp-2307','sr-comp-3307','sr-comp-1316'],      9:['sr-comp-8309','sr-comp-P2033'],           2:[]                     }
     },
     'ม.5': { // 2 ปี — เร่ง Pack ตั้งแต่ต้น
-      1: { 4:['b99-med','pk-math','pk-phy'],     9:['pk-chem','pk-bio','pk-eng'],  2:['tgat1','tgat23']     },
-      2: { 4:['al-bio','al-chem','al-phy'],      9:['al-math','al-eng'],           2:['tpat1']              }
+      1: { 4:['oth-b99-med','sr-comp-8399','sr-comp-1399'],     9:['sr-comp-3399','sr-comp-2399','sr-comp-P3009'],  2:['tgat1','tgat23']     },
+      2: { 4:['sr-comp-2307','sr-comp-3307','sr-comp-1316'],      9:['sr-comp-8309','sr-comp-P2033'],           2:['tpat1']              }
     },
     'ม.6': { // 1 ปี — เร่งด่วนทุกวิชา
-      2: { 4:['pk-bio','pk-chem','tgat1','tgat23'], 9:['pk-math','pk-phy','al-bio','al-chem'], 2:['al-phy','al-math','al-eng','tpat1'] }
+      2: { 4:['sr-comp-2399','sr-comp-3399','tgat1','tgat23'], 9:['sr-comp-8399','sr-comp-1399','sr-comp-2307','sr-comp-3307'], 2:['sr-comp-1316','sr-comp-8309','sr-comp-P2033','tpat1'] }
     }
   },
   'วิศวะ': {
     'ม.4': { // 3 ปี
-      0: { 4:['b99-eng2'],                      9:['pk-math','pk-phy'],           2:['pk-chem']            },
-      1: { 4:['pk-eng','tgat1'],                9:['tgat23','tpat3'],              2:['al-math']            },
-      2: { 4:['al-phy','al-chem'],              9:['al-math','al-eng'],            2:[]                     }
+      0: { 4:['oth-b99-eng2'],                      9:['sr-comp-8399','sr-comp-1399'],           2:['sr-comp-3399']            },
+      1: { 4:['sr-comp-P3009','tgat1'],                9:['tgat23','tpat3'],              2:['sr-comp-8309']            },
+      2: { 4:['sr-comp-1316','sr-comp-3307'],              9:['sr-comp-8309','sr-comp-P2033'],            2:[]                     }
     },
     'ม.5': { // 2 ปี
-      1: { 4:['pk-math','pk-phy','pk-eng'],      9:['pk-chem','tgat1','tgat23'],   2:['al-math','tpat3']    },
-      2: { 4:['al-phy','al-chem'],               9:['al-math','al-eng'],            2:[]                    }
+      1: { 4:['sr-comp-8399','sr-comp-1399','sr-comp-P3009'],      9:['sr-comp-3399','tgat1','tgat23'],   2:['sr-comp-8309','tpat3']    },
+      2: { 4:['sr-comp-1316','sr-comp-3307'],               9:['sr-comp-8309','sr-comp-P2033'],            2:[]                    }
     },
     'ม.6': { // 1 ปี
-      2: { 4:['pk-math','pk-phy','tgat1','tgat23'], 9:['pk-chem','pk-eng','al-math','al-phy'], 2:['al-chem','al-eng','tpat3'] }
+      2: { 4:['sr-comp-8399','sr-comp-1399','tgat1','tgat23'], 9:['sr-comp-3399','sr-comp-P3009','sr-comp-8309','sr-comp-1316'], 2:['sr-comp-3307','sr-comp-P2033','tpat3'] }
     }
   },
   'Business': {
     'ม.4': { // 3 ปี
-      0: { 4:['b99-math','b99-eng'],             9:['pk-math','pk-eng'],           2:[]                     },
-      1: { 4:['tgat1'],                          9:['tgat23'],                     2:['al-math']            },
-      2: { 4:['al-eng'],                         9:['al-math'],                    2:[]                     }
+      0: { 4:['oth-b99-math','oth-b99-eng'],             9:['sr-comp-8399','sr-comp-P3009'],           2:[]                     },
+      1: { 4:['tgat1'],                          9:['tgat23'],                     2:['sr-comp-8309']            },
+      2: { 4:['sr-comp-P2033'],                         9:['sr-comp-8309'],                    2:[]                     }
     },
     'ม.5': { // 2 ปี
-      1: { 4:['pk-math','pk-eng','tgat1'],        9:['tgat23'],                    2:['al-math']            },
-      2: { 4:['al-eng'],                          9:['al-math'],                   2:[]                     }
+      1: { 4:['sr-comp-8399','sr-comp-P3009','tgat1'],        9:['tgat23'],                    2:['sr-comp-8309']            },
+      2: { 4:['sr-comp-P2033'],                          9:['sr-comp-8309'],                   2:[]                     }
     },
     'ม.6': { // 1 ปี
-      2: { 4:['pk-math','pk-eng','tgat1','tgat23'], 9:['al-math','al-eng'],        2:[]                     }
+      2: { 4:['sr-comp-8399','sr-comp-P3009','tgat1','tgat23'], 9:['sr-comp-8309','sr-comp-P2033'],        2:[]                     }
     }
   },
   'นิติศาสตร์': {
     'ม.4': { // 3 ปี
-      0: { 4:['b99-eng','b99-math'],             9:['pk-eng'],                    2:['pk-math']             },
-      1: { 4:['pk-math','tgat1'],                9:['tgat23'],                    2:['al-eng']              },
-      2: { 4:['al-eng'],                         9:['al-math'],                   2:[]                      }
+      0: { 4:['oth-b99-eng','oth-b99-math'],             9:['sr-comp-P3009'],                    2:['sr-comp-8399']             },
+      1: { 4:['sr-comp-8399','tgat1'],                9:['tgat23'],                    2:['sr-comp-P2033']              },
+      2: { 4:['sr-comp-P2033'],                         9:['sr-comp-8309'],                   2:[]                      }
     },
     'ม.5': { // 2 ปี
-      1: { 4:['pk-eng','pk-math','tgat1'],        9:['tgat23'],                   2:['al-eng']              },
-      2: { 4:['al-eng'],                          9:['al-math'],                  2:[]                      }
+      1: { 4:['sr-comp-P3009','sr-comp-8399','tgat1'],        9:['tgat23'],                   2:['sr-comp-P2033']              },
+      2: { 4:['sr-comp-P2033'],                          9:['sr-comp-8309'],                  2:[]                      }
     },
     'ม.6': { // 1 ปี
-      2: { 4:['pk-eng','pk-math','tgat1','tgat23'], 9:['al-eng','al-math'],       2:[]                      }
+      2: { 4:['sr-comp-P3009','sr-comp-8399','tgat1','tgat23'], 9:['sr-comp-P2033','sr-comp-8309'],       2:[]                      }
     }
   }
 };
@@ -1192,24 +1517,39 @@ function clearCourseSearch(){
   document.getElementById('courseSearch').focus();
 }
 
+var CAT_LABEL = {
+  'jr-cont':'ม.ต้น เนื้อหา','jr-comp':'ม.ต้น แข่งขัน',
+  'sr-cont':'ม.ปลาย เนื้อหา','sr-comp':'ม.ปลาย แข่งขัน',
+  'other':'อื่นๆ 99b bundle ielts sat','custom':'คอร์สเพิ่มเอง'
+};
+var SUBJ_LABEL = {
+  PHY:'ฟิสิกส์ physics', CHEM:'เคมี chemistry', BIO:'ชีววิทยา biology',
+  MATH:'คณิตศาสตร์ math', ENG:'ภาษาอังกฤษ english', TPAT:'tpat ความถนัด',
+  SCI:'วิทยาศาสตร์ science', MIX:'รวมวิชา pack'
+};
+
 function renderModalList(){
-  var list = modalCat === 'all' ? COURSES : COURSES.filter(function(c){ return c.cat === modalCat; });
+  // ค้นหา = มองข้ามแท็บ (ค้นทั้ง catalog) ; ไม่ค้นหา = กรองตามแท็บ
+  var list;
   if(modalSearch){
-    list = list.filter(function(c){
-      var categoryText = {
-        'b99':'ปรับพื้นฐาน','pack-tcas':'pack tcas','pack-upskill':'tcas upskill',
-        'alevel':'a-level','tgat':'tgat','tpat':'tpat','bundle':'bundle',
-        'sr':'ม.ปลาย','jr':'ม.ต้น','ielts':'ielts sat','custom':'คอร์สเพิ่มเอง'
-      }[c.cat] || c.cat;
-      var searchable = [c.name, c.id, c.cat, categoryText].join(' ').toLocaleLowerCase('th-TH');
+    list = COURSES.filter(function(c){
+      // รหัสวิชา: ให้ match แบบขึ้นต้นหรือมีอยู่ในรหัส เช่น "3121", "121"
+      if(c.code && String(c.code).toLocaleLowerCase('th-TH').indexOf(modalSearch) >= 0) return true;
+      var searchable = [
+        c.name, c.id, c.code || '', c.grp || '',
+        CAT_LABEL[c.cat] || c.cat, SUBJ_LABEL[c.subj] || ''
+      ].join(' ').toLocaleLowerCase('th-TH');
       return searchable.indexOf(modalSearch) >= 0;
     });
+  } else {
+    list = modalCat === 'all' ? COURSES : COURSES.filter(function(c){ return c.cat === modalCat; });
   }
   var el = document.getElementById('mclist');
   var empty = document.getElementById('mNoResults');
   el.innerHTML = '';
   empty.style.display = list.length ? 'none' : 'block';
-  document.getElementById('mResultCount').textContent = 'พบ ' + list.length + ' คอร์ส';
+  document.getElementById('mResultCount').textContent =
+    'พบ ' + list.length + ' คอร์ส' + (modalSearch ? ' (ค้นทุกหมวด)' : '');
   list.forEach(function(c){
     var isSel = modalTemp.indexOf(c.id) >= 0;
     var clr = getColor(c);
@@ -1217,7 +1557,9 @@ function renderModalList(){
     div.className = 'mcitem' + (isSel ? ' sel' : '');
     div.dataset.id = c.id;
     var pBlur = guruMode ? '' : ' blur';
+    var codeTag = c.code ? '<span class="mccode">' + escapeHtml(c.code) + '</span>' : '';
     div.innerHTML = '<div class="mcdot" style="background:' + clr + '"></div>' +
+      codeTag +
       '<span class="mcname">' + escapeHtml(c.name) + (c.hot ? ' 🔥' : '') + '</span>' +
       '<span class="mchrs">' + c.hours + 'ชม.</span>' +
       '<span class="mcprice' + pBlur + '">฿' + c.price.toLocaleString() + '</span>' +
@@ -1383,11 +1725,11 @@ function populatePrintView(){
         pvtd.innerHTML = pvCourses.map(function(cid){
           var c = COURSES.find(function(x){ return x.id===cid; });
           if(!c) return '';
+          // ไม่แสดงราคาในแผนที่ print / ส่งให้นักเรียน
           return '<div class="pvcard" style="background:'+getColor(c)+';">' +
-            '<span class="pvcard-start">เริ่ม</span>' +
+            '<span class="pvcard-start">' + (c.code ? escapeHtml(c.code) : 'เริ่ม') + '</span>' +
             '<div class="pvcard-name">'+escapeHtml(c.name)+'</div>' +
             (c.hours ? '<div class="pvcard-hrs">'+c.hours+' ชม.</div>' : '') +
-            '<div class="pvcard-price">฿'+c.price.toLocaleString()+'</div>' +
             '</div>';
         }).join('');
       }
@@ -1395,6 +1737,48 @@ function populatePrintView(){
     }
     body.appendChild(tr);
   }
+
+  // ── กล่อง "คอร์สในแผน ONDY" (legend) ──
+  var used = [], seenId = {};
+  for(var li2=pvStartRow; li2<LEVELS.length; li2++){
+    for(var mi2=0; mi2<12; mi2++){
+      getActiveCal()[li2][mi2].forEach(function(cid){
+        if(seenId[cid]) return; seenId[cid] = 1;
+        var c = COURSES.find(function(x){ return x.id===cid; });
+        if(c) used.push(c);
+      });
+    }
+  }
+  document.getElementById('pvLegend').innerHTML = used.length
+    ? used.map(function(c){
+        return '<div class="pvleg-item"><span class="pvleg-dot" style="background:'+getColor(c)+'"></span>' +
+               (c.code ? '<strong>'+escapeHtml(c.code)+'</strong> ' : '') +
+               escapeHtml(c.name) + ' <span style="color:#888">('+c.hours+' ชม.)</span></div>';
+      }).join('')
+    : '<div style="font-size:8px;color:#999;">— ยังไม่ได้เลือกคอร์ส —</div>';
+
+  // ── กล่อง "เกณฑ์คะแนน / Target" (เฉพาะวิชาที่กรอก) ──
+  var filled = getFilledScores();
+  document.getElementById('pvScores').innerHTML = filled.length
+    ? filled.map(function(s){
+        return '<div class="pvsc-row"><span class="pvsc-lbl">'+escapeHtml(s.label)+'</span>' +
+               '<span class="pvsc-val">'+escapeHtml(s.value)+'</span></div>';
+      }).join('')
+    : '<div style="font-size:8px;color:#999;">— ยังไม่ได้ระบุเกณฑ์คะแนน —</div>';
+
+  // ── กล่องสถิติ : ไม่แสดงมูลค่ารวม ──
+  var totHrs = 0, monthsUsed = {};
+  used.forEach(function(c){ totHrs += (c.hours||0); });
+  for(var li3=pvStartRow; li3<LEVELS.length; li3++){
+    for(var mi3=0; mi3<12; mi3++){
+      if(getActiveCal()[li3][mi3].length) monthsUsed[li3+'-'+mi3] = 1;
+    }
+  }
+  document.getElementById('pvStats').innerHTML =
+    '<div class="pvstat-box"><div class="pvstat-num">'+used.length+'</div><div class="pvstat-lbl">คอร์สในแผน</div></div>' +
+    '<div class="pvstat-box"><div class="pvstat-num">'+totHrs+'</div><div class="pvstat-lbl">ชั่วโมงรวม</div></div>' +
+    '<div class="pvstat-box"><div class="pvstat-num">'+Object.keys(monthsUsed).length+'</div><div class="pvstat-lbl">เดือนที่เรียน</div></div>' +
+    '<div class="pvstat-box"><div class="pvstat-num">'+(LEVELS.length-pvStartRow)+'</div><div class="pvstat-lbl">ปีการศึกษา</div></div>';
 }
 
 function togglePreview(){
@@ -1574,12 +1958,15 @@ function _renderPvCanvas(el, useForeignObject){
 
 // สร้าง PDF จาก .pvpage — คืนค่าเป็น base64 string
 // ขนาดหน้ากระดาษคำนวณจากสัดส่วนจริงของ canvas => หน้าเดียว ไม่โดนตัด ไม่ยืด
-function buildPlanPdf(fname){
+// ═══════════════════════════════════════════════════════════════
+//  RENDERER เดียว — ใช้ทั้ง Print, ดาวน์โหลด PDF และ PDF ที่แนบ Email
+//  ทำให้ผลลัพธ์ทั้ง 3 ทางออกมาเหมือนกันเป๊ะ ไม่มีทางเพี้ยนจากกัน
+// ═══════════════════════════════════════════════════════════════
+function renderPlanCanvas(){
   var pvEl = enterPrintMode();
   var captureEl = pvEl.querySelector('.pvpage') || pvEl;
   var prevW = captureEl.style.width, prevMg = captureEl.style.margin, prevBS = captureEl.style.boxSizing;
 
-  // ล็อกความกว้างให้ตรง A4 landscape เป๊ะ ๆ เหมือนตอน print
   captureEl.style.width = PV_PAGE_W_MM + 'mm';
   captureEl.style.margin = '0';
   captureEl.style.boxSizing = 'border-box';
@@ -1592,58 +1979,52 @@ function buildPlanPdf(fname){
   };
 
   return waitForPvAssets(captureEl)
-    // 1) ลอง foreignObject ก่อน — layout ตรงกับที่เห็นบนจอ/ตอน print
     .then(function(){
+      // foreignObject = ให้ browser จัด layout เอง (flex/grid/ตัวอักษรไทยตรงเป๊ะ)
       return _renderPvCanvas(captureEl, true).then(function(cv){
-        // ถ้า foreignObject ไม่รองรับ จะได้ canvas เปล่า → ถอยไปโหมดปกติ
         return _canvasBlank(cv) ? _renderPvCanvas(captureEl, false) : cv;
       }).catch(function(){
         return _renderPvCanvas(captureEl, false);
       });
     })
     .then(function(cv){
+      restore();
       if(_canvasBlank(cv)) throw new Error('เรนเดอร์แผนไม่สำเร็จ (ภาพว่าง)');
-      var JsPDF = _JsPDF();
-      if(!JsPDF) throw new Error('jsPDF ไม่พร้อมใช้งาน');
-
-      var pageW = PV_PAGE_W_MM;
-      var pageH = Math.max(PV_PAGE_H_MM, Math.round((cv.height / cv.width) * pageW * 100) / 100);
-      var pdf = new JsPDF({
-        unit: 'mm',
-        format: [pageW, pageH],
-        orientation: pageW >= pageH ? 'landscape' : 'portrait',
-        compress: true
-      });
-
-      // ลดคุณภาพลงถ้าไฟล์ใหญ่เกิน (Apps Script/Gmail รับ attachment ได้จำกัด)
-      var q = 0.92, buffer, bytes;
-      for(var attempt = 0; attempt < 3; attempt++){
-        var doc = attempt === 0 ? pdf : new JsPDF({
-          unit:'mm', format:[pageW, pageH],
-          orientation: pageW >= pageH ? 'landscape' : 'portrait', compress:true
-        });
-        doc.addImage(cv.toDataURL('image/jpeg', q), 'JPEG', 0, 0, pageW, pageH, undefined, 'FAST');
-        buffer = doc.output('arraybuffer');
-        bytes = new Uint8Array(buffer);
-        if(bytes.byteLength <= 5 * 1024 * 1024) break;
-        q -= 0.22;
-      }
-
-      restore();
-      if(bytes.byteLength < 100) throw new Error('ไฟล์ PDF ว่าง');
-      var binary = '', CHUNK = 8192;
-      for(var i = 0; i < bytes.byteLength; i += CHUNK){
-        binary += String.fromCharCode.apply(null, bytes.subarray(i, Math.min(i + CHUNK, bytes.byteLength)));
-      }
-      return window.btoa(binary);
+      return cv;
     })
-    .catch(function(err){
-      restore();
-      throw err;
-    });
+    .catch(function(err){ restore(); throw err; });
 }
 
-// ดาวน์โหลด PDF ตรง ๆ (ใช้ engine เดียวกับที่แนบไป Email)
+// canvas -> base64 PDF (หน้าเดียว ขนาดตามสัดส่วนจริง ไม่โดนตัด)
+function canvasToPdfBase64(cv){
+  var JsPDF = _JsPDF();
+  if(!JsPDF) throw new Error('jsPDF ไม่พร้อมใช้งาน');
+  var pageW = PV_PAGE_W_MM;
+  var pageH = Math.max(PV_PAGE_H_MM, Math.round((cv.height / cv.width) * pageW * 100) / 100);
+  var q = 0.92, bytes;
+  for(var attempt = 0; attempt < 3; attempt++){
+    var doc = new JsPDF({
+      unit:'mm', format:[pageW, pageH],
+      orientation: pageW >= pageH ? 'landscape' : 'portrait', compress:true
+    });
+    doc.addImage(cv.toDataURL('image/jpeg', q), 'JPEG', 0, 0, pageW, pageH, undefined, 'FAST');
+    bytes = new Uint8Array(doc.output('arraybuffer'));
+    if(bytes.byteLength <= 5 * 1024 * 1024) break;
+    q -= 0.22;
+  }
+  if(bytes.byteLength < 100) throw new Error('ไฟล์ PDF ว่าง');
+  var binary = '', CHUNK = 8192;
+  for(var i = 0; i < bytes.byteLength; i += CHUNK){
+    binary += String.fromCharCode.apply(null, bytes.subarray(i, Math.min(i + CHUNK, bytes.byteLength)));
+  }
+  return window.btoa(binary);
+}
+
+function buildPlanPdf(fname){
+  return renderPlanCanvas().then(canvasToPdfBase64);
+}
+
+// ดาวน์โหลด PDF (ไฟล์เดียวกับที่แนบ Email)
 function downloadPlanPdf(){
   if(typeof html2pdf === 'undefined'){ printPlan(); return; }
   var p = buildPayload();
@@ -1667,12 +2048,39 @@ function downloadPlanPdf(){
   });
 }
 
+// Print — พิมพ์ "ภาพเดียวกัน" กับที่แนบไป Email จึงตรงกัน 100%
 function printPlan(){
-  populatePrintView();
-  var pv = document.getElementById('pv');
-  pv.style.display = 'block';
-  var imgsReady = waitForPvAssets(pv);
-  imgsReady.then(function(){ window.print(); });
+  if(typeof html2canvas === 'undefined' || !_h2c()){
+    // fallback: พิมพ์จาก DOM ตรง ๆ
+    populatePrintView();
+    var pvf = document.getElementById('pv');
+    pvf.style.display = 'block';
+    waitForPvAssets(pvf).then(function(){ window.print(); });
+    return;
+  }
+  setLoading(true, 'กำลังเตรียมหน้าพิมพ์...');
+  renderPlanCanvas().then(function(cv){
+    setLoading(false);
+    var dataUrl = cv.toDataURL('image/jpeg', 0.94);
+    var ratio = cv.height / cv.width;
+    var pageH = Math.max(PV_PAGE_H_MM, Math.round(ratio * PV_PAGE_W_MM * 100) / 100);
+    var win = window.open('', '_blank');
+    if(!win){ showToast('เบราว์เซอร์บล็อก popup — กรุณาอนุญาตแล้วลองใหม่', 'error', 6000); return; }
+    win.document.write(
+      '<!DOCTYPE html><html><head><meta charset="utf-8"><title>ONDY Plan</title>' +
+      '<style>@page{size:' + PV_PAGE_W_MM + 'mm ' + pageH + 'mm;margin:0;}' +
+      'html,body{margin:0;padding:0;background:#fff;}' +
+      'img{display:block;width:' + PV_PAGE_W_MM + 'mm;height:' + pageH + 'mm;}' +
+      '</style></head><body><img id="pi" src="' + dataUrl + '"></body></html>'
+    );
+    win.document.close();
+    var img = win.document.getElementById('pi');
+    var go = function(){ setTimeout(function(){ win.focus(); win.print(); }, 250); };
+    if(img.complete) go(); else img.onload = go;
+  }).catch(function(err){
+    setLoading(false);
+    showToast('❌ เตรียมหน้าพิมพ์ไม่สำเร็จ: ' + ((err&&err.message)||err), 'error');
+  });
 }
 
 // ─── รับผลลัพธ์จาก Apps Script ผ่าน postMessage ────────────────
