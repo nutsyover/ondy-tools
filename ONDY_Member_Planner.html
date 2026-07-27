@@ -1530,8 +1530,50 @@ function waitForPvAssets(root){
   });
 }
 
+// ── engine resolvers (html2pdf.bundle มี html2canvas + jsPDF อยู่ข้างใน) ──
+function _h2c(){ return window.html2canvas || null; }
+function _JsPDF(){
+  if(window.jspdf && window.jspdf.jsPDF) return window.jspdf.jsPDF;
+  if(window.jsPDF) return window.jsPDF;
+  return null;
+}
+
+// เช็คว่า canvas ออกมาว่างเปล่าไหม (สุ่มอ่าน 5 จุด ถ้าสีเหมือนกันหมด = ว่าง)
+function _canvasBlank(cv){
+  try{
+    var ctx = cv.getContext('2d'), w = cv.width, h = cv.height;
+    if(!w || !h) return true;
+    var pts = [[.5,.12],[.22,.45],[.78,.45],[.5,.8],[.12,.9]];
+    var first = null, diff = 0;
+    for(var i=0;i<pts.length;i++){
+      var d = ctx.getImageData(Math.floor(w*pts[i][0]), Math.floor(h*pts[i][1]), 1, 1).data;
+      var key = d[0]+','+d[1]+','+d[2];
+      if(first === null) first = key; else if(key !== first) diff++;
+    }
+    return diff === 0;
+  }catch(e){ return false; }
+}
+
+// foreignObject = ให้ browser เป็นคน layout เอง (flexbox/grid/ตัวอักษรไทยตรงเป๊ะ)
+// html2canvas โหมดปกติจะ re-implement CSS เอง → flex พัง ตัวหนังสือทับกัน
+function _renderPvCanvas(el, useForeignObject){
+  var h2c = _h2c();
+  if(!h2c) return Promise.reject(new Error('html2canvas ไม่พร้อมใช้งาน'));
+  return h2c(el, {
+    scale: 2,
+    useCORS: true,
+    allowTaint: true,
+    logging: false,
+    backgroundColor: '#FFFFFF',
+    scrollX: 0,
+    scrollY: 0,
+    windowWidth: Math.ceil(el.offsetWidth) + 40,
+    foreignObjectRendering: !!useForeignObject
+  });
+}
+
 // สร้าง PDF จาก .pvpage — คืนค่าเป็น base64 string
-// ขนาดหน้ากระดาษคำนวณจากความสูงจริงของเนื้อหา => ไม่มีการตัดกลางการ์ด/ตาราง
+// ขนาดหน้ากระดาษคำนวณจากสัดส่วนจริงของ canvas => หน้าเดียว ไม่โดนตัด ไม่ยืด
 function buildPlanPdf(fname){
   var pvEl = enterPrintMode();
   var captureEl = pvEl.querySelector('.pvpage') || pvEl;
@@ -1549,48 +1591,56 @@ function buildPlanPdf(fname){
     exitPrintMode();
   };
 
-  return waitForPvAssets(captureEl).then(function(){
-    var wPx = captureEl.offsetWidth || (PV_PAGE_W_MM / PV_MM_PER_PX);
-    var hPx = Math.max(captureEl.scrollHeight, captureEl.offsetHeight);
-    // แปลงสัดส่วนจริงเป็น mm แล้วใช้เป็นขนาดหน้า => ได้ PDF หน้าเดียว ไม่โดนตัด
-    var pageH = Math.max(PV_PAGE_H_MM, Math.ceil((hPx / wPx) * PV_PAGE_W_MM));
+  return waitForPvAssets(captureEl)
+    // 1) ลอง foreignObject ก่อน — layout ตรงกับที่เห็นบนจอ/ตอน print
+    .then(function(){
+      return _renderPvCanvas(captureEl, true).then(function(cv){
+        // ถ้า foreignObject ไม่รองรับ จะได้ canvas เปล่า → ถอยไปโหมดปกติ
+        return _canvasBlank(cv) ? _renderPvCanvas(captureEl, false) : cv;
+      }).catch(function(){
+        return _renderPvCanvas(captureEl, false);
+      });
+    })
+    .then(function(cv){
+      if(_canvasBlank(cv)) throw new Error('เรนเดอร์แผนไม่สำเร็จ (ภาพว่าง)');
+      var JsPDF = _JsPDF();
+      if(!JsPDF) throw new Error('jsPDF ไม่พร้อมใช้งาน');
 
-    var opt = {
-      margin: 0,
-      filename: (fname || 'ONDY_Plan') + '.pdf',
-      image: {type:'jpeg', quality:0.94},
-      html2canvas: {
-        scale: 2,                    // คมพอสำหรับตัวอักษรไทย 7-9px
-        useCORS: true,
-        allowTaint: true,
-        logging: false,
-        backgroundColor: '#FFFFFF',
-        scrollX: 0,
-        scrollY: 0,
-        windowWidth: Math.ceil(wPx) + 40
-      },
-      jsPDF: {
+      var pageW = PV_PAGE_W_MM;
+      var pageH = Math.max(PV_PAGE_H_MM, Math.round((cv.height / cv.width) * pageW * 100) / 100);
+      var pdf = new JsPDF({
         unit: 'mm',
-        format: [PV_PAGE_W_MM, pageH],
-        orientation: PV_PAGE_W_MM >= pageH ? 'landscape' : 'portrait',
+        format: [pageW, pageH],
+        orientation: pageW >= pageH ? 'landscape' : 'portrait',
         compress: true
-      },
-      pagebreak: {mode:'avoid-all'}
-    };
-    return html2pdf().from(captureEl).set(opt).outputPdf('arraybuffer');
-  }).then(function(buffer){
-    restore();
-    var bytes = new Uint8Array(buffer);
-    if(bytes.byteLength < 100) throw new Error('ไฟล์ PDF ว่าง');
-    var binary = '', CHUNK = 8192;
-    for(var i = 0; i < bytes.byteLength; i += CHUNK){
-      binary += String.fromCharCode.apply(null, bytes.subarray(i, Math.min(i + CHUNK, bytes.byteLength)));
-    }
-    return window.btoa(binary);
-  }).catch(function(err){
-    restore();
-    throw err;
-  });
+      });
+
+      // ลดคุณภาพลงถ้าไฟล์ใหญ่เกิน (Apps Script/Gmail รับ attachment ได้จำกัด)
+      var q = 0.92, buffer, bytes;
+      for(var attempt = 0; attempt < 3; attempt++){
+        var doc = attempt === 0 ? pdf : new JsPDF({
+          unit:'mm', format:[pageW, pageH],
+          orientation: pageW >= pageH ? 'landscape' : 'portrait', compress:true
+        });
+        doc.addImage(cv.toDataURL('image/jpeg', q), 'JPEG', 0, 0, pageW, pageH, undefined, 'FAST');
+        buffer = doc.output('arraybuffer');
+        bytes = new Uint8Array(buffer);
+        if(bytes.byteLength <= 5 * 1024 * 1024) break;
+        q -= 0.22;
+      }
+
+      restore();
+      if(bytes.byteLength < 100) throw new Error('ไฟล์ PDF ว่าง');
+      var binary = '', CHUNK = 8192;
+      for(var i = 0; i < bytes.byteLength; i += CHUNK){
+        binary += String.fromCharCode.apply(null, bytes.subarray(i, Math.min(i + CHUNK, bytes.byteLength)));
+      }
+      return window.btoa(binary);
+    })
+    .catch(function(err){
+      restore();
+      throw err;
+    });
 }
 
 // ดาวน์โหลด PDF ตรง ๆ (ใช้ engine เดียวกับที่แนบไป Email)
