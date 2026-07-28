@@ -139,11 +139,14 @@ header{background:var(--navy);padding:12px 20px;display:flex;align-items:center;
 #pv .pvleg-title{font-size:8px;font-weight:700;color:var(--maroon);text-transform:uppercase;letter-spacing:.7px;margin-bottom:7px;}
 #pv .pvleg-item{display:flex;align-items:center;gap:6px;margin-bottom:4px;font-size:8.5px;color:var(--dark);}
 #pv .pvleg-dot{width:9px;height:9px;border-radius:50%;flex-shrink:0;}
-#pv .pvscores{background:#fff;border:2px solid var(--pink-border);border-radius:8px;padding:9px 11px;min-width:160px;}
-#pv .pvsc-title{font-size:8px;font-weight:700;color:var(--maroon);margin-bottom:7px;}
-#pv .pvsc-row{display:flex;justify-content:space-between;font-size:8px;margin-bottom:4px;padding-bottom:3px;border-bottom:1px solid var(--pink-bg);}
-#pv .pvsc-lbl{color:var(--gray4);}
-#pv .pvsc-val{font-weight:700;color:var(--maroon);}
+#pv .pvscores{background:#fff;border:2px solid var(--pink-border);border-radius:8px;padding:9px 11px;min-width:250px;max-width:340px;}
+#pv .pvsc-title{font-size:8px;font-weight:700;color:var(--maroon);margin-bottom:6px;}
+#pv .pvsc-grp{font-size:7.5px;font-weight:800;letter-spacing:.3px;margin:6px 0 3px;padding-bottom:1.5px;border-bottom:1.5px solid currentColor;}
+#pv .pvsc-grp:first-child{margin-top:0;}
+#pv .pvsc-grid{display:grid;grid-template-columns:1fr 1fr;gap:0 9px;}
+#pv .pvsc-row{display:flex;justify-content:space-between;align-items:baseline;gap:5px;font-size:7.5px;margin-bottom:2.5px;padding-bottom:2px;border-bottom:1px solid var(--pink-bg);}
+#pv .pvsc-lbl{color:var(--gray4);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+#pv .pvsc-val{font-weight:800;color:var(--maroon);flex-shrink:0;}
 #pv .pvstats{display:grid;grid-template-columns:1fr 1fr;gap:6px;min-width:150px;}
 #pv .pvstat-box{background:#fff;border:1.5px solid var(--pink-border);border-radius:7px;padding:8px 6px;text-align:center;}
 #pv .pvstat-num{font-size:17px;font-weight:800;color:var(--maroon);}
@@ -1764,12 +1767,23 @@ function populatePrintView(){
       }).join('')
     : '<div style="font-size:8px;color:#999;">— ยังไม่ได้เลือกคอร์ส —</div>';
 
-  // ── กล่อง "เกณฑ์คะแนน / Target" (เฉพาะวิชาที่กรอก) ──
+  // ── กล่อง "เกณฑ์คะแนน / Target" — จัดกลุ่ม TGAT / TPAT / A-Level ──
+  // แสดงเฉพาะวิชาที่กรอก และเรียง 2 คอลัมน์เพื่อให้อยู่ใน 1 หน้า
   var filled = getFilledScores();
+  var SC_GROUPS = [['TGAT','#00838F','ความถนัดทั่วไป'],
+                   ['TPAT','#880E4F','ความถนัดวิชาชีพ'],
+                   ['A-Level','#1B5E20','วิชาเฉพาะ']];
   document.getElementById('pvScores').innerHTML = filled.length
-    ? filled.map(function(s){
-        return '<div class="pvsc-row"><span class="pvsc-lbl">'+escapeHtml(s.label)+'</span>' +
-               '<span class="pvsc-val">'+escapeHtml(s.value)+'</span></div>';
+    ? SC_GROUPS.map(function(g){
+        var items = filled.filter(function(s){ return s.group === g[0]; });
+        if(!items.length) return '';
+        return '<div class="pvsc-grp" style="color:'+g[1]+'">' + g[0] + ' — ' + g[2] + '</div>' +
+          '<div class="pvsc-grid">' + items.map(function(s){
+            // ตัดคำว่า "A-Level " ออก เพราะมีหัวข้อกลุ่มบอกอยู่แล้ว
+            var lbl = s.label.replace(/^A-Level\s*/, '');
+            return '<div class="pvsc-row"><span class="pvsc-lbl">'+escapeHtml(lbl)+'</span>' +
+                   '<span class="pvsc-val">'+escapeHtml(s.value)+'</span></div>';
+          }).join('') + '</div>';
       }).join('')
     : '<div style="font-size:8px;color:#999;">— ยังไม่ได้ระบุเกณฑ์คะแนน —</div>';
 
