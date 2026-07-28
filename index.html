@@ -707,7 +707,9 @@ function showView(id){
   document.getElementById('bcSep').style.display=id==='vHome'?'none':'inline';
   if(id==='vPlanner'){
     const fr=document.getElementById('plannerFrame');
-    if(!fr.getAttribute('data-loaded')){fr.src='ONDY_Member_Planner.html';fr.setAttribute('data-loaded','1');}
+    // ต่อ ?v=timestamp กัน browser cache ไฟล์ planner เวอร์ชันเก่าไว้ใน iframe
+    // (กด Ctrl+Shift+R ที่หน้านี้ ไม่ได้บังคับให้ iframe โหลดใหม่)
+    if(!fr.getAttribute('data-loaded')){fr.src='ONDY_Member_Planner.html?v='+Date.now();fr.setAttribute('data-loaded','1');}
   }
   window.scrollTo(0,0);
 }
