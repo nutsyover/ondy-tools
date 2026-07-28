@@ -1902,23 +1902,32 @@ function exitPrintMode(){
   document.getElementById('pv').style.display = 'none';
 }
 
+// ตัวช่วย: promise ที่ resolve เองเมื่อครบเวลา (กันงานค้างไม่จบ)
+function _timeout(ms, value){
+  return new Promise(function(res){ setTimeout(function(){ res(value); }, ms); });
+}
+
 // รอให้รูป (QR LINE ฯลฯ) โหลดครบก่อน capture — กัน PDF ออกมาเป็นช่องว่าง
+// ทุกขั้นมี timeout กำกับ เพราะ document.fonts.ready ค้างได้
+// และ requestAnimationFrame จะไม่ทำงานเลยถ้าแท็บไม่ได้อยู่หน้าจอ
 function waitForPvAssets(root){
   var imgs = Array.prototype.slice.call(root.querySelectorAll('img'));
   var jobs = imgs.map(function(img){
     if(img.complete && img.naturalWidth > 0) return Promise.resolve();
-    return new Promise(function(res){
-      var done = function(){ res(); };
-      img.addEventListener('load', done, {once:true});
-      img.addEventListener('error', done, {once:true});
-      setTimeout(done, 3000);
-    });
+    return Promise.race([
+      new Promise(function(res){
+        img.addEventListener('load', res, {once:true});
+        img.addEventListener('error', res, {once:true});
+      }),
+      _timeout(3000)
+    ]);
   });
-  if(document.fonts && document.fonts.ready) jobs.push(document.fonts.ready.catch(function(){}));
-  return Promise.all(jobs).then(function(){
-    // ให้ browser reflow/repaint รอบสุดท้าย
-    return new Promise(function(res){ requestAnimationFrame(function(){ setTimeout(res, 350); }); });
-  });
+  if(document.fonts && document.fonts.ready){
+    jobs.push(Promise.race([document.fonts.ready.catch(function(){}), _timeout(3000)]));
+  }
+  // เพดานรวม 6 วิ ไม่ว่าจะเกิดอะไรขึ้น แล้วเว้นอีก 300ms ให้ reflow
+  return Promise.race([Promise.all(jobs), _timeout(6000)])
+    .then(function(){ return _timeout(300); });
 }
 
 // ── engine resolvers ──────────────────────────────────────────
@@ -1993,17 +2002,26 @@ function renderPlanCanvas(){
     exitPrintMode();
   };
 
+  // html2canvas โหมด foreignObject ค้างได้ในบางเครื่อง จึงต้องมี timeout คุมทุกชั้น
   return waitForPvAssets(captureEl)
     .then(function(){
-      // foreignObject = ให้ browser จัด layout เอง (flex/grid/ตัวอักษรไทยตรงเป๊ะ)
-      return _renderPvCanvas(captureEl, true).then(function(cv){
-        return _canvasBlank(cv) ? _renderPvCanvas(captureEl, false) : cv;
-      }).catch(function(){
-        return _renderPvCanvas(captureEl, false);
-      });
+      // 1) foreignObject — ให้ browser จัด layout เอง (flex/grid/ตัวอักษรไทยตรงเป๊ะ)
+      return Promise.race([
+        _renderPvCanvas(captureEl, true).catch(function(){ return null; }),
+        _timeout(20000, null)
+      ]);
+    })
+    .then(function(cv){
+      if(cv && !_canvasBlank(cv)) return cv;
+      // 2) ถอยไปโหมดปกติ
+      return Promise.race([
+        _renderPvCanvas(captureEl, false).catch(function(){ return null; }),
+        _timeout(30000, null)
+      ]);
     })
     .then(function(cv){
       restore();
+      if(!cv) throw new Error('เรนเดอร์แผนไม่สำเร็จ (หมดเวลา) — ลองลดจำนวนคอร์สแล้วลองใหม่');
       if(_canvasBlank(cv)) throw new Error('เรนเดอร์แผนไม่สำเร็จ (ภาพว่าง)');
       return cv;
     })
