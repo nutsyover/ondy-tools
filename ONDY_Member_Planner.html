@@ -190,7 +190,10 @@ header{background:var(--navy);padding:12px 20px;display:flex;align-items:center;
   #pv .pvpage{width:297mm;min-height:210mm;margin:0;}
 }
 </style>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+<!-- โหลด html2canvas + jsPDF แบบ standalone เพื่อให้มี window.html2canvas / window.jspdf จริง
+     (html2pdf.bundle รวม 2 ตัวนี้ไว้ข้างในแต่ไม่ประกาศเป็น global จึงเรียกใช้ตรง ๆ ไม่ได้) -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 </head>
 <body>
 
@@ -867,8 +870,9 @@ function sendViaMailto(){
     var stLast  = (payload.lastName||'').replace(/[^ก-๙a-zA-Z0-9]/g,'_').slice(0,20);
     var fname = 'ONDY_' + stFirst + (stLast?'_'+stLast:'') + '_' + new Date().toISOString().slice(0,10);
 
-    if(typeof html2pdf === 'undefined' || !_h2c() || !_JsPDF()){
-      showToast('❌ โหลดตัวสร้าง PDF ไม่ได้ กรุณาตรวจสอบการเชื่อมต่ออินเทอร์เน็ตแล้วรีเฟรช', 'error', 7000);
+    var miss = _pdfEngineMissing();
+    if(miss){
+      showToast('❌ โหลดไลบรารี ' + miss + ' ไม่ได้ — กรุณาเช็คอินเทอร์เน็ต/ตัวบล็อกสคริปต์ แล้วรีเฟรช', 'error', 8000);
       return;
     }
     setLoading(true, 'กำลังสร้าง PDF...');
@@ -1868,7 +1872,7 @@ function renderBranchQR(){
 
 // ═══════════════════════════════════════════════════════════════
 //  PRINT / PDF — shared pipeline
-//  Print (window.print) และ Email PDF (html2pdf) ใช้ DOM ชุดเดียวกัน
+//  Print และ Email PDF ใช้ DOM + renderer ชุดเดียวกัน
 //  เพื่อให้ผลลัพธ์ออกมาเหมือนกันทุกครั้ง
 // ═══════════════════════════════════════════════════════════════
 var PV_MM_PER_PX = 25.4 / 96;   // 1px @96dpi -> mm
@@ -1917,12 +1921,20 @@ function waitForPvAssets(root){
   });
 }
 
-// ── engine resolvers (html2pdf.bundle มี html2canvas + jsPDF อยู่ข้างใน) ──
+// ── engine resolvers ──────────────────────────────────────────
 function _h2c(){ return window.html2canvas || null; }
 function _JsPDF(){
-  if(window.jspdf && window.jspdf.jsPDF) return window.jspdf.jsPDF;
-  if(window.jsPDF) return window.jsPDF;
+  if(window.jspdf && window.jspdf.jsPDF) return window.jspdf.jsPDF;   // jspdf.umd 2.x
+  if(window.jsPDF && window.jsPDF.jsPDF) return window.jsPDF.jsPDF;
+  if(typeof window.jsPDF === 'function') return window.jsPDF;          // jsPDF 1.x
   return null;
+}
+// คืนชื่อไลบรารีที่โหลดไม่ได้ (หรือ '' ถ้าครบ) — ใช้บอก error ให้ตรงจุด
+function _pdfEngineMissing(){
+  var m = [];
+  if(!_h2c()) m.push('html2canvas');
+  if(!_JsPDF()) m.push('jsPDF');
+  return m.join(' และ ');
 }
 
 // เช็คว่า canvas ออกมาว่างเปล่าไหม (สุ่มอ่าน 5 จุด ถ้าสีเหมือนกันหมด = ว่าง)
@@ -2020,16 +2032,21 @@ function makePlanPdf(){
   return renderPlanCanvas().then(function(cv){
     var JsPDF = _JsPDF();
     if(!JsPDF) throw new Error('jsPDF ไม่พร้อมใช้งาน');
-    var pageW = PV_PAGE_W_MM;
-    var pageH = Math.max(PV_PAGE_H_MM, Math.round((cv.height / cv.width) * pageW * 100) / 100);
-    var orient = pageW >= pageH ? 'landscape' : 'portrait';
+
+    // ── บังคับให้จบใน 1 หน้า A4 แนวนอน ──
+    // ย่อภาพให้พอดีกรอบ 297x210 mm โดยคงสัดส่วนเดิม แล้วจัดกึ่งกลาง
+    var pageW = PV_PAGE_W_MM, pageH = PV_PAGE_H_MM;
+    var ratio = cv.height / cv.width;
+    var imgW = pageW, imgH = pageW * ratio;
+    if(imgH > pageH){ imgH = pageH; imgW = pageH / ratio; }
+    var offX = (pageW - imgW) / 2, offY = (pageH - imgH) / 2;
 
     // ไล่ลดคุณภาพจนไฟล์เล็กพอจะแนบไป Apps Script ได้
     var qualities = [0.82, 0.70, 0.58, 0.45, 0.35];
     var bytes = null, b64 = '';
     for(var i = 0; i < qualities.length; i++){
-      var doc = new JsPDF({unit:'mm', format:[pageW, pageH], orientation:orient, compress:true});
-      doc.addImage(cv.toDataURL('image/jpeg', qualities[i]), 'JPEG', 0, 0, pageW, pageH, undefined, 'FAST');
+      var doc = new JsPDF({unit:'mm', format:[pageW, pageH], orientation:'landscape', compress:true});
+      doc.addImage(cv.toDataURL('image/jpeg', qualities[i]), 'JPEG', offX, offY, imgW, imgH, undefined, 'FAST');
       bytes = new Uint8Array(doc.output('arraybuffer'));
       b64 = _bytesToB64(bytes);
       if(b64.length <= PDF_MAX_B64) break;
@@ -2079,7 +2096,9 @@ function downloadPlanPdf(){
 
 // Print = สั่งพิมพ์ "ไฟล์ PDF ไฟล์เดียวกัน" กับที่แนบไป Email
 function printPlan(){
-  if(typeof html2canvas === 'undefined' || !_h2c() || !_JsPDF()){
+  if(_pdfEngineMissing()){
+    // ไลบรารีโหลดไม่ได้ → พิมพ์จาก DOM ตรง ๆ แทน (ยังพิมพ์ได้ แค่ไม่ได้ไฟล์ PDF)
+    showToast('⚠️ โหลดตัวสร้าง PDF ไม่ได้ — พิมพ์จากหน้าเว็บแทน', 'error', 5000);
     populatePrintView();
     var pvf = document.getElementById('pv');
     pvf.style.display = 'block';
