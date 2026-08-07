@@ -31,6 +31,8 @@ header{background:var(--navy);padding:12px 20px;display:flex;align-items:center;
 .fgrid .full{grid-column:1/-1;}
 .flbl{font-size:11px;color:var(--gray4);display:block;margin-bottom:3px;}
 .finput{width:100%;padding:7px 9px;border:1.5px solid var(--gray2);border-radius:7px;font-size:12px;color:var(--dark);background:var(--gray0);transition:border .15s;}
+textarea.finput{resize:vertical;min-height:76px;line-height:1.6;font-family:inherit;}
+.fcount{font-size:10px;color:var(--gray3);text-align:right;margin-top:3px;}
 .finput:focus{outline:none;border-color:var(--navy);background:#fff;}
 .srow{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;}
 .scard{background:var(--navy);border-radius:8px;padding:11px;text-align:center;color:#fff;}
@@ -134,6 +136,9 @@ header{background:var(--navy);padding:12px 20px;display:flex;align-items:center;
 #pv .pvcard-price{font-size:7.5px;color:var(--gold);font-weight:700;margin-top:2px;}
 .mccode{font-size:9.5px;color:#5B6B7A;font-family:'Consolas',monospace;background:#EEF2F6;border:1px solid #D8E0E8;padding:1px 5px;border-radius:3px;flex-shrink:0;letter-spacing:.4px;min-width:44px;text-align:center;}
 .mcitem.sel .mccode{background:#fff;}
+#pv .pvnote{background:#fff;border:1.5px solid var(--pink-border);border-left:4px solid var(--maroon);border-radius:8px;padding:9px 12px;margin:0 10px 10px;page-break-inside:avoid;break-inside:avoid;}
+#pv .pvnote-title{font-size:8px;font-weight:700;color:var(--maroon);text-transform:uppercase;letter-spacing:.7px;margin-bottom:5px;}
+#pv .pvnote-body{font-size:9px;color:var(--dark);line-height:1.65;white-space:pre-wrap;word-break:break-word;}
 #pv .pvbottom{display:grid;grid-template-columns:1fr auto auto;gap:10px;margin:0 10px 10px;align-items:start;}
 #pv .pvlegend{background:#fff;border:1.5px solid var(--pink-border);border-radius:8px;padding:9px 11px;}
 #pv .pvleg-title{font-size:8px;font-weight:700;color:var(--maroon);text-transform:uppercase;letter-spacing:.7px;margin-bottom:7px;}
@@ -342,6 +347,10 @@ header{background:var(--navy);padding:12px 20px;display:flex;align-items:center;
       </div>
       <div class="pvstats" id="pvStats"></div>
     </div>
+    <div class="pvnote" id="pvNoteWrap" style="display:none;">
+      <div class="pvnote-title">&#128221; หมายเหตุจาก Guru</div>
+      <div class="pvnote-body" id="pvNoteBody"></div>
+    </div>
     <div class="pvfooter">
       <div>OnDemand Education Co., Ltd. | www.ondemand.in.th | Tel: 02-251-9456 | <span id="pFOOTER"></span></div>
       <div class="pvfooter-logo">Ondy Member</div>
@@ -520,6 +529,16 @@ header{background:var(--navy);padding:12px 20px;display:flex;align-items:center;
         <div><label class="flbl">A-Level ภาษาไทย</label><input class="finput" id="scThai" type="number" placeholder="คะแนน" oninput="updateAll()"></div>
         <div><label class="flbl">A-Level ภาษาอังกฤษ</label><input class="finput" id="scEng" type="number" placeholder="คะแนน" oninput="updateAll()"></div>
         <div><label class="flbl">A-Level ภาษาต่างประเทศอื่น</label><input class="finput" id="scLang" type="number" placeholder="คะแนน" oninput="updateAll()"></div>
+      </div>
+    </div>
+    <div class="bcard">
+      <div class="bcard-title">&#128221; หมายเหตุ / Note</div>
+      <div class="fgrid">
+        <div class="full">
+          <label class="flbl">บันทึกเพิ่มเติม (จะแสดงในแผน PDF ของนักเรียน)</label>
+          <textarea class="finput" id="stNote" maxlength="600" placeholder="เช่น จุดที่ต้องเน้นเป็นพิเศษ, ข้อตกลงกับผู้ปกครอง, ตารางเรียนพิเศษ..." oninput="updateNoteCount();updateAll()"></textarea>
+          <div class="fcount"><span id="noteCount">0</span> / 600</div>
+        </div>
       </div>
     </div>
   </div>
@@ -1690,6 +1709,11 @@ function calcStats(){
 function updateAll(){ calcStats(); }
 function gv(id){ return document.getElementById(id).value || '—'; }
 
+function updateNoteCount(){
+  var el=document.getElementById('stNote');
+  if(el) document.getElementById('noteCount').textContent = el.value.length;
+}
+
 function populatePrintView(){
   document.getElementById('pN').textContent = gv('stName');
   document.getElementById('pNN').textContent = gv('stNick');
@@ -1795,6 +1819,11 @@ function populatePrintView(){
       if(getActiveCal()[li3][mi3].length) monthsUsed[li3+'-'+mi3] = 1;
     }
   }
+  var noteEl = document.getElementById('stNote');
+  var noteTxt = noteEl ? noteEl.value.trim() : '';
+  document.getElementById('pvNoteBody').textContent = noteTxt;
+  document.getElementById('pvNoteWrap').style.display = noteTxt ? 'block' : 'none';
+
   document.getElementById('pvStats').innerHTML =
     '<div class="pvstat-box"><div class="pvstat-num">'+used.length+'</div><div class="pvstat-lbl">คอร์สในแผน</div></div>' +
     '<div class="pvstat-box"><div class="pvstat-num">'+totHrs+'</div><div class="pvstat-lbl">ชั่วโมงรวม</div></div>' +
